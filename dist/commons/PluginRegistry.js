@@ -31,7 +31,7 @@ var PluginRegistry = (function () {
         var _this = this;
         var info = [];
         _.forEach(this.pluginMap, function (entry, key) {
-            if (_this.checkDeps(entry, plugins)) {
+            if (!_this.checkDeps(entry, plugins)) {
                 console.error("Plugin", entry.name, "removed");
             }
             else {
