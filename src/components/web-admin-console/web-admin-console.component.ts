@@ -16,9 +16,14 @@ export class WebAdminConsoleComponent implements OnInit {
    */
   public ngOnInit(): void {
     console.log("WebAdminConsoleComponent init done");
-    this.routes = this.pluginManager.createRouteConfigFromCatalog();
-    console.log("WebAdminConsoleComponent routes",this.routes);
-    this.router.resetConfig(this.routes);
+    //this.routes = this.pluginManager.createRouteConfigFromCatalog();
+    this.pluginManager.createRouteConfigFromCatalog().then((result:Array<Route>) => {
+      this.routes = result;
+      this.router.resetConfig(this.routes);
+      console.log("WebAdminConsoleComponent routes",this.routes);
+    })
+    //console.log("WebAdminConsoleComponent routes",this.routes);
+    //this.router.resetConfig(this.routes);
   }
   
   

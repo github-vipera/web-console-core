@@ -6,7 +6,17 @@ var WebAdminPluginManagerService = (function () {
     }
     WebAdminPluginManagerService.prototype.createRouteConfigFromCatalog = function () {
         //TODO fetch plugin from server and merge data with this config
-        return PluginRegistry.getInstance().getRouteConfig();
+        return new Promise(function (resolve) {
+            fetch('/rest/registry/plugin/list?all=true').then(function (response) {
+                return response.json();
+            }).then(function (json) {
+                var plugins = json.Plugins;
+                resolve(PluginRegistry.getInstance().getRouteConfig(plugins));
+            }).catch(function (err) {
+                console.error("Error in fetch", err);
+            });
+        });
+        //return null;
     };
     WebAdminPluginManagerService.decorators = [
         { type: Injectable },
@@ -16,4 +26,8 @@ var WebAdminPluginManagerService = (function () {
     return WebAdminPluginManagerService;
 }());
 export { WebAdminPluginManagerService };
+/*export interface PluginInfo{
+    getPluginId():string
+    getPluginDescription():string
+}*/
 //# sourceMappingURL=web-admin-plugin-manager.service.js.map

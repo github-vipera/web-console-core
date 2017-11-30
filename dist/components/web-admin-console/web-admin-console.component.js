@@ -17,10 +17,16 @@ var WebAdminConsoleComponent = (function () {
        * Implements onInit event handler.
        */
     function () {
+        var _this = this;
         console.log("WebAdminConsoleComponent init done");
-        this.routes = this.pluginManager.createRouteConfigFromCatalog();
-        console.log("WebAdminConsoleComponent routes", this.routes);
-        this.router.resetConfig(this.routes);
+        //this.routes = this.pluginManager.createRouteConfigFromCatalog();
+        this.pluginManager.createRouteConfigFromCatalog().then(function (result) {
+            _this.routes = result;
+            _this.router.resetConfig(_this.routes);
+            console.log("WebAdminConsoleComponent routes", _this.routes);
+        });
+        //console.log("WebAdminConsoleComponent routes",this.routes);
+        //this.router.resetConfig(this.routes);
     };
     WebAdminConsoleComponent.decorators = [
         { type: Component, args: [{

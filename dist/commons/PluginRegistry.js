@@ -11,21 +11,28 @@ var PluginRegistry = (function () {
         }
         return instance;
     };
-    PluginRegistry.prototype.createRegistrationEntry = function (name, value, route) {
-        return {
+    PluginRegistry.prototype.createRegistrationEntry = function (name, value, info) {
+        var registrationEntry = {
             name: name,
-            component: value,
-            routeDef: route
+            component: value
         };
+        if (info) {
+            registrationEntry.routeDef = info.route;
+            registrationEntry.dependencies = info.dependencies;
+        }
+        return registrationEntry;
     };
-    PluginRegistry.prototype.registryPluginComponent = function (name, value, route) {
+    PluginRegistry.prototype.registryPluginComponent = function (name, value, info) {
         console.log("registryPluginComponent", value);
-        var entry = this.createRegistrationEntry(name, value, route);
+        var entry = this.createRegistrationEntry(name, value, info);
         this.pluginMap[name] = entry;
     };
-    PluginRegistry.prototype.getRouteConfig = function () {
+    PluginRegistry.prototype.getRouteConfig = function (plugins) {
+        var _this = this;
         var info = [];
         _.forEach(this.pluginMap, function (entry, key) {
+            if (_this.checkDeps(entry, plugins)) {
+            }
             if (entry.routeDef) {
                 info.push(entry.routeDef);
             }
@@ -38,6 +45,20 @@ var PluginRegistry = (function () {
         });
         return info;
     };
+    PluginRegistry.prototype.checkDeps = function (entry, plugins) {
+        try {
+            _.forEach(entry.dependencies || [], function (info) {
+                if (_.findIndex(plugins || [], function (single) { return info.name == single.name; }) == -1) {
+                    throw new Error("Plugin not found:" + info.name);
+                }
+            });
+            return true;
+        }
+        catch (ex) {
+            console.error("invalid plugin info", ex);
+            return false;
+        }
+    };
     return PluginRegistry;
 }());
 export { PluginRegistry };
@@ -46,10 +67,10 @@ export { PluginRegistry };
  * @param name plugin name; if route is null, this name are used as path
  * @param route
  */
-export function PluginView(name, route) {
+export function PluginView(name, info) {
     console.log("pluginview decorator called", name);
     return function (target) {
-        PluginRegistry.getInstance().registryPluginComponent(name, target, route);
+        PluginRegistry.getInstance().registryPluginComponent(name, target, info);
     };
 }
 //# sourceMappingURL=PluginRegistry.js.map

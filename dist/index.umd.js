@@ -154,21 +154,28 @@ var PluginRegistry = (function () {
         }
         return instance;
     };
-    PluginRegistry.prototype.createRegistrationEntry = function (name, value, route) {
-        return {
+    PluginRegistry.prototype.createRegistrationEntry = function (name, value, info) {
+        var registrationEntry = {
             name: name,
-            component: value,
-            routeDef: route
+            component: value
         };
+        if (info) {
+            registrationEntry.routeDef = info.route;
+            registrationEntry.dependencies = info.dependencies;
+        }
+        return registrationEntry;
     };
-    PluginRegistry.prototype.registryPluginComponent = function (name, value, route) {
+    PluginRegistry.prototype.registryPluginComponent = function (name, value, info) {
         console.log("registryPluginComponent", value);
-        var entry = this.createRegistrationEntry(name, value, route);
+        var entry = this.createRegistrationEntry(name, value, info);
         this.pluginMap[name] = entry;
     };
-    PluginRegistry.prototype.getRouteConfig = function () {
+    PluginRegistry.prototype.getRouteConfig = function (plugins) {
+        var _this = this;
         var info = [];
         _.forEach(this.pluginMap, function (entry, key) {
+            if (_this.checkDeps(entry, plugins)) {
+            }
             if (entry.routeDef) {
                 info.push(entry.routeDef);
             }
@@ -181,6 +188,20 @@ var PluginRegistry = (function () {
         });
         return info;
     };
+    PluginRegistry.prototype.checkDeps = function (entry, plugins) {
+        try {
+            _.forEach(entry.dependencies || [], function (info) {
+                if (_.findIndex(plugins || [], function (single) { return info.name == single.name; }) == -1) {
+                    throw new Error("Plugin not found:" + info.name);
+                }
+            });
+            return true;
+        }
+        catch (ex) {
+            console.error("invalid plugin info", ex);
+            return false;
+        }
+    };
     return PluginRegistry;
 }());
 exports.PluginRegistry = PluginRegistry;
@@ -189,10 +210,10 @@ exports.PluginRegistry = PluginRegistry;
  * @param name plugin name; if route is null, this name are used as path
  * @param route
  */
-function PluginView(name, route) {
+function PluginView(name, info) {
     console.log("pluginview decorator called", name);
     return function (target) {
-        PluginRegistry.getInstance().registryPluginComponent(name, target, route);
+        PluginRegistry.getInstance().registryPluginComponent(name, target, info);
     };
 }
 exports.PluginView = PluginView;
@@ -17447,10 +17468,16 @@ var WebAdminConsoleComponent = (function () {
      * Implements onInit event handler.
      */
     WebAdminConsoleComponent.prototype.ngOnInit = function () {
+        var _this = this;
         console.log("WebAdminConsoleComponent init done");
-        this.routes = this.pluginManager.createRouteConfigFromCatalog();
-        console.log("WebAdminConsoleComponent routes", this.routes);
-        this.router.resetConfig(this.routes);
+        //this.routes = this.pluginManager.createRouteConfigFromCatalog();
+        this.pluginManager.createRouteConfigFromCatalog().then(function (result) {
+            _this.routes = result;
+            _this.router.resetConfig(_this.routes);
+            console.log("WebAdminConsoleComponent routes", _this.routes);
+        });
+        //console.log("WebAdminConsoleComponent routes",this.routes);
+        //this.router.resetConfig(this.routes);
     };
     WebAdminConsoleComponent = __decorate([
         core_1.Component({
@@ -17502,7 +17529,17 @@ var WebAdminPluginManagerService = (function () {
     }
     WebAdminPluginManagerService.prototype.createRouteConfigFromCatalog = function () {
         //TODO fetch plugin from server and merge data with this config
-        return index_1.PluginRegistry.getInstance().getRouteConfig();
+        return new Promise(function (resolve) {
+            fetch('/rest/registry/plugin/list?all=true').then(function (response) {
+                return response.json();
+            }).then(function (json) {
+                var plugins = json.Plugins;
+                resolve(index_1.PluginRegistry.getInstance().getRouteConfig(plugins));
+            }).catch(function (err) {
+                console.error("Error in fetch", err);
+            });
+        });
+        //return null;
     };
     WebAdminPluginManagerService = __decorate([
         core_1.Injectable(),
@@ -17511,6 +17548,10 @@ var WebAdminPluginManagerService = (function () {
     return WebAdminPluginManagerService;
 }());
 exports.WebAdminPluginManagerService = WebAdminPluginManagerService;
+/*export interface PluginInfo{
+    getPluginId():string
+    getPluginDescription():string
+}*/
 
 
 /***/ }),
