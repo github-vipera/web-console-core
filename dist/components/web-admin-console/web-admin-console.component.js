@@ -1,0 +1,40 @@
+import { Component } from '@angular/core';
+import { WebAdminPluginManagerService } from '../../services';
+import { Router } from '@angular/router';
+var WebAdminConsoleComponent = (function () {
+    function WebAdminConsoleComponent(pluginManager, router) {
+        this.pluginManager = pluginManager;
+        this.router = router;
+        this.routes = [];
+    }
+    /**
+     * Implements onInit event handler.
+     */
+    /**
+       * Implements onInit event handler.
+       */
+    WebAdminConsoleComponent.prototype.ngOnInit = /**
+       * Implements onInit event handler.
+       */
+    function () {
+        console.log("WebAdminConsoleComponent init done");
+        this.routes = this.pluginManager.createRouteConfigFromCatalog();
+        console.log("WebAdminConsoleComponent routes", this.routes);
+        this.router.resetConfig(this.routes);
+    };
+    WebAdminConsoleComponent.decorators = [
+        { type: Component, args: [{
+                    selector: 'web-admin-console',
+                    styles: ["\n    a.plugin-link{padding:10px}\n  "],
+                    template: "\n    <div>\n        <a class=\"plugin-link\"  *ngFor=\"let route of routes\" routerLink=\"{{route.path}}\">{{route.path}}</a>\n        <router-outlet></router-outlet>\n    </div>\n  ",
+                },] },
+    ];
+    /** @nocollapse */
+    WebAdminConsoleComponent.ctorParameters = function () { return [
+        { type: WebAdminPluginManagerService, },
+        { type: Router, },
+    ]; };
+    return WebAdminConsoleComponent;
+}());
+export { WebAdminConsoleComponent };
+//# sourceMappingURL=web-admin-console.component.js.map
