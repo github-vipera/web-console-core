@@ -5,18 +5,35 @@ var WebAdminPluginManagerService = (function () {
         console.log("WebAdminPluginManagerService injected");
     }
     WebAdminPluginManagerService.prototype.createRouteConfigFromCatalog = function () {
-        //TODO fetch plugin from server and merge data with this config
+        var _this = this;
+        /*return new Promise<Array<Route>>((resolve) => {
+                    fetch('/rest/registry/plugin/list?all=true').then((response:any) => {
+                        return response.json();
+                    }).then((json:any) => {
+                        let plugins:Array<PluginInfo> = json.Plugin;
+                        resolve(PluginRegistry.getInstance().getRouteConfig(plugins));
+                    }).catch((err) => {
+                        console.error("Error in fetch",err);
+                    });
+                });*/
+        return new Promise(function (resolve, reject) {
+            _this.fetchCatalog().then(function (catalog) {
+                resolve(PluginRegistry.getInstance().getRouteConfig(catalog));
+            }, reject);
+        });
+    };
+    WebAdminPluginManagerService.prototype.fetchCatalog = function () {
         return new Promise(function (resolve) {
             fetch('/rest/registry/plugin/list?all=true').then(function (response) {
-                return response.json();
+                if (response.ok) {
+                    return response.json();
+                }
+                return Promise.reject(response);
             }).then(function (json) {
                 var plugins = json.Plugin;
-                resolve(PluginRegistry.getInstance().getRouteConfig(plugins));
-            }).catch(function (err) {
-                console.error("Error in fetch", err);
+                resolve(json.Plugin);
             });
         });
-        //return null;
     };
     WebAdminPluginManagerService.decorators = [
         { type: Injectable },
@@ -26,8 +43,4 @@ var WebAdminPluginManagerService = (function () {
     return WebAdminPluginManagerService;
 }());
 export { WebAdminPluginManagerService };
-/*export interface PluginInfo{
-    getPluginId():string
-    getPluginDescription():string
-}*/
 //# sourceMappingURL=web-admin-plugin-manager.service.js.map
