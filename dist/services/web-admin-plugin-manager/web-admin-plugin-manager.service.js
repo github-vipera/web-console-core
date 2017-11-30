@@ -10,7 +10,7 @@ var WebAdminPluginManagerService = (function () {
             fetch('/rest/registry/plugin/list?all=true').then(function (response) {
                 return response.json();
             }).then(function (json) {
-                var plugins = json.Plugins;
+                var plugins = json.Plugin;
                 resolve(PluginRegistry.getInstance().getRouteConfig(plugins));
             }).catch(function (err) {
                 console.error("Error in fetch", err);

@@ -175,15 +175,18 @@ var PluginRegistry = (function () {
         var info = [];
         _.forEach(this.pluginMap, function (entry, key) {
             if (_this.checkDeps(entry, plugins)) {
-            }
-            if (entry.routeDef) {
-                info.push(entry.routeDef);
+                console.error("Plugin", entry.name, "removed");
             }
             else {
-                info.push({
-                    path: key,
-                    component: entry.component
-                });
+                if (entry.routeDef) {
+                    info.push(entry.routeDef);
+                }
+                else {
+                    info.push({
+                        path: key,
+                        component: entry.component
+                    });
+                }
             }
         });
         return info;
@@ -17533,7 +17536,7 @@ var WebAdminPluginManagerService = (function () {
             fetch('/rest/registry/plugin/list?all=true').then(function (response) {
                 return response.json();
             }).then(function (json) {
-                var plugins = json.Plugins;
+                var plugins = json.Plugin;
                 resolve(index_1.PluginRegistry.getInstance().getRouteConfig(plugins));
             }).catch(function (err) {
                 console.error("Error in fetch", err);

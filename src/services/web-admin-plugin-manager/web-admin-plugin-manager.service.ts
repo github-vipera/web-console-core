@@ -18,7 +18,7 @@ export class WebAdminPluginManagerService {
             fetch('/rest/registry/plugin/list?all=true').then((response:any) => {
                 return response.json();
             }).then((json:any) => {
-                let plugins:Array<PluginInfo> = json.Plugins;
+                let plugins:Array<PluginInfo> = json.Plugin;
                 resolve(PluginRegistry.getInstance().getRouteConfig(plugins));
             }).catch((err) => {
                 console.error("Error in fetch",err);

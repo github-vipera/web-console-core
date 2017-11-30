@@ -39,17 +39,18 @@ export class PluginRegistry {
         let info:Routes = [];
         _.forEach(this.pluginMap,(entry:PluginRegistrationEntry,key:string) => {
             if(this.checkDeps(entry,plugins)){
-                
-            }
-            
-            if(entry.routeDef){
-                info.push(entry.routeDef);
+                console.error("Plugin",entry.name,"removed");
             }else{
-                info.push({
-                    path:key,
-                    component:entry.component
-                });
+                if(entry.routeDef){
+                    info.push(entry.routeDef);
+                }else{
+                    info.push({
+                        path:key,
+                        component:entry.component
+                    });
+                }
             }
+
         });   
         return info;
     }

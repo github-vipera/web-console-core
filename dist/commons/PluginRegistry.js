@@ -32,15 +32,18 @@ var PluginRegistry = (function () {
         var info = [];
         _.forEach(this.pluginMap, function (entry, key) {
             if (_this.checkDeps(entry, plugins)) {
-            }
-            if (entry.routeDef) {
-                info.push(entry.routeDef);
+                console.error("Plugin", entry.name, "removed");
             }
             else {
-                info.push({
-                    path: key,
-                    component: entry.component
-                });
+                if (entry.routeDef) {
+                    info.push(entry.routeDef);
+                }
+                else {
+                    info.push({
+                        path: key,
+                        component: entry.component
+                    });
+                }
             }
         });
         return info;
