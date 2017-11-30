@@ -7,7 +7,7 @@ export declare class PluginRegistry {
     private createRegistrationEntry(name, value, info);
     registryPluginComponent(name: string, value: Type<any>, info?: RegistrationInfo): void;
     getRouteConfig(plugins: Array<PluginInfo>): Routes;
-    checkDeps(entry: PluginRegistrationEntry, plugins: Array<PluginInfo>): boolean;
+    private checkDeps(entry, plugins);
 }
 /**
  * Decorator for plugin registration
@@ -17,14 +17,11 @@ export declare class PluginRegistry {
 export declare function PluginView(name: string, info?: RegistrationInfo): (target: Type<any>) => void;
 export interface RegistrationInfo {
     route?: Route;
-    dependencies?: Array<{
-        name: string;
-        value: string;
-    }>;
+    dependencies?: Array<PluginInfo>;
 }
 export interface PluginInfo {
     name: string;
-    value: string;
+    version: string;
 }
 export interface PluginRegistrationEntry {
     name: string;

@@ -4,6 +4,7 @@ import {Type} from '@angular/core'
 import { Routes,Route } from '@angular/router';
 import { WebAdminConsoleComponent } from '../components/index';
 import { forEach } from '@angular/router/src/utils/collection';
+
 let instance:PluginRegistry = undefined;
 export class PluginRegistry {
     private pluginMap: { [key:string]:PluginRegistrationEntry; } = {};
@@ -55,7 +56,7 @@ export class PluginRegistry {
         return info;
     }
 
-    checkDeps(entry:PluginRegistrationEntry,plugins:Array<PluginInfo>):boolean{
+    private checkDeps(entry:PluginRegistrationEntry,plugins:Array<PluginInfo>):boolean{
        try{
         _.forEach(entry.dependencies || [],(info:PluginInfo) => {
            if(_.findIndex(plugins || [],(single:PluginInfo) => {return info.name == single.name}) == -1){
@@ -85,13 +86,13 @@ export function PluginView(name:string,info?:RegistrationInfo){
 
 export interface RegistrationInfo{
     route?:Route,
-    dependencies?:Array<{name:string, value:string}>
+    dependencies?:Array<PluginInfo>
 }
 
 
 export interface PluginInfo {
     name:string,
-    value:string
+    version:string
 }
 
 export interface PluginRegistrationEntry{
