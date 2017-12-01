@@ -1,3 +1,14 @@
 a.plugin-link{
     padding: 10px;
 }
+.error-box{
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: red;
+    p.error-msg {
+      font-weight: bold;
+      color: white;
+      padding:10px;
+    }
+}

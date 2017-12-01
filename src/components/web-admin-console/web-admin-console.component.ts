@@ -8,7 +8,16 @@ import { Route,Router } from '@angular/router'
 })
 export class WebAdminConsoleComponent implements OnInit {
   routes:Array<Route> = [];
+  errorBox:{
+    show:boolean,
+    message:string
+  };
   public constructor(private pluginManager:WebAdminPluginManagerService,private router: Router) {
+    console.log("console component constructor");
+    this.errorBox  = {
+      show:false,
+      message:null
+    }
   }
 
   /**
@@ -23,11 +32,21 @@ export class WebAdminConsoleComponent implements OnInit {
       console.log("WebAdminConsoleComponent routes",this.routes);
     },(err) => {
       console.error("Fail to crete routing:",err);
+      this.showError("Catalog mapping fail");
     }).catch((err) => {
       console.error("Catch fail to crete routing:",err);
+      this.showError("Catalog mapping fail");
     });
-    //console.log("WebAdminConsoleComponent routes",this.routes);
-    //this.router.resetConfig(this.routes);
+  }
+
+  private showError(message:string):void{
+    this.errorBox.message = message;
+    this.errorBox.show = true;
+  }
+
+  private hideError():void{
+    this.errorBox.show = false;
+    this.errorBox.message = null;
   }
   
   

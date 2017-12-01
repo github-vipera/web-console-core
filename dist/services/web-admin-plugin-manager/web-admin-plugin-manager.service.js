@@ -54,16 +54,16 @@ var WebAdminPluginManagerService = (function () {
         });
     };
     WebAdminPluginManagerService.prototype.fetchCatalog = function () {
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             fetch('/rest/registry/plugin/list?all=true').then(function (response) {
                 if (response.ok) {
                     return response.json();
                 }
                 return Promise.reject(response);
-            }).then(function (json) {
+            }, reject).then(function (json) {
                 var plugins = json.Plugin;
                 resolve(json.Plugin);
-            });
+            }, reject);
         });
     };
     WebAdminPluginManagerService.decorators = [

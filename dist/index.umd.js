@@ -17466,6 +17466,11 @@ var WebAdminConsoleComponent = (function () {
         this.pluginManager = pluginManager;
         this.router = router;
         this.routes = [];
+        console.log("console component constructor");
+        this.errorBox = {
+            show: false,
+            message: null
+        };
     }
     /**
      * Implements onInit event handler.
@@ -17480,11 +17485,19 @@ var WebAdminConsoleComponent = (function () {
             console.log("WebAdminConsoleComponent routes", _this.routes);
         }, function (err) {
             console.error("Fail to crete routing:", err);
+            _this.showError("Catalog mapping fail");
         }).catch(function (err) {
             console.error("Catch fail to crete routing:", err);
+            _this.showError("Catalog mapping fail");
         });
-        //console.log("WebAdminConsoleComponent routes",this.routes);
-        //this.router.resetConfig(this.routes);
+    };
+    WebAdminConsoleComponent.prototype.showError = function (message) {
+        this.errorBox.message = message;
+        this.errorBox.show = true;
+    };
+    WebAdminConsoleComponent.prototype.hideError = function () {
+        this.errorBox.show = false;
+        this.errorBox.message = null;
     };
     WebAdminConsoleComponent = __decorate([
         core_1.Component({
@@ -17584,16 +17597,16 @@ var WebAdminPluginManagerService = (function () {
         });
     };
     WebAdminPluginManagerService.prototype.fetchCatalog = function () {
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             fetch('/rest/registry/plugin/list?all=true').then(function (response) {
                 if (response.ok) {
                     return response.json();
                 }
                 return Promise.reject(response);
-            }).then(function (json) {
+            }, reject).then(function (json) {
                 var plugins = json.Plugin;
                 resolve(json.Plugin);
-            });
+            }, reject);
         });
     };
     WebAdminPluginManagerService = __decorate([
@@ -17628,7 +17641,7 @@ exports = module.exports = __webpack_require__(17)(undefined);
 
 
 // module
-exports.push([module.i, "a.plugin-link {\n  padding: 10px; }\n", ""]);
+exports.push([module.i, "a.plugin-link {\n  padding: 10px; }\n\n.error-box {\n  display: block;\n  width: 100%;\n  text-align: center;\n  background-color: red; }\n  .error-box p.error-msg {\n    font-weight: bold;\n    color: white;\n    padding: 10px; }\n", ""]);
 
 // exports
 
@@ -17719,7 +17732,7 @@ function toComment(sourceMap) {
 /* 18 */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n    <a class=\"plugin-link\"  *ngFor=\"let route of routes\" routerLink=\"{{route.path}}\">{{route.path}}</a>\n    <router-outlet></router-outlet>\n</div>\n"
+module.exports = "<div>\n    <div class=\"routing-container\" *ngIf=\"!errorBox.show\">\n        <a class=\"plugin-link\"   *ngFor=\"let route of routes\" routerLink=\"{{route.path}}\">{{route.path}}</a>\n    </div>\n    <div class=\"error-box\" *ngIf=\"errorBox.show\">\n        <p class=\"error-msg\">{{errorBox.message}}</p>\n    </div>\n    \n    <router-outlet></router-outlet>\n</div>\n"
 
 /***/ }),
 /* 19 */

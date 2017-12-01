@@ -34,16 +34,16 @@ export class WebAdminPluginManagerService {
     }
 
     private  fetchCatalog():Promise<Array<PluginInfo>>{
-        return new Promise<Array<PluginInfo>>((resolve) => {
+        return new Promise<Array<PluginInfo>>((resolve,reject) => {
             fetch('/rest/registry/plugin/list?all=true').then((response:Response) => {
                 if(response.ok){
                   return response.json();               
                 }
                 return Promise.reject(response);
-            }).then((json:any) => {
+            },reject).then((json:any) => {
                 let plugins:Array<PluginInfo> = json.Plugin;
                 resolve(json.Plugin);
-            });
+            },reject);
         });
     }
 }
