@@ -47,6 +47,7 @@ var WebAdminPluginManagerService = (function () {
                     case 0: return [4 /*yield*/, this.fetchCatalog()];
                     case 1:
                         catalog = _a.sent();
+                        console.log("Catalog:", catalog);
                         return [2 /*return*/, PluginRegistry.getInstance().getRouteConfig(catalog)];
                 }
             });

@@ -21,7 +21,11 @@ export class WebAdminConsoleComponent implements OnInit {
       this.routes = result;
       this.router.resetConfig(this.routes);
       console.log("WebAdminConsoleComponent routes",this.routes);
-    })
+    },(err) => {
+      console.error("Fail to crete routing:",err);
+    }).catch((err) => {
+      console.error("Catch fail to crete routing:",err);
+    });
     //console.log("WebAdminConsoleComponent routes",this.routes);
     //this.router.resetConfig(this.routes);
   }

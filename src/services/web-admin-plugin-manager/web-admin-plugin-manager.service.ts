@@ -29,6 +29,7 @@ export class WebAdminPluginManagerService {
             },reject);
         });*/
         let catalog:Array<PluginInfo> = await this.fetchCatalog();
+        console.log("Catalog:",catalog);
         return PluginRegistry.getInstance().getRouteConfig(catalog);
     }
 

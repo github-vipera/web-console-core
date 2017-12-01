@@ -24,6 +24,10 @@ var WebAdminConsoleComponent = (function () {
             _this.routes = result;
             _this.router.resetConfig(_this.routes);
             console.log("WebAdminConsoleComponent routes", _this.routes);
+        }, function (err) {
+            console.error("Fail to crete routing:", err);
+        }).catch(function (err) {
+            console.error("Catch fail to crete routing:", err);
         });
         //console.log("WebAdminConsoleComponent routes",this.routes);
         //this.router.resetConfig(this.routes);
