@@ -170,11 +170,12 @@ var PluginRegistry = (function () {
         var entry = this.createRegistrationEntry(name, value, info);
         this.pluginMap[name] = entry;
     };
-    PluginRegistry.prototype.getRouteConfig = function (plugins) {
+    PluginRegistry.prototype.getRouteConfig = function (plugins, checkDeps) {
         var _this = this;
+        if (checkDeps === void 0) { checkDeps = true; }
         var info = [];
         _.forEach(this.pluginMap, function (entry, key) {
-            if (!_this.checkDeps(entry, plugins)) {
+            if (checkDeps && !_this.checkDeps(entry, plugins)) {
                 console.error("Plugin", entry.name, "removed");
             }
             else {
@@ -17595,6 +17596,9 @@ var WebAdminPluginManagerService = (function () {
                 }
             });
         });
+    };
+    WebAdminPluginManagerService.prototype.getInitialConfig = function () {
+        return index_1.PluginRegistry.getInstance().getRouteConfig([], false);
     };
     WebAdminPluginManagerService.prototype.fetchCatalog = function () {
         return new Promise(function (resolve, reject) {

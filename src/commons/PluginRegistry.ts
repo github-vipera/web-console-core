@@ -36,10 +36,10 @@ export class PluginRegistry {
         this.pluginMap[name] = entry;
     }
 
-    getRouteConfig(plugins:Array<PluginInfo>):Routes{
+    getRouteConfig(plugins:Array<PluginInfo>,checkDeps:boolean=true):Routes{
         let info:Routes = [];
         _.forEach(this.pluginMap,(entry:PluginRegistrationEntry,key:string) => {
-            if(!this.checkDeps(entry,plugins)){
+            if(checkDeps && !this.checkDeps(entry,plugins)){
                 console.error("Plugin",entry.name,"removed");
             }else{
                 if(entry.routeDef){

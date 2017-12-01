@@ -33,6 +33,10 @@ export class WebAdminPluginManagerService {
         return PluginRegistry.getInstance().getRouteConfig(catalog);
     }
 
+    getInitialConfig():Array<Route>{
+        return PluginRegistry.getInstance().getRouteConfig([],false);
+    }
+
     private  fetchCatalog():Promise<Array<PluginInfo>>{
         return new Promise<Array<PluginInfo>>((resolve,reject) => {
             fetch('/rest/registry/plugin/list?all=true').then((response:Response) => {

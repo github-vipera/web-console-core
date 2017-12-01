@@ -6,7 +6,7 @@ export declare class PluginRegistry {
     private constructor();
     private createRegistrationEntry(name, value, info);
     registryPluginComponent(name: string, value: Type<any>, info?: RegistrationInfo): void;
-    getRouteConfig(plugins: Array<PluginInfo>): Routes;
+    getRouteConfig(plugins: Array<PluginInfo>, checkDeps?: boolean): Routes;
     private checkDeps(entry, plugins);
 }
 /**

@@ -53,6 +53,9 @@ var WebAdminPluginManagerService = (function () {
             });
         });
     };
+    WebAdminPluginManagerService.prototype.getInitialConfig = function () {
+        return PluginRegistry.getInstance().getRouteConfig([], false);
+    };
     WebAdminPluginManagerService.prototype.fetchCatalog = function () {
         return new Promise(function (resolve, reject) {
             fetch('/rest/registry/plugin/list?all=true').then(function (response) {
