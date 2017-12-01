@@ -12,7 +12,7 @@ export class WebAdminPluginManagerService {
     constructor(){
         console.log("WebAdminPluginManagerService injected");
     }
-    createRouteConfigFromCatalog():Promise<Array<Route>>{
+    async createRouteConfigFromCatalog():Promise<Array<Route>>{
         /*return new Promise<Array<Route>>((resolve) => {
             fetch('/rest/registry/plugin/list?all=true').then((response:any) => {
                 return response.json();
@@ -23,14 +23,16 @@ export class WebAdminPluginManagerService {
                 console.error("Error in fetch",err);
             });
         });*/
-        return new Promise<Array<Route>>((resolve,reject) => {
+        /*return new Promise<Array<Route>>((resolve,reject) => {
             this.fetchCatalog().then((catalog) => {
                 resolve(PluginRegistry.getInstance().getRouteConfig(catalog));
             },reject);
-        });
+        });*/
+        let catalog:Array<PluginInfo> = await this.fetchCatalog();
+        return PluginRegistry.getInstance().getRouteConfig(catalog);
     }
 
-    private fetchCatalog():Promise<Array<PluginInfo>>{
+    private  fetchCatalog():Promise<Array<PluginInfo>>{
         return new Promise<Array<PluginInfo>>((resolve) => {
             fetch('/rest/registry/plugin/list?all=true').then((response:Response) => {
                 if(response.ok){
