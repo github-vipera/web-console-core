@@ -7,11 +7,14 @@ var WebAdminConsoleComponent = (function () {
         this.router = router;
         this.routes = [];
         console.log("console component constructor");
+        this.initErrorBox();
+    }
+    WebAdminConsoleComponent.prototype.initErrorBox = function () {
         this.errorBox = {
             show: false,
             message: null
         };
-    }
+    };
     /**
      * Implements onInit event handler.
      */
@@ -22,20 +25,60 @@ var WebAdminConsoleComponent = (function () {
        * Implements onInit event handler.
        */
     function () {
-        var _this = this;
         console.log("WebAdminConsoleComponent init done");
-        //this.routes = this.pluginManager.createRouteConfigFromCatalog();
+        this.initStaticRouting();
+        this.createRoutingConfigByMotifCatalog();
+    };
+    WebAdminConsoleComponent.prototype.createRoutingConfigByMotifCatalog = function () {
+        var _this = this;
         this.pluginManager.createRouteConfigFromCatalog().then(function (result) {
             _this.routes = result;
             _this.router.resetConfig(_this.routes);
             console.log("WebAdminConsoleComponent routes", _this.routes);
+            _this.validateCurrentRoute();
         }, function (err) {
             console.error("Fail to crete routing:", err);
+            _this.resetRouting([]);
             _this.showError("Catalog mapping fail");
+            _this.validateCurrentRoute();
         }).catch(function (err) {
             console.error("Catch fail to crete routing:", err);
+            _this.resetRouting([]);
             _this.showError("Catalog mapping fail");
+            _this.validateCurrentRoute();
         });
+    };
+    WebAdminConsoleComponent.prototype.initStaticRouting = function () {
+        console.log("initStaticRouting");
+        this.resetRouting(this.pluginManager.getInitialConfig());
+    };
+    WebAdminConsoleComponent.prototype.validateCurrentRoute = function () {
+        var _this = this;
+        var url = this.router.routerState.snapshot.url;
+        console.log("active", "" + this.router.isActive(url, true));
+        if (url) {
+            this.router.navigateByUrl(url).then(function (res) {
+                console.log("navigateByUrl:", res);
+            }, function (err) {
+                console.error("navigateByUrl err", err);
+                _this.router.navigateByUrl('/');
+            });
+        }
+    };
+    /**
+     * Reset routing config
+     * @param routes
+     */
+    /**
+       * Reset routing config
+       * @param routes
+       */
+    WebAdminConsoleComponent.prototype.resetRouting = /**
+       * Reset routing config
+       * @param routes
+       */
+    function (routes) {
+        this.router.resetConfig(routes);
     };
     WebAdminConsoleComponent.prototype.showError = function (message) {
         this.errorBox.message = message;

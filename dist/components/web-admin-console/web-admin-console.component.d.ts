@@ -10,10 +10,19 @@ export declare class WebAdminConsoleComponent implements OnInit {
         message: string;
     };
     constructor(pluginManager: WebAdminPluginManagerService, router: Router);
+    private initErrorBox();
     /**
      * Implements onInit event handler.
      */
     ngOnInit(): void;
+    private createRoutingConfigByMotifCatalog();
+    private initStaticRouting();
+    private validateCurrentRoute();
+    /**
+     * Reset routing config
+     * @param routes
+     */
+    private resetRouting(routes);
     private showError(message);
     private hideError();
 }
