@@ -26,7 +26,7 @@ var WebAdminConsoleComponent = (function () {
        */
     function () {
         console.log("WebAdminConsoleComponent init done");
-        this.initStaticRouting();
+        //this.initStaticRouting();
         this.createRoutingConfigByMotifCatalog();
     };
     WebAdminConsoleComponent.prototype.createRoutingConfigByMotifCatalog = function () {

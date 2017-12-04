@@ -29,7 +29,7 @@ export class WebAdminConsoleComponent implements OnInit {
    */
   public ngOnInit(): void {
     console.log("WebAdminConsoleComponent init done");
-    this.initStaticRouting();
+    //this.initStaticRouting();
     this.createRoutingConfigByMotifCatalog();
   }
 
