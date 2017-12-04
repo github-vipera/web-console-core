@@ -17573,17 +17573,17 @@ var WebAdminConsoleComponent = (function () {
             _this.routes = result;
             _this.router.resetConfig(_this.routes);
             console.log("WebAdminConsoleComponent routes", _this.routes);
-            _this.validateCurrentRoute();
+            //this.validateCurrentRoute();
         }, function (err) {
             console.error("Fail to crete routing:", err);
             _this.resetRouting([]);
             _this.showError("Catalog mapping fail");
-            _this.validateCurrentRoute();
+            //this.validateCurrentRoute();
         }).catch(function (err) {
             console.error("Catch fail to crete routing:", err);
             _this.resetRouting([]);
             _this.showError("Catalog mapping fail");
-            _this.validateCurrentRoute();
+            //this.validateCurrentRoute();
         });
     };
     WebAdminConsoleComponent.prototype.initStaticRouting = function () {
