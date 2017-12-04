@@ -14,7 +14,7 @@
 		exports["ticktock"] = factory(require("@angular/core"), require("@angular/router"), require("@angular/common"));
 	else
 		root["ticktock"] = factory(root["ng"]["core"], root["ng"]["router"], root["ng"]["common"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_19__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_24__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -99,12 +99,12 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var commons_1 = __webpack_require__(4);
+var commons_1 = __webpack_require__(5);
 exports.PluginRegistry = commons_1.PluginRegistry;
 exports.PluginView = commons_1.PluginView;
-var web_admin_module_1 = __webpack_require__(9);
+var web_admin_module_1 = __webpack_require__(10);
 exports.WebAdminCoreModule = web_admin_module_1.WebAdminCoreModule;
-var modules_1 = __webpack_require__(20);
+var modules_1 = __webpack_require__(25);
 exports.WebAdminRoutingModule = modules_1.WebAdminRoutingModule;
 
 
@@ -118,20 +118,89 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(13));
+__export(__webpack_require__(14));
 
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
 }
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(5));
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
 
 
 /***/ }),
@@ -140,8 +209,21 @@ __export(__webpack_require__(5));
 
 "use strict";
 
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-var _ = __webpack_require__(6);
+__export(__webpack_require__(6));
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var _ = __webpack_require__(7);
 var instance = undefined;
 var PluginRegistry = (function () {
     function PluginRegistry() {
@@ -224,7 +306,7 @@ exports.PluginView = PluginView;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -17313,10 +17395,10 @@ exports.PluginView = PluginView;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(9)(module)))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var g;
@@ -17343,7 +17425,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -17371,7 +17453,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17384,10 +17466,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(0);
-var components_1 = __webpack_require__(10);
+var components_1 = __webpack_require__(11);
 var services_1 = __webpack_require__(3);
 var router_1 = __webpack_require__(1);
-var common_1 = __webpack_require__(19);
+var common_1 = __webpack_require__(24);
 var WebAdminCoreModule = (function () {
     function WebAdminCoreModule() {
     }
@@ -17418,19 +17500,6 @@ exports.WebAdminCoreModule = WebAdminCoreModule;
 
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(11));
-
-
-/***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17441,10 +17510,24 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(12));
+__export(__webpack_require__(19));
 
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(13));
+
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17538,7 +17621,7 @@ var WebAdminConsoleComponent = (function () {
     WebAdminConsoleComponent = __decorate([
         core_1.Component({
             selector: 'web-admin-console',
-            styles: [__webpack_require__(15)],
+            styles: [__webpack_require__(16)],
             template: __webpack_require__(18),
         }),
         __metadata("design:paramtypes", [services_1.WebAdminPluginManagerService, router_1.Router])
@@ -17549,7 +17632,7 @@ exports.WebAdminConsoleComponent = WebAdminConsoleComponent;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17558,11 +17641,11 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(14));
+__export(__webpack_require__(15));
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17658,11 +17741,11 @@ exports.WebAdminPluginManagerService = WebAdminPluginManagerService;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-        var result = __webpack_require__(16);
+        var result = __webpack_require__(17);
 
         if (typeof result === "string") {
             module.exports = result;
@@ -17672,115 +17755,27 @@ exports.WebAdminPluginManagerService = WebAdminPluginManagerService;
     
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(17)(undefined);
+exports = module.exports = __webpack_require__(4)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "a.plugin-link {\n  padding: 10px; }\n\n.error-box {\n  display: block;\n  width: 100%;\n  text-align: center;\n  background-color: red; }\n  .error-box p.error-msg {\n    font-weight: bold;\n    color: white;\n    padding: 10px; }\n", ""]);
+exports.push([module.i, "/*a.plugin-link{\n    padding: 10px;\n}\n.error-box{\n    display: block;\n    width: 100%;\n    text-align: center;\n    background-color: red;\n    p.error-msg {\n      font-weight: bold;\n      color: white;\n      padding:10px;\n    }\n}*/\n.web-console-container {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  display: flex;\n  background-color: #394b59;\n  color: #FFFFFF; }\n  .web-console-container .routing-container {\n    flex: 1;\n    min-width: 200px;\n    max-width: 200px;\n    -webkit-box-shadow: 3px 0 5px -1px rgba(0, 0, 0, 0.2), 6px 0 10px 0 rgba(0, 0, 0, 0.14), 1px 0 18px 0 rgba(0, 0, 0, 0.12);\n    -moz-box-shadow: 3px 0 5px -1px rgba(0, 0, 0, 0.2), 6px 0 10px 0 rgba(0, 0, 0, 0.14), 1px 0 18px 0 rgba(0, 0, 0, 0.12);\n    box-shadow: 3px 0 5px -1px rgba(0, 0, 0, 0.2), 6px 0 10px 0 rgba(0, 0, 0, 0.14), 1px 0 18px 0 rgba(0, 0, 0, 0.12); }\n    .web-console-container .routing-container a {\n      color: #FFFFFF; }\n      .web-console-container .routing-container a.plugin-link {\n        display: block;\n        text-decoration: none;\n        padding: 10px;\n        /*&:active{\n                    font-weight: 600;\n                };*/ }\n        .web-console-container .routing-container a.plugin-link:hover {\n          background-color: #8c9496; }\n    .web-console-container .routing-container h2 {\n      padding-left: 10px;\n      padding-bottom: 15px;\n      border-bottom: 1px solid; }\n  .web-console-container .web-console-page-container {\n    flex: 3;\n    padding: 15px; }\n    .web-console-container .web-console-page-container div.error-box {\n      display: block;\n      width: 100%;\n      text-align: center;\n      background-color: red; }\n      .web-console-container .web-console-page-container div.error-box p.error-msg {\n        font-weight: bold;\n        color: white;\n        padding: 10px; }\n", ""]);
 
 // exports
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
 
 
 /***/ }),
 /* 18 */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n    <div class=\"routing-container\" *ngIf=\"!errorBox.show\">\n        <a class=\"plugin-link\"   *ngFor=\"let route of routes\" routerLink=\"{{route.path}}\">{{route.path}}</a>\n    </div>\n    <div class=\"error-box\" *ngIf=\"errorBox.show\">\n        <p class=\"error-msg\">{{errorBox.message}}</p>\n    </div>\n    \n    <router-outlet></router-outlet>\n</div>\n"
+module.exports = "<div class=\"web-console-container\">\n    <div class=\"routing-container\" *ngIf=\"!errorBox.show\">\n        <h2>Plugins</h2>\n        <a class=\"plugin-link\"   *ngFor=\"let route of routes\" routerLink=\"{{route.path}}\">{{route.path}}</a>\n    </div>\n    <div class=\"web-console-page-container\">\n        <div class=\"error-box\" *ngIf=\"errorBox.show\">\n            <p class=\"error-msg\">{{errorBox.message}}</p>\n        </div>\n        <router-outlet></router-outlet>\n    </div>\n</div>\n"
 
 /***/ }),
 /* 19 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_19__;
-
-/***/ }),
-/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17789,11 +17784,98 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(21));
+__export(__webpack_require__(20));
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(0);
+var NavbarComponent = (function () {
+    function NavbarComponent() {
+        console.log("create navbar");
+    }
+    NavbarComponent = __decorate([
+        core_1.Component({
+            selector: 'navbar',
+            styles: [__webpack_require__(21)],
+            template: __webpack_require__(23),
+        }),
+        __metadata("design:paramtypes", [])
+    ], NavbarComponent);
+    return NavbarComponent;
+}());
+exports.NavbarComponent = NavbarComponent;
 
 
 /***/ }),
 /* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+        var result = __webpack_require__(22);
+
+        if (typeof result === "string") {
+            module.exports = result;
+        } else {
+            module.exports = result.toString();
+        }
+    
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(4)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "", ""]);
+
+// exports
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+module.exports = ""
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_24__;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(26));
+
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

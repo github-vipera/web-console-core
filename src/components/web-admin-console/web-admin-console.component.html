@@ -1,10 +1,12 @@
-<div>
+<div class="web-console-container">
     <div class="routing-container" *ngIf="!errorBox.show">
+        <h2>Plugins</h2>
         <a class="plugin-link"   *ngFor="let route of routes" routerLink="{{route.path}}">{{route.path}}</a>
     </div>
-    <div class="error-box" *ngIf="errorBox.show">
-        <p class="error-msg">{{errorBox.message}}</p>
+    <div class="web-console-page-container">
+        <div class="error-box" *ngIf="errorBox.show">
+            <p class="error-msg">{{errorBox.message}}</p>
+        </div>
+        <router-outlet></router-outlet>
     </div>
-    
-    <router-outlet></router-outlet>
 </div>

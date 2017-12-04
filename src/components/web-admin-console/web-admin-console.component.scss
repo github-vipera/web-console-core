@@ -1,4 +1,4 @@
-a.plugin-link{
+/*a.plugin-link{
     padding: 10px;
 }
 .error-box{
@@ -10,5 +10,64 @@ a.plugin-link{
       font-weight: bold;
       color: white;
       padding:10px;
+    }
+}*/
+$dark-color : #394b59;
+$dark-hover : #8c9496;
+//$dark-selected:  #b5bbbe;
+$text-color: #FFFFFF;
+$side-nav-min-size: 200px;
+$side-nav-max-size: 200px;
+
+.web-console-container{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left: 0;
+    display: flex;
+    background-color: $dark-color;
+    color:$text-color;
+    .routing-container{
+        flex: 1;
+        min-width: $side-nav-min-size;
+        max-width: $side-nav-min-size;
+        -webkit-box-shadow: 3px 0 5px -1px rgba(0,0,0,.2), 6px 0 10px 0 rgba(0,0,0,.14), 1px 0 18px 0 rgba(0,0,0,.12);
+        -moz-box-shadow: 3px 0 5px -1px rgba(0,0,0,.2), 6px 0 10px 0 rgba(0,0,0,.14), 1px 0 18px 0 rgba(0,0,0,.12);
+        box-shadow: 3px 0 5px -1px rgba(0,0,0,.2), 6px 0 10px 0 rgba(0,0,0,.14), 1px 0 18px 0 rgba(0,0,0,.12);        
+        a{
+            color:$text-color;
+            &.plugin-link{
+                display: block;
+                text-decoration: none;
+                padding: 10px;
+                &:hover{
+                    background-color: $dark-hover;
+                };
+                /*&:active{
+                    font-weight: 600;
+                };*/
+            }
+        }
+        h2 {
+            padding-left: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid;
+        }
+    }
+    .web-console-page-container{
+        flex: 3;
+        padding: 15px;
+        div.error-box{
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: red;
+            p.error-msg {
+              font-weight: bold;
+              color: white;
+              padding:10px;
+            }
+        };
     }
 }
