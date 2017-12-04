@@ -29,7 +29,7 @@ export class WebAdminConsoleComponent implements OnInit {
    */
   public ngOnInit(): void {
     console.log("WebAdminConsoleComponent init done");
-    //this.initStaticRouting();
+    this.initStaticRouting();
     this.createRoutingConfigByMotifCatalog();
   }
 
@@ -38,17 +38,17 @@ export class WebAdminConsoleComponent implements OnInit {
       this.routes = result;
       this.router.resetConfig(this.routes);
       console.log("WebAdminConsoleComponent routes",this.routes);
-      //this.validateCurrentRoute();
+      this.validateCurrentRoute();
     },(err) => {
       console.error("Fail to crete routing:",err);
       this.resetRouting([]);
       this.showError("Catalog mapping fail");
-      //this.validateCurrentRoute();
+      this.validateCurrentRoute();
     }).catch((err) => {
       console.error("Catch fail to crete routing:",err);
       this.resetRouting([]);
       this.showError("Catalog mapping fail");
-      //this.validateCurrentRoute();
+      this.validateCurrentRoute();
     });
   }
 

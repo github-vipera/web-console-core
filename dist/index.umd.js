@@ -17564,7 +17564,7 @@ var WebAdminConsoleComponent = (function () {
      */
     WebAdminConsoleComponent.prototype.ngOnInit = function () {
         console.log("WebAdminConsoleComponent init done");
-        //this.initStaticRouting();
+        this.initStaticRouting();
         this.createRoutingConfigByMotifCatalog();
     };
     WebAdminConsoleComponent.prototype.createRoutingConfigByMotifCatalog = function () {
@@ -17573,17 +17573,17 @@ var WebAdminConsoleComponent = (function () {
             _this.routes = result;
             _this.router.resetConfig(_this.routes);
             console.log("WebAdminConsoleComponent routes", _this.routes);
-            //this.validateCurrentRoute();
+            _this.validateCurrentRoute();
         }, function (err) {
             console.error("Fail to crete routing:", err);
             _this.resetRouting([]);
             _this.showError("Catalog mapping fail");
-            //this.validateCurrentRoute();
+            _this.validateCurrentRoute();
         }).catch(function (err) {
             console.error("Catch fail to crete routing:", err);
             _this.resetRouting([]);
             _this.showError("Catalog mapping fail");
-            //this.validateCurrentRoute();
+            _this.validateCurrentRoute();
         });
     };
     WebAdminConsoleComponent.prototype.initStaticRouting = function () {
