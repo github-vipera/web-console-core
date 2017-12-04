@@ -12,6 +12,7 @@
       padding:10px;
     }
 }*/
+/*
 $dark-color : #394b59;
 $dark-hover : #8c9496;
 //$dark-selected:  #b5bbbe;
@@ -44,9 +45,6 @@ $side-nav-max-size: 200px;
                 &:hover{
                     background-color: $dark-hover;
                 };
-                /*&:active{
-                    font-weight: 600;
-                };*/
             }
         }
         h2 {
@@ -70,4 +68,20 @@ $side-nav-max-size: 200px;
             }
         };
     }
-}
+}*/
+
+.web-console-container {
+    height:100%;
+    margin:0; 
+    padding:0;
+    font-family:'Open Sans', sans-serif; 
+    display:flex; 
+    background:#282D31; 
+    flex-wrap:wrap;
+    box-sizing:border-box;
+    outline: none;
+    color: #ddd;
+    *{
+        transition: .1s;
+    }
+};

@@ -4,7 +4,7 @@ import { Route,Router } from '@angular/router'
 @Component({
   selector: 'web-admin-console',
   styleUrls: ['./web-admin-console.component.scss'],
-  templateUrl: './web-admin-console.component.html',
+  templateUrl: './web-admin-console.component.html'
 })
 export class WebAdminConsoleComponent implements OnInit {
   routes:Array<Route> = [];
