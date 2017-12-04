@@ -39,7 +39,7 @@ export class WebAdminPluginManagerService {
 
     private  fetchCatalog():Promise<Array<PluginInfo>>{
         return new Promise<Array<PluginInfo>>((resolve,reject) => {
-            fetch('/rest/registry/plugin/list?all=true').then((response:Response) => {
+            fetch('/rest/registry/plugin/list?all=true&status=ACTIVE').then((response:Response) => {
                 if(response.ok){
                   return response.json();               
                 }
