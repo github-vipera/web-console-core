@@ -1,0 +1,1 @@
+export * from './web-admin-console/web-admin-console.component'
