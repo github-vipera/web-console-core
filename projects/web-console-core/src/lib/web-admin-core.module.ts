@@ -14,7 +14,7 @@ import { AuthService } from './services/auth-service/auth.service';
   imports:[
     CommonModule,
     HttpClientModule,
-    RouterModule.forRoot([],{enableTracing:true})
+    RouterModule.forChild([])
   ],
   exports: [
     WebAdminConsoleComponent,

@@ -11,7 +11,7 @@ export class MotifConnectorService {
     }
 
     post(url:string,request:ServiceRequest,options?:any):Observable<any>{
-        return this.httpClient.post(url,request,options || null);
+        return this.httpClient.post(url,request,options || {});
     }
 
     get(url:string,options?:any):Observable<any>{

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse } from "@angular/common/http";
+import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams } from "@angular/common/http";
 import { Observable} from "rxjs";
 import {tap} from 'rxjs/operators'
 import { MotifConnectorService } from "../motif-connector/motif-connector.service";
 
 export const TOKEN_NOT_AVAILABLE:string = "TOKEN_NOT_AVAILABLE";
-export const LOGIN_PATH:string = '/rest/auth/';
+export const LOGIN_PATH:string = '/oauth2/token';
 
 const AUTH_TOKEN_KEY:string = "AuthToken"
 
@@ -36,8 +36,10 @@ export class AuthService implements HttpInterceptor{
                 }
             });
         }
-        return next.handle(request).pipe(tap((res:any) => {
-            if(res instanceof HttpErrorResponse){
+        return next.handle(request).pipe(tap(() => {
+            console.log("Interceptor req done");
+        },(res:any) => {
+            if(res instanceof HttpResponse){
                 if(res.status === 401){
                     this.invalidateToken();
                     this.notifyUnauthorized();
@@ -51,24 +53,23 @@ export class AuthService implements HttpInterceptor{
     }
 
     public login(request:LoginRequest):Observable<any>{
-        const params = {
-            username: request.userName, 
-            password: request.password,
-            client_id: "123456789",
-            client_secret: "123456789",
-            grantType:"password",
-            scope:""
-        };
+        let httpParams = new HttpParams()
+            .append("username", request.userName)
+            .append("password", request.password)
+            .append("client_id", "123456789")
+            .append("client_secret", "123456789")
+            .append("grant_type", "password");
         
-        return this.motifConnector.post(LOGIN_PATH,request,{params:params}).pipe(tap((resp) => {
-            if(resp instanceof HttpResponse){
-                if(resp.status > 200 && resp.status < 210){
-                    console.log(resp);
-                }else{
-                    console.error(resp);
-                }
+        return this.motifConnector.post(LOGIN_PATH,httpParams).pipe(
+            tap((resp) => {
+                console.log("login",resp)
+                let token = resp.access_token;
+                let refreshToken = resp.refresh_token;
+                this.setToken(token);
+            },(err) => {
+                console.log("login error",err);
             }
-        }));
+        ));
     }
 
 
