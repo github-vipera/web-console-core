@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { ExtComponent} from './extensions/ext.component'
 import { WebAdminModulesProvider } from './web-admin-modules-provider.module';
-import { HttpClientModule } from '@angular/common/http';
-
 
 @NgModule({
   declarations: [
@@ -12,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
     ExtComponent
   ],
   imports: [
-    BrowserModule , HttpClientModule, WebAdminModulesProvider
+    BrowserModule , WebAdminModulesProvider
   ],
   providers: [WebAdminModulesProvider],
   entryComponents: [ExtComponent],
