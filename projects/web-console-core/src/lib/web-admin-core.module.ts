@@ -6,7 +6,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from './services/auth-service/auth.service';
 @NgModule({
   providers:[
-    //{ provide: HTTP_INTERCEPTORS, useClass: AuthService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthService, multi: true },
   ],
   declarations: [
     WebAdminConsoleComponent
