@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse } from "@angular/common/http";
+import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse } from "@angular/common/http";
 import { Observable} from "rxjs";
 import {tap} from 'rxjs/operators'
 import { MotifConnectorService } from "../motif-connector/motif-connector.service";
@@ -27,6 +27,7 @@ export class AuthService implements HttpInterceptor{
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
+        console.log("intercept request");
         let token = this.getToken();
         if(token){
             request = request.clone({
@@ -50,8 +51,24 @@ export class AuthService implements HttpInterceptor{
     }
 
     public login(request:LoginRequest):Observable<any>{
-        const credentials = {username: request.userName, password: request.password};
-        return this.motifConnector.post(LOGIN_PATH,request)
+        const params = {
+            username: request.userName, 
+            password: request.password,
+            client_id: "123456789",
+            client_secret: "123456789",
+            grantType:"password",
+            scope:""
+        };
+        
+        return this.motifConnector.post(LOGIN_PATH,request,{params:params}).pipe(tap((resp) => {
+            if(resp instanceof HttpResponse){
+                if(resp.status > 200 && resp.status < 210){
+                    console.log(resp);
+                }else{
+                    console.error(resp);
+                }
+            }
+        }));
     }
 
 
