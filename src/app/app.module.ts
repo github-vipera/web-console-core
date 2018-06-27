@@ -3,6 +3,15 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { ExtComponent} from './extensions/ext.component'
 import { WebAdminModulesProvider } from './web-admin-modules-provider.module';
+import { RouterModule, Routes } from '@angular/router';
+
+
+const routes:Routes = [
+  {
+    path:"**",
+    component:AppComponent
+  }
+]
 
 @NgModule({
   declarations: [
@@ -10,7 +19,8 @@ import { WebAdminModulesProvider } from './web-admin-modules-provider.module';
     ExtComponent
   ],
   imports: [
-    BrowserModule , WebAdminModulesProvider
+    BrowserModule , WebAdminModulesProvider,
+    RouterModule.forRoot(routes,{enableTracing:true})
   ],
   providers: [WebAdminModulesProvider],
   entryComponents: [ExtComponent],
