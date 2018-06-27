@@ -4,12 +4,17 @@ import { AppComponent } from './app.component';
 import { ExtComponent} from './extensions/ext.component'
 import { WebAdminModulesProvider } from './web-admin-modules-provider.module';
 import { RouterModule, Routes } from '@angular/router';
-
+import { AuthGuard } from 'web-console-core'
 
 const routes:Routes = [
   {
-    path:"**",
+    path:"login",
     component:AppComponent
+  },
+  {
+    path:"home",
+    component:AppComponent,
+    canActivate: [AuthGuard]
   }
 ]
 

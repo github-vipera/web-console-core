@@ -3,12 +3,13 @@ import { RouterModule } from '@angular/router'
 import { CommonModule } from '@angular/common';
 import { WebAdminConsoleComponent } from './components/web-admin-console/web-admin-console.component'
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthService } from './services/auth-service/auth.service';
+import { AuthService, AuthGuard } from './services/auth-service/auth.service';
 import { WebConsoleConfig } from './config/WebConsoleConfig';
 
 @NgModule({
   providers:[
     { provide: HTTP_INTERCEPTORS, useClass: AuthService, multi: true },
+    AuthGuard
   ],
   declarations: [
     WebAdminConsoleComponent
