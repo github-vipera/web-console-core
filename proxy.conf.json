@@ -1,0 +1,10 @@
+{
+    "/rest": {
+      "target": "http://82.53.206.150:56080",
+      "secure": false
+    },
+    "/oauth": {
+      "target": "http://82.53.206.150:56080",
+      "secure": false
+    }
+}
