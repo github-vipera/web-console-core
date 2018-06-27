@@ -3,6 +3,7 @@ import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable} from "rxjs";
 import {tap} from 'rxjs/operators'
 import { MotifConnectorService } from "../motif-connector/motif-connector.service";
+import { WebConsoleConfig } from "../../config/WebConsoleConfig";
 
 export const TOKEN_NOT_AVAILABLE:string = "TOKEN_NOT_AVAILABLE";
 export const LOGIN_PATH:string = '/oauth2/token';
@@ -13,7 +14,7 @@ const AUTH_TOKEN_KEY:string = "AuthToken"
     providedIn: 'root'
 })
 export class AuthService implements HttpInterceptor{
-    constructor(private motifConnector:MotifConnectorService){
+    constructor(private motifConnector:MotifConnectorService, private webConsoleConfig:WebConsoleConfig){
     }
 
     public setToken(value:string):void{
