@@ -10,7 +10,7 @@ const PLUGIN_LIST_ENTRYPOINT = "/rest/registry/plugin/list?all=true&status=ACTIV
     providedIn: 'root'
 })
 export class WebAdminPluginManagerService {
-    private pluginCatalog:Array<any>
+    private pluginCatalog:Array<PluginInfo>
     constructor(private connector:MotifConnectorService){
         console.log("WebAdminPluginManagerService injected");
     }
@@ -25,25 +25,11 @@ export class WebAdminPluginManagerService {
     }
 
     private fetchCatalog():Promise<Array<PluginInfo>>{
-        /*return new Promise<Array<PluginInfo>>((resolve,reject) => {
-            fetch('/rest/registry/plugin/list?all=true&status=ACTIVE').then((response:Response) => {
-                if(response.ok){
-                  return response.json();               
-                }
-                return Promise.reject(response);
-            },reject).then((json:any) => {
-                let plugins:Array<PluginInfo> = json.Plugin;
-                resolve(json.Plugin);
-            },reject);
-        });*/
-
         return new Promise<Array<PluginInfo>>((resolve,reject) => {
             this.connector.get(PLUGIN_LIST_ENTRYPOINT).subscribe((data) => {
                 resolve(data);
             },reject);
         })
-
-
     }
 }
 
