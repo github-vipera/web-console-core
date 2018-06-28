@@ -68,6 +68,7 @@ export class AuthService implements HttpInterceptor{
                 let token = resp.access_token;
                 let refreshToken = resp.refresh_token;
                 this.setToken(token);
+                this.onAuthorizationSuccess();
             },(err) => {
                 console.log("login error",err);
             }
@@ -89,7 +90,8 @@ export class AuthService implements HttpInterceptor{
 
     onAuthorizationSuccess():void {
         //called by the login/auth form module
-        //TODO!! redirecto to web console route 
+        //TODO!! redirecto to web console route
+        this.router.navigate([this.webConsoleConfig.loginRoute]);
     }
 
     onAuthorizationFailure():void {
@@ -98,7 +100,7 @@ export class AuthService implements HttpInterceptor{
     }
 
     isAuthenticated():boolean {
-        return (this.getToken()!=null);
+        return this.getToken()? true:false;
     }
 }
 

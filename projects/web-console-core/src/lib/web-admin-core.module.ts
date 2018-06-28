@@ -1,10 +1,13 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { RouterModule } from '@angular/router'
+import { RouterModule, Routes } from '@angular/router'
 import { CommonModule } from '@angular/common';
 import { WebAdminConsoleComponent } from './components/web-admin-console/web-admin-console.component'
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService, AuthGuard } from './services/auth-service/auth.service';
 import { WebConsoleConfig } from './config/WebConsoleConfig';
+
+
+
 
 @NgModule({
   providers:[
