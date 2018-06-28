@@ -4,6 +4,7 @@ import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
 import { PluginRegistry } from '../../commons';
 import * as _ from 'lodash';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
   selector: 'web-admin-console',
@@ -16,7 +17,7 @@ export class WebAdminConsoleComponent implements OnInit {
     show:boolean,
     message:string
   };
-  public constructor(/*private pluginManager:WebAdminPluginManagerService,*/private router: Router,private navService:NavigationService) {
+  public constructor(private router: Router, private authService:AuthService ,private navService:NavigationService) {
     console.log("console component constructor");
     this.initErrorBox();
   }
@@ -101,5 +102,9 @@ export class WebAdminConsoleComponent implements OnInit {
     this.errorBox.message = null;
   }
   
+
+  doLogout():void{
+    this.authService.logout();
+  }
   
 }

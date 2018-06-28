@@ -27,11 +27,8 @@ export class WebAdminPluginManagerService {
         return catalog;
     }
 
-    getInitialConfig():Array<Route>{
-        //return PluginRegistry.getInstance().getRouteConfig([],false);
-        return null;
-    }
 
+    
     private fetchCatalog():Promise<Array<PluginInfo>>{
         return new Promise<Array<PluginInfo>>((resolve,reject) => {
             this.connector.get(PLUGIN_LIST_ENTRYPOINT).subscribe((data) => {

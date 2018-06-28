@@ -75,6 +75,10 @@ export class AuthService implements HttpInterceptor{
         ));
     }
 
+    logout(){
+        this.invalidateToken();
+        this.router.navigate([this.webConsoleConfig.loginRoute]);
+    }
 
     createTokenData(value:string): TokenData{
         let millis = Date.now();
@@ -89,13 +93,10 @@ export class AuthService implements HttpInterceptor{
     }
 
     onAuthorizationSuccess():void {
-        //called by the login/auth form module
-        //TODO!! redirecto to web console route
         this.router.navigate([this.webConsoleConfig.dashboardRoute]);
     }
 
     onAuthorizationFailure():void {
-        //called by the login/auth form module
         this.router.navigate([this.webConsoleConfig.loginRoute]);
     }
 

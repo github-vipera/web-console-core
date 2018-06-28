@@ -2,7 +2,7 @@
     <header>
         <div class="description">Vipera Motif Admin Console • mw_uat_1 • 52.28.189.225</div>
         <div class="logo"><img src="assets/img/logo.svg"></div>
-        <div class="cmd"><a href="index.htm" class="btn">Logout</a></div>
+        <div class="cmd"><button (click)="doLogout()">Logout</button></div>
     </header>
     <nav class="routing-container" *ngIf="!errorBox.show">
         <a class="plugin-link" *ngFor="let route of routes" routerLink="{{route.path}}">
