@@ -1,1 +1,1 @@
-export * from './web-admin-console/'
+export * from './web-admin-console'

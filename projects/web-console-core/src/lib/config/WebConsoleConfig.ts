@@ -8,7 +8,7 @@ export class WebConsoleConfig{
         this.dashboardRoute = dashboardRoute;
     }
     
-    public static create(loginRoute:string, dashboardRoute?:string){
+    public static create(loginRoute:string, dashboardRoute : string){
         return new WebConsoleConfig(loginRoute,dashboardRoute || DEFAULT_DASHBOARD_ROUTE);
     }
 }

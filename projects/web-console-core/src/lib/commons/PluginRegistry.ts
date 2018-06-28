@@ -1,7 +1,7 @@
 //declare const require: any;
 //const _:any = require('lodash');
 import {Type} from '@angular/core'
-import { Routes,Route } from '@angular/router';
+import { Route } from '@angular/router';
 import * as _ from 'lodash' 
 
 let instance:PluginRegistry = undefined;
