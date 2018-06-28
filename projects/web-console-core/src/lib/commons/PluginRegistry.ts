@@ -35,7 +35,7 @@ export class PluginRegistry {
         this.pluginMap[name] = entry;
     }
 
-    getRouteConfig(plugins:Array<PluginInfo>,checkDeps:boolean=true):Routes{
+    /*getRouteConfig(plugins:Array<PluginInfo>,checkDeps:boolean=true):Routes{
         let info:Routes = [];
         _.forEach(this.pluginMap,(entry:PluginRegistrationEntry,key:string) => {
             if(checkDeps && !this.checkDeps(entry,plugins)){
@@ -53,7 +53,7 @@ export class PluginRegistry {
 
         });   
         return info;
-    }
+    }*/
 
     public getActivablePlugins(motifPlugins:Array<PluginInfo>):Array<PluginRegistrationEntry>{
         let plugins:Array<PluginRegistrationEntry> = [];

@@ -38,22 +38,6 @@ export class WebAdminConsoleComponent implements OnInit {
   }
 
   private createRoutingConfigByMotifCatalog(){
-    /*this.pluginManager.createRouteConfigFromCatalog().then((result:Array<Route>) => {
-      this.routes = result;
-      this.router.resetConfig(this.routes);
-      console.log("WebAdminConsoleComponent routes",this.routes);
-      this.validateCurrentRoute();
-    },(err) => {
-      console.error("Fail to crete routing:",err);
-      this.resetRouting([]);
-      this.showError("Catalog mapping fail");
-      this.validateCurrentRoute();
-    }).catch((err) => {
-      console.error("Catch fail to crete routing:",err);
-      this.resetRouting([]);
-      this.showError("Catalog mapping fail");
-      this.validateCurrentRoute();
-    });*/
     this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
       this.routes = result;
       console.log(">>>>>> New route:",this.routes);
