@@ -46,12 +46,12 @@ export class WebAdminConsoleComponent implements OnInit {
       //this.validateCurrentRoute();
     },(err) => {
       console.error("Fail to crete routing:",err);
-      this.resetRouting([]);
+      //this.resetRouting([]);
       this.showError("Catalog mapping fail");
       this.validateCurrentRoute();
     }).catch((err) => {
       console.error("Catch fail to crete routing:",err);
-      this.resetRouting([]);
+      //this.resetRouting([]);
       this.showError("Catalog mapping fail");
       this.validateCurrentRoute();
     });
