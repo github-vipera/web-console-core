@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {  WebAdminPluginManagerService } from '../../services/web-admin-plugin-manager/web-admin-plugin-manager.service';
 import { Route,Router } from '@angular/router'
+import { NavigationService } from '../../services/navigation-service/navigation.service';
+import { PluginRegistry } from '../../commons';
+import * as _ from 'lodash';
+
 @Component({
   selector: 'web-admin-console',
   styleUrls: ['./web-admin-console.component.scss'],
@@ -12,7 +16,7 @@ export class WebAdminConsoleComponent implements OnInit {
     show:boolean,
     message:string
   };
-  public constructor(private pluginManager:WebAdminPluginManagerService,private router: Router) {
+  public constructor(/*private pluginManager:WebAdminPluginManagerService,*/private router: Router,private navService:NavigationService) {
     console.log("console component constructor");
     this.initErrorBox();
   }
@@ -29,33 +33,38 @@ export class WebAdminConsoleComponent implements OnInit {
    */
   public ngOnInit(): void {
     console.log("WebAdminConsoleComponent init done");
-    this.initStaticRouting();
+    //this.initStaticRouting();
     this.createRoutingConfigByMotifCatalog();
   }
 
   private createRoutingConfigByMotifCatalog(){
-    this.pluginManager.createRouteConfigFromCatalog().then((result:Array<Route>) => {
+    this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
       this.routes = result;
+      console.log(">>>>>> New route:",this.routes);
       this.router.resetConfig(this.routes);
       console.log("WebAdminConsoleComponent routes",this.routes);
-      this.validateCurrentRoute();
+      //this.validateCurrentRoute();
     },(err) => {
       console.error("Fail to crete routing:",err);
-      this.resetRouting([]);
+      //this.resetRouting([]);
       this.showError("Catalog mapping fail");
       this.validateCurrentRoute();
     }).catch((err) => {
       console.error("Catch fail to crete routing:",err);
-      this.resetRouting([]);
+      //this.resetRouting([]);
       this.showError("Catalog mapping fail");
       this.validateCurrentRoute();
     });
+
   }
 
 
   private initStaticRouting():void{
-    console.log("initStaticRouting",this.pluginManager.getInitialConfig());
-    this.resetRouting(this.pluginManager.getInitialConfig());
+    //console.log("initStaticRouting",this.pluginManager.getInitialConfig());
+    //this.resetRouting(this.pluginManager.getInitialConfig());
+    let routes = this.navService.getInitialRouteConfig()
+    console.log("initStaticRouting",routes);
+    this.resetRouting(routes);
   }
 
 
@@ -79,8 +88,7 @@ export class WebAdminConsoleComponent implements OnInit {
    */
   private resetRouting(routes:Array<Route>){
     this.router.resetConfig(routes);
-    //TODO remove this
-    //this.routes = routes;
+    this.routes = routes;
   }
 
   private showError(message:string):void{

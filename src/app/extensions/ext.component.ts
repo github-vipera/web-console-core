@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PluginView } from 'web-console-core';
+import { PluginView,MotifConnectorService } from 'web-console-core';
 @Component({
   selector: 'app-root',
   templateUrl: './ext.component.html',
@@ -8,7 +8,7 @@ import { PluginView } from 'web-console-core';
 @PluginView("ext")
 export class ExtComponent implements OnInit{
   title = 'app';
-  constructor(){
+  constructor(private mcs:MotifConnectorService){
     console.log("ExtComponent constructor")
   }
   ngOnInit(){

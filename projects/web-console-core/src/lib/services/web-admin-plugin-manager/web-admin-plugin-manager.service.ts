@@ -14,14 +14,22 @@ export class WebAdminPluginManagerService {
     constructor(private connector:MotifConnectorService){
         console.log("WebAdminPluginManagerService injected");
     }
-    async createRouteConfigFromCatalog():Promise<Array<Route>>{
+    /*
+      async createRouteConfigFromCatalog():Promise<Array<Route>>{
         let catalog:Array<PluginInfo> = await this.fetchCatalog();
         console.log("Catalog:",catalog);
         return PluginRegistry.getInstance().getRouteConfig(catalog);
+    }*/
+
+    async getRemotePlugins(){
+        let catalog:Array<PluginInfo> = await this.fetchCatalog();
+        console.log("Catalog:",catalog);
+        return catalog;
     }
 
     getInitialConfig():Array<Route>{
-        return PluginRegistry.getInstance().getRouteConfig([],false);
+        //return PluginRegistry.getInstance().getRouteConfig([],false);
+        return null;
     }
 
     private fetchCatalog():Promise<Array<PluginInfo>>{

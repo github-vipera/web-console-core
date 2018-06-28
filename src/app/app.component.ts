@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'web-console-core';
+import { NavigationService } from 'web-console-core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,7 +8,7 @@ import { AuthService } from 'web-console-core';
 })
 export class AppComponent implements OnInit{
   title = 'app';
-  constructor(private srv:AuthService){
+  constructor(private srv:AuthService,private navService:NavigationService){
 
   }
   ngOnInit(){

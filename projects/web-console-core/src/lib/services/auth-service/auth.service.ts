@@ -3,6 +3,8 @@ import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable} from "rxjs";
 import {tap} from 'rxjs/operators'
 import { MotifConnectorService } from "../motif-connector/motif-connector.service";
+import { WebConsoleConfig } from "../../config/WebConsoleConfig";
+import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 export const TOKEN_NOT_AVAILABLE:string = "TOKEN_NOT_AVAILABLE";
 export const LOGIN_PATH:string = '/oauth2/token';
@@ -13,7 +15,7 @@ const AUTH_TOKEN_KEY:string = "AuthToken"
     providedIn: 'root'
 })
 export class AuthService implements HttpInterceptor{
-    constructor(private motifConnector:MotifConnectorService){
+    constructor(private motifConnector:MotifConnectorService, private webConsoleConfig:WebConsoleConfig, private router: Router){
     }
 
     public setToken(value:string):void{
@@ -66,6 +68,7 @@ export class AuthService implements HttpInterceptor{
                 let token = resp.access_token;
                 let refreshToken = resp.refresh_token;
                 this.setToken(token);
+                this.onAuthorizationSuccess();
             },(err) => {
                 console.log("login error",err);
             }
@@ -85,6 +88,20 @@ export class AuthService implements HttpInterceptor{
         console.error("Unauthorized")
     }
 
+    onAuthorizationSuccess():void {
+        //called by the login/auth form module
+        //TODO!! redirecto to web console route
+        this.router.navigate([this.webConsoleConfig.dashboardRoute]);
+    }
+
+    onAuthorizationFailure():void {
+        //called by the login/auth form module
+        this.router.navigate([this.webConsoleConfig.loginRoute]);
+    }
+
+    isAuthenticated():boolean {
+        return this.getToken()? true:false;
+    }
 }
 
 export interface TokenData {
@@ -96,4 +113,25 @@ export interface LoginRequest{
     userName?:string,
     password?:string
     [propName: string]: string
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+ 
+    constructor(private router: Router, private authService:AuthService, private webConsoleConfig:WebConsoleConfig) { 
+
+    }
+ 
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        
+        if (this.authService.isAuthenticated()){
+            return true;
+        }
+ 
+        // not logged in so redirect to login page with the return url
+        this.router.navigate([this.webConsoleConfig.loginRoute]);
+        return false;
+    }
 }
