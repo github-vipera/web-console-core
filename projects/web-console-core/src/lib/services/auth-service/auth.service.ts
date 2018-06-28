@@ -91,7 +91,7 @@ export class AuthService implements HttpInterceptor{
     onAuthorizationSuccess():void {
         //called by the login/auth form module
         //TODO!! redirecto to web console route
-        this.router.navigate([this.webConsoleConfig.loginRoute]);
+        this.router.navigate([this.webConsoleConfig.dashboardRoute]);
     }
 
     onAuthorizationFailure():void {
