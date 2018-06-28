@@ -4,13 +4,17 @@ import { AppComponent } from './app.component';
 import { ExtComponent} from './extensions/ext.component'
 import { WebAdminModulesProvider } from './web-admin-modules-provider.module';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard, WebAdminConsoleComponent } from 'web-console-core'
+import { AuthGuard, WebAdminConsoleComponent, PageNotFoundComponent } from 'web-console-core'
 
 const routes:Routes = [
   {
     path:"dashboard",
     component:WebAdminConsoleComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path:"pnt",
+    component:PageNotFoundComponent
   }
 ]
 

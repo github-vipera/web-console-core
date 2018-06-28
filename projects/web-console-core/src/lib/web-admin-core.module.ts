@@ -5,7 +5,7 @@ import { WebAdminConsoleComponent } from './components/web-admin-console/web-adm
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService, AuthGuard } from './services/auth-service/auth.service';
 import { WebConsoleConfig } from './config/WebConsoleConfig';
-
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 
 
 
@@ -15,7 +15,7 @@ import { WebConsoleConfig } from './config/WebConsoleConfig';
     AuthGuard
   ],
   declarations: [
-    WebAdminConsoleComponent
+    WebAdminConsoleComponent, PageNotFoundComponent
   ],
   imports:[
     CommonModule,
