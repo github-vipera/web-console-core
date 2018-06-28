@@ -1,1 +1,1 @@
-export * from './web-admin-console/web-admin-console.component'
+export * from './web-admin-console/'

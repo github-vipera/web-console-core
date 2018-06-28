@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {  WebAdminPluginManagerService } from '../../services/web-admin-plugin-manager/web-admin-plugin-manager.service';
 import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
-import { PluginRegistry } from '../../commons';
-import * as _ from 'lodash';
 import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
@@ -60,13 +57,13 @@ export class WebAdminConsoleComponent implements OnInit {
   }
 
 
-  private initStaticRouting():void{
+  /*private initStaticRouting():void{
     //console.log("initStaticRouting",this.pluginManager.getInitialConfig());
     //this.resetRouting(this.pluginManager.getInitialConfig());
     let routes = this.navService.getInitialRouteConfig()
     console.log("initStaticRouting",routes);
     this.resetRouting(routes);
-  }
+  }*/
 
 
   private validateCurrentRoute():void{
