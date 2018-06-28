@@ -13,7 +13,7 @@ const routes:Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path:"pnt",
+    path:"**",
     component:PageNotFoundComponent
   }
 ]
