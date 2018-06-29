@@ -10,7 +10,7 @@ const PLUGIN_LIST_ENTRYPOINT = "/rest/registry/plugin/list?all=true&status=ACTIV
 })
 export class WebAdminPluginManagerService {
     private pluginCatalog:Array<PluginInfo>
-    private activePluginsCache:Array<PluginRegistrationEntry>
+    private activePluginsCache:Array<ActivablePlugin>
 
     constructor(private connector:MotifConnectorService){
         console.log("WebAdminPluginManagerService injected");
@@ -29,33 +29,53 @@ export class WebAdminPluginManagerService {
         return catalog;
     }
 
+
+    private setPluginCatalog(catalog:Array<PluginInfo>):void {
+        this.pluginCatalog = catalog;
+    }
+
+    private getPluginCatalog():Array<PluginInfo> {
+        return this.pluginCatalog;
+    }
+
     private fetchCatalog():Promise<Array<PluginInfo>>{
         return new Promise<Array<PluginInfo>>((resolve,reject) => {
             this.connector.get(PLUGIN_LIST_ENTRYPOINT).subscribe((data) => {
+                console.log("Fetch plugin catalog done: ",data);
+                this.setPluginCatalog(data);
                 resolve(data);
             },reject);
         })
     }
 
-    public getCurrentActivePlugins():Array<PluginRegistrationEntry>{
-        if(this.activePluginsCache){
-            return this.activePluginsCache;
+    public getCurrentActivablePlugins():Array<ActivablePlugin>{
+        if(!this.activePluginsCache){
+            this.activePluginsCache = this.getActivablePlugins(this.pluginCatalog);
         }
-        this.activePluginsCache = this.getActivablePlugins(this.pluginCatalog);
-        return null;
+        return this.activePluginsCache;
     }
 
-    public getActivablePlugins(motifPlugins:Array<PluginInfo>):Array<PluginRegistrationEntry>{
-        let plugins:Array<PluginRegistrationEntry> = [];
+    private getActivablePlugins(motifPlugins:Array<PluginInfo>):Array<ActivablePlugin>{
+        let plugins:Array<ActivablePlugin> = [];
         let availablePlugins = PluginRegistry.getInstance().getAllPlugins();
         _.forEach(availablePlugins,(entry:PluginRegistrationEntry,key:string) => {
             if(!this.checkDeps(entry,motifPlugins)){
                 console.error("Plugin",entry.name,"removed");
             }else{
-                plugins.push(entry);
+                plugins.push(this.createActivableRecord(entry));
             }
         })
         return plugins;
+    }
+
+    private createActivableRecord(entry: PluginRegistrationEntry):ActivablePlugin{
+        let label:string = entry.name;
+        let link:string =  entry.routeDef ? entry.routeDef.path : entry.name;
+        return {
+            label:label,
+            baseInfo:entry,
+            link: link
+        };
     }
 
 
@@ -74,3 +94,10 @@ export class WebAdminPluginManagerService {
      }
 }
 
+
+
+export interface ActivablePlugin {
+    label:string,
+    link:string,
+    baseInfo:PluginRegistrationEntry
+  }

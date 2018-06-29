@@ -4,10 +4,10 @@
         <div class="logo"><img src="assets/img/logo.svg"></div>
         <div class="cmd"><button (click)="doLogout()">Logout</button></div>
     </header>
-    <nav class="routing-container" *ngIf="!errorBox.show">
-        <a class="plugin-link" *ngFor="let route of routes" routerLink="{{route.path}}">
+    <nav class="routing-container">
+        <a class="plugin-link" *ngFor="let plugin of plugins" routerLink="{{plugin.link}}">
            <svg><use xlink:href="assets/img/icons.svg#ico-plugins"></use></svg>
-           <span>{{route.path}}</span>
+           <span>{{plugin.label}}</span>
         </a>
     </nav>
     <main class="web-console-page-container">

@@ -16,8 +16,9 @@ export class NavigationService {
     }
 
     public goToDashboard(){
-        this.router.navigateByUrl(this.config.dashboardRoute);
+        this.router.navigate([this.config.dashboardRoute]);
     }
+    
 
     public getInitialRouteConfig():Routes{
         let baseRoute:Route = this.findDashboardRoute(this.router.config);

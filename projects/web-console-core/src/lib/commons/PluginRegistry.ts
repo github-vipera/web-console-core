@@ -115,7 +115,7 @@ export interface PluginInfo {
     version:string
 }
 
-export interface PluginRegistrationEntry{
+export interface PluginRegistrationEntry {
     name:string,
     component?:Type<any>
     routeDef?:Route

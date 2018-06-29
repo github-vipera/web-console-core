@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
 import { AuthService } from '../../services/auth-service/auth.service';
+import { WebAdminPluginManagerService, ActivablePlugin } from '../../services/web-admin-plugin-manager/web-admin-plugin-manager.service';
 
 @Component({
   selector: 'web-admin-console',
@@ -9,12 +10,16 @@ import { AuthService } from '../../services/auth-service/auth.service';
   templateUrl: './web-admin-console.component.html'
 })
 export class WebAdminConsoleComponent implements OnInit {
-  routes:Array<Route> = [];
+  //routes:Array<Route> = [];
+  
+  plugins:Array<ActivablePlugin>
+  
   errorBox:{
     show:boolean,
     message:string
   };
-  public constructor(private router: Router, private authService:AuthService ,private navService:NavigationService) {
+
+  public constructor(private router: Router, private authService:AuthService ,private navService:NavigationService, private pluginManager:WebAdminPluginManagerService) {
     console.log("console component constructor");
     this.initErrorBox();
   }
@@ -35,13 +40,13 @@ export class WebAdminConsoleComponent implements OnInit {
     this.createRoutingConfigByMotifCatalog();
   }
 
+
   private createRoutingConfigByMotifCatalog(){
+    this.loadPluginList();
     this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
-      this.routes = result;
-      console.log(">>>>>> New route:",this.routes);
-      this.router.resetConfig(this.routes);
-      console.log("WebAdminConsoleComponent routes",this.routes);
-      //this.validateCurrentRoute();
+      this.resetRouting(result);
+      this.loadPluginList();
+      console.log("WebAdminConsoleComponent routes",result);
     },(err) => {
       console.error("Fail to crete routing:",err);
       //this.resetRouting([]);
@@ -53,18 +58,17 @@ export class WebAdminConsoleComponent implements OnInit {
       this.showError("Catalog mapping fail");
       this.validateCurrentRoute();
     });
-
   }
 
+  private loadPluginList(){
+    console.log("loadPluginList ...")
+    this.plugins = this.pluginManager.getCurrentActivablePlugins();
+    console.log("loading done: ",this.plugins);
+  }
 
-  /*private initStaticRouting():void{
-    //console.log("initStaticRouting",this.pluginManager.getInitialConfig());
-    //this.resetRouting(this.pluginManager.getInitialConfig());
-    let routes = this.navService.getInitialRouteConfig()
-    console.log("initStaticRouting",routes);
-    this.resetRouting(routes);
-  }*/
-
+  private activatePlugin(plugin:ActivablePlugin){
+    console.log("activate plugin",plugin);
+  }
 
   private validateCurrentRoute():void{
     let url = this.router.routerState.snapshot.url;
@@ -74,11 +78,11 @@ export class WebAdminConsoleComponent implements OnInit {
         console.log("navigateByUrl:",res)
       },(err) => {
          console.error("navigateByUrl err",err);
-         this.router.navigateByUrl('/');
+         //this.router.navigateByUrl('/');
+         this.navService.goToDashboard();
       });
     }
   }
-
 
   /**
    * Reset routing config
@@ -86,7 +90,7 @@ export class WebAdminConsoleComponent implements OnInit {
    */
   private resetRouting(routes:Array<Route>){
     this.router.resetConfig(routes);
-    this.routes = routes;
+    //this.routes = routes;
   }
 
   private showError(message:string):void{
@@ -99,9 +103,10 @@ export class WebAdminConsoleComponent implements OnInit {
     this.errorBox.message = null;
   }
   
-
   doLogout():void{
     this.authService.logout();
   }
   
 }
+
+
