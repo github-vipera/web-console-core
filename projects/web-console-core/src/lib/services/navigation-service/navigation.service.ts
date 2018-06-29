@@ -77,7 +77,7 @@ export class NavigationService {
                 routes.push(entry.routeDef);
             }else{
                 routes.push({
-                    path:name,
+                    path:entry.name,
                     component:entry.component
                 });
             }

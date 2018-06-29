@@ -5,8 +5,13 @@ import { ExtComponent} from './extensions/ext.component'
 import { WebAdminModulesProvider } from './web-admin-modules-provider.module';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard, WebAdminConsoleComponent, PageNotFoundComponent } from 'web-console-core'
+import { LoginComponent } from './login/login/login.component';
 
 const routes:Routes = [
+  {
+    path:"login",
+    component:LoginComponent
+  },
   {
     path:"dashboard",
     component:WebAdminConsoleComponent,
@@ -21,7 +26,8 @@ const routes:Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    ExtComponent
+    ExtComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule , WebAdminModulesProvider,
