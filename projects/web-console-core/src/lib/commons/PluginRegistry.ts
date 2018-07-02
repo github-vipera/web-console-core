@@ -25,6 +25,8 @@ export class PluginRegistry {
         if(info){
             registrationEntry.routeDef = info.route;
             registrationEntry.dependencies = info.dependencies;
+            registrationEntry.customIcon = info.customIcon;
+            registrationEntry.iconName = info.iconName;
         }
         return registrationEntry;
     }
@@ -106,7 +108,9 @@ export function PluginView(name:string,info?:RegistrationInfo){
 
 export interface RegistrationInfo{
     route?:Route,
-    dependencies?:Array<PluginInfo>
+    dependencies?:Array<PluginInfo>,
+    customIcon?:string
+    iconName?:string
 }
 
 
@@ -120,4 +124,6 @@ export interface PluginRegistrationEntry {
     component?:Type<any>
     routeDef?:Route
     dependencies?:Array<PluginInfo>
+    customIcon?:string
+    iconName?:string
 }

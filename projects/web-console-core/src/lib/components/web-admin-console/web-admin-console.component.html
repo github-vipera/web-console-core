@@ -6,7 +6,15 @@
     </header>
     <nav class="routing-container">
         <a class="plugin-link" *ngFor="let plugin of plugins" routerLink="{{plugin.link}}">
-           <svg><use xlink:href="assets/img/icons.svg#ico-plugins"></use></svg>
+            
+            <svg *ngIf="plugin.baseInfo.customIcon;else other_icon"><use [attr.xlink:href]="plugin.baseInfo.customIcon"></use></svg>
+            <ng-template #other_icon>
+                <svg *ngIf="plugin.baseInfo.iconName;else default_icon"><use [attr.xlink:href]="'assets/img/icons.svg#'+plugin.baseInfo.iconName"></use></svg>
+                <ng-template #default_icon>
+                    <svg><use xlink:href="assets/img/icons.svg#ico-plugins"></use></svg>
+                </ng-template>
+            </ng-template>
+            
            <span>{{plugin.label}}</span>
         </a>
     </nav>
