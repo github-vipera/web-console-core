@@ -1,9 +1,9 @@
 import { NgModule } from "@angular/core";
-import { WebAdminCoreModule } from 'web-console-core'
+import { WebConsoleCoreModule } from 'web-console-core'
 
 @NgModule({
-    imports:[ WebAdminCoreModule.withConfig({loginRoute:"login",dashboardRoute:"dashboard"})],
-    exports:[ WebAdminCoreModule]
+    imports:[ WebConsoleCoreModule.withConfig({loginRoute:"login",dashboardRoute:"dashboard"})],
+    exports:[ WebConsoleCoreModule]
 })
 export class WebAdminModulesProvider {
 
