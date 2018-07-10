@@ -8,12 +8,12 @@ const PLUGIN_LIST_ENTRYPOINT = "/rest/registry/plugin/list?all=true&status=ACTIV
 @Injectable({
     providedIn: 'root'
 })
-export class WebAdminPluginManagerService {
+export class WebConsolePluginManagerService {
     private pluginCatalog:Array<PluginInfo>
     private activePluginsCache:Array<ActivablePlugin>
 
     constructor(private connector:MotifConnectorService){
-        console.log("WebAdminPluginManagerService injected");
+        console.log("WebConsolePluginManagerService injected");
     }
     /*
       async createRouteConfigFromCatalog():Promise<Array<Route>>{

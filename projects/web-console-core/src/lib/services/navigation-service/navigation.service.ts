@@ -2,14 +2,14 @@ import { Injectable } from "@angular/core";
 import { Routes, Route, Router } from "@angular/router";
 import { PluginInfo, PluginRegistry, PluginRegistrationEntry} from "../../commons/PluginRegistry";
 import * as _ from 'lodash';
-import { WebAdminPluginManagerService } from "../web-admin-plugin-manager/web-admin-plugin-manager.service";
+import { WebConsolePluginManagerService } from "../web-console-plugin-manager/web-console-plugin-manager.service";
 import { WebConsoleConfig } from "../../config/WebConsoleConfig";
 
 @Injectable({
     providedIn:'root'
 })
 export class NavigationService {
-    constructor(private pluginManager:WebAdminPluginManagerService,private router:Router, private config:WebConsoleConfig ){
+    constructor(private pluginManager:WebConsolePluginManagerService,private router:Router, private config:WebConsoleConfig ){
         console.log("NavigationService");
         let routes = this.getInitialRouteConfig()
         this.router.resetConfig(routes);

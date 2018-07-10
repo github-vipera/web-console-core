@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
 import { AuthService } from '../../services/auth-service/auth.service';
-import { WebAdminPluginManagerService, ActivablePlugin } from '../../services/web-admin-plugin-manager/web-admin-plugin-manager.service';
+import { WebConsolePluginManagerService, ActivablePlugin } from '../../services/web-console-plugin-manager/web-console-plugin-manager.service';
 
 @Component({
-  selector: 'web-admin-console',
-  styleUrls: ['./web-admin-console.component.scss'],
-  templateUrl: './web-admin-console.component.html'
+  selector: 'web-console',
+  styleUrls: ['./web-console.component.scss'],
+  templateUrl: './web-console.component.html'
 })
-export class WebAdminConsoleComponent implements OnInit {
+export class WebConsoleComponent implements OnInit {
   //routes:Array<Route> = [];
   
   plugins:Array<ActivablePlugin>
@@ -19,8 +19,8 @@ export class WebAdminConsoleComponent implements OnInit {
     message:string
   };
 
-  public constructor(private router: Router, private authService:AuthService ,private navService:NavigationService, private pluginManager:WebAdminPluginManagerService) {
-    console.log("console component constructor");
+  public constructor(private router: Router, private authService:AuthService ,private navService:NavigationService, private pluginManager:WebConsolePluginManagerService) {
+    console.log("Web Console component constructor");
     this.initErrorBox();
   }
 
@@ -35,7 +35,7 @@ export class WebAdminConsoleComponent implements OnInit {
    * Implements onInit event handler.
    */
   public ngOnInit(): void {
-    console.log("WebAdminConsoleComponent init done");
+    console.log("WebConsoleComponent init done");
     //this.initStaticRouting();
     this.createRoutingConfigByMotifCatalog();
   }
@@ -46,7 +46,7 @@ export class WebAdminConsoleComponent implements OnInit {
     this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
       this.resetRouting(result);
       this.loadPluginList();
-      console.log("WebAdminConsoleComponent routes",result);
+      console.log("WebConsoleComponent routes",result);
     },(err) => {
       console.error("Fail to crete routing:",err);
       //this.resetRouting([]);
