@@ -3,7 +3,7 @@ import { PluginRegistry , PluginInfo, PluginRegistrationEntry } from '../../comm
 import { MotifConnectorService} from '../motif-connector/motif-connector.service';
 import * as _ from 'lodash'
 
-const PLUGIN_LIST_ENTRYPOINT = "/rest/registry/plugin/list?all=true&status=ACTIVE"
+const PLUGIN_LIST_ENTRYPOINT = "/rest/v2/registry/plugins?all=true&status=ACTIVE"
 
 @Injectable({
     providedIn: 'root'
