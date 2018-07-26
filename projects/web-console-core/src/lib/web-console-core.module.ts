@@ -6,8 +6,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService, AuthGuard } from './services/auth-service/auth.service';
 import { WebConsoleConfig } from './config/WebConsoleConfig';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
-
-
+import { StatusBarComponent } from './components/status-bar/status-bar.component'
+import { StatusBarDirective } from './components/status-bar/status-bar.directive'
 
 @NgModule({
   providers:[
@@ -15,7 +15,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
     AuthGuard
   ],
   declarations: [
-    WebConsoleComponent, PageNotFoundComponent
+    WebConsoleComponent, PageNotFoundComponent, StatusBarComponent, StatusBarDirective
   ],
   imports:[
     CommonModule,
