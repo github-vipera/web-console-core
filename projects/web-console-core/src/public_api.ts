@@ -11,4 +11,5 @@ export * from "./lib/services/status-bar-service/status-bar.service"
 export * from "./lib/components/web-console/web-console.component"
 export * from "./lib/components/page-not-found/page-not-found.component"
 export * from "./lib/web-console-core.module"
-
+export * from "./lib/web-console-logger.module"
+export * from "./lib/types/web-console-logger-level"
