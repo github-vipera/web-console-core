@@ -14,6 +14,42 @@ export interface MotifQueryFieldSort {
     direction:MotifQuerySortDirection
 }
 
+export class MotifQuerySort {
+    private fields:Array<MotifQueryFieldSort>;
+    public addField(fieldName:string, direction:MotifQuerySortDirection):MotifQuerySort{
+        this.fields.push({ fieldName: fieldName, direction: direction});
+        return this;
+    }
+    public encode():string {
+        if (this.fields.length==0){
+            return null;
+        }
+        return "TODO!!";
+    }
+}
+
+export interface MotifQueryFilterField {
+    fieldName:string,
+    filterType:string,
+    value:any
+}
+
+export class MotifQueryFilter {
+    private fields:Array<MotifQueryFilterField>;
+
+    public addField(fieldName:string, filterType:string, value:any):MotifQueryFilter{
+        this.fields.push({ fieldName: fieldName, filterType: filterType, value: value});
+        return this;
+    }
+    public encode():string {
+        if (this.fields.length==0){
+            return null;
+        }
+        return "TODO!!";
+    }
+}
+
+
 export interface MotifQueryResults {
     pageIndex:number;
     pageSize:number;
@@ -21,7 +57,7 @@ export interface MotifQueryResults {
     totalPages:number;
     data:any;
     link?:string;
-    sort?:MotifQueryFieldSort[];
+    sort?:MotifQuerySort;
     filter?:any;
 }
 
@@ -36,7 +72,7 @@ export class MotifQueryService {
 
     }
 
-    public query(url:string,pageIndex?:number,pageSize?:number,sort?:MotifQueryFieldSort[],filter?:any,options?:any):Observable<MotifQueryResults>{
+    public query(url:string,pageIndex?:number,pageSize?:number,sort?:MotifQuerySort,filter?:MotifQueryFilter,options?:any):Observable<MotifQueryResults>{
         this.logger.debug("MotifQueryService","query called",url,pageIndex,pageSize,options);
         return Observable.create((observer:any) => {
             
@@ -45,10 +81,10 @@ export class MotifQueryService {
                 .set('page_size', ""+pageSize)
                 .set('page', ""+pageIndex)
             if (sort){
-                params = params.set('sort',sort.toString())
+                params = params.set('sort',sort.encode())
             }
             if (filter){
-                params = params.set('filter',filter.toString())
+                params = params.set('filter',filter.encode())
             }
 
             // Create Options
@@ -57,7 +93,7 @@ export class MotifQueryService {
             }
             options.params = params;
             options.observe = "response"; // => to receive the full response with headers
-            
+
             let observable = this.motifConnector.get(url,options).subscribe((response) => {
                 this.logger.debug("MotifQueryService","Get Users List done",response);
 
