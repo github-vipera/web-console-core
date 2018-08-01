@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MotifConnectorService } from "web-console-core"
-import { NGXLogger } from 'web-console-core';
+import { MotifConnectorService } from "./motif-connector.service"
+import { NGXLogger } from 'ngx-logger';
 import { HttpParams } from '@angular/common/http';
 
 export enum MotifQuerySortDirection {
