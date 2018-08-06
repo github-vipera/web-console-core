@@ -37,7 +37,7 @@ and use it:
 this.logger.debug("MotifQueryService","constructor");
 ```
 
-### Querying Data ### 
+## Querying Data ##
 
 #### Paging Queries ####
 This is an example of paged query:
