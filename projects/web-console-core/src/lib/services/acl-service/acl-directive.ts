@@ -51,7 +51,7 @@ export class ACLPermissionDirective implements OnInit, OnDestroy {
     private checkPermission():boolean {
         this.logger.debug("ACLPermissionDirective", "Checking permission for", this._aclPermission)
         if (typeof this._aclPermission==='string'){
-            return this.aclService.canAll(this._aclPermission);
+            return this.aclService.can(this._aclPermission);
         } else {
             return this.aclService.canAll(this._aclPermission);
         }

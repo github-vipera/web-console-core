@@ -45,8 +45,38 @@ export class ACLService {
      * 
      * @param permission 
      */
-    public can(permission:string):boolean{
+    public can(permission:string|string[]):boolean {
+        if (typeof permission==='string'){
+            return this.checkSingle(permission);
+        } else {
+            return this.checkMultiple(permission);
+        }
+    }
+
+    /**
+     * Check for single permission
+     * @param permission 
+     */
+    private checkSingle(permission:string):boolean {
+        if (this._permissions.entries.length===0){
+            return false; //no permission available
+        }
         return (this._permissions[permission]!=null);
+    }
+
+    /**
+     * Check for multiple permissions
+     * @param permissions 
+     */
+    private checkMultiple(permissions:string[]):boolean {
+        let retValue = false;
+        for (let i=0;i<permissions.length;i++){
+            if (!this.checkSingle(permissions[i])){
+                return false;
+            }
+            retValue = true;
+        }
+        return retValue;
     }
 
     /**
