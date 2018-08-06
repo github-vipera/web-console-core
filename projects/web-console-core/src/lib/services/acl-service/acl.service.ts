@@ -16,7 +16,6 @@ export class ACLService {
 
     constructor(private motifConnector:MotifConnectorService, private logger: NGXLogger) { 
         this.logger.debug("ACLService","constructor");
-        //TODO!! load from MOTIF
     }
 
     /**
@@ -50,11 +49,11 @@ export class ACLService {
      * 
      * @param permission 
      */
-    public can(permission:string|string[]):boolean {
+    public can(permission:string|string[], allRequired?:boolean):boolean {
         if (typeof permission==='string'){
             return this.checkSingle(permission);
         } else {
-            return this.checkMultiple(permission);
+            return this.checkMultiple(permission, allRequired);
         }
     }
 
@@ -73,13 +72,16 @@ export class ACLService {
      * Check for multiple permissions
      * @param permissions 
      */
-    private checkMultiple(permissions:string[]):boolean {
+    private checkMultiple(permissions:string[], allRequired?:boolean):boolean {
         let retValue = false;
         for (let i=0;i<permissions.length;i++){
             if (!this.checkSingle(permissions[i])){
-                return false;
+                if (allRequired){
+                    return false;
+                }
+            } else {
+                retValue = true;
             }
-            retValue = true;
         }
         return retValue;
     }

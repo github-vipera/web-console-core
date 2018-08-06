@@ -3,17 +3,18 @@ import { ACLService } from './acl.service';
 import { NGXLogger } from 'ngx-logger';
 
 @Directive({
-    selector:"[aclPermission]"
+    selector: '[aclPermissionOneOf],[aclPermission]'
   })
 export class ACLPermissionDirective implements OnInit, OnDestroy {
 
     private _aclPermission: string | string[];
+    private _allRequired: boolean = true;
 
     constructor(private logger: NGXLogger,
         private aclService:ACLService,
         private templateRef: TemplateRef<any>,
         private viewContainer: ViewContainerRef) {
-            this.logger.debug("ACLPermissionDirective", "ctor")
+            this.logger.debug("ACLPermissionDirective", "ctor", aclService)
     }
   
     ngOnInit(): void {
@@ -24,9 +25,22 @@ export class ACLPermissionDirective implements OnInit, OnDestroy {
     ngOnDestroy(): void {
     }
 
+    @Input("aclPermissionOneOf")
+    set setAclPermissionOneOf(value:string|string[]){
+        this.logger.debug("ACLPermissionDirective", "Setting oneOf permission for ", value)
+        this.setAclPermissionImpl(value);
+        this._allRequired = false;
+    }
+
     @Input("aclPermission")
     set setAclPermission(value:string|string[]){
         this.logger.debug("ACLPermissionDirective", "Setting permission for ", value)
+        this.setAclPermissionImpl(value);
+        this._allRequired = true;
+    }
+
+
+    private setAclPermissionImpl(value:string|string[]):void{
         this._aclPermission = value
     }
   
@@ -50,8 +64,8 @@ export class ACLPermissionDirective implements OnInit, OnDestroy {
   
     private checkPermission():boolean {
         this.logger.debug("ACLPermissionDirective", "Checking permission for", this._aclPermission)
-        let checkResult = this.aclService.can(this._aclPermission);
+        let checkResult = this.aclService.can(this._aclPermission, this._allRequired);
         return checkResult;
     }
-  
+
 }
