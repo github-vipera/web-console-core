@@ -3,9 +3,6 @@ import { Observable } from 'rxjs';
 import { MotifConnectorService } from '../motif-connector/motif-connector.service'
 import { NGXLogger } from 'ngx-logger';
 
-interface Map<T> {
-    [K: string]: T;
-}
 
 @Injectable({
     providedIn: 'root'
@@ -15,28 +12,36 @@ export class ACLService {
     /**
      * List of cached permissions
      */
-    private _permissions:Map<string> = {};
+    private _permissions:Map<string,string> = new Map();
 
     constructor(private motifConnector:MotifConnectorService, private logger: NGXLogger) { 
         this.logger.debug("ACLService","constructor");
+        //TODO!! load from MOTIF
     }
 
     /**
-     * Add permissions into the cache
+     * Add a listo of permissions into the cache
      * @param permissions
      */
     public addPermissions(permissions:Array<string>):void{
         for (var i=0;i<permissions.length;i++){
             let permission = permissions[i];
-            this._permissions[permission] = permission;
+            this.addPermission(permission);
         }
+    }
+
+    /**
+     * Add a permission
+     */
+    public addPermission(permission:string):void {
+        this._permissions.set(permission, permission);
     }
 
     /**
      * Remove all cached permissions
      */
     public flushPermissions():void{
-        this._permissions = {};
+        this._permissions.clear();
     }
 
 
@@ -58,10 +63,10 @@ export class ACLService {
      * @param permission 
      */
     private checkSingle(permission:string):boolean {
-        if (this._permissions.entries.length===0){
+        if (this._permissions.size===0){
             return false; //no permission available
         }
-        return (this._permissions[permission]!=null);
+        return (this._permissions.has(permission));
     }
 
     /**
@@ -77,20 +82,6 @@ export class ACLService {
             retValue = true;
         }
         return retValue;
-    }
-
-    /**
-     * Does current user have permission to do something?
-     * 
-     * @param permission 
-     */
-    public canAll(permissions:string[]):boolean {
-        for (let i=0;i<permissions.length;i++){
-            if (!this.can(permissions[i])){
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
