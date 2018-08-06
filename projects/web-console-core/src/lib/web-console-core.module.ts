@@ -8,6 +8,7 @@ import { WebConsoleConfig } from './config/WebConsoleConfig';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 import { StatusBarComponent } from './components/status-bar/status-bar.component'
 import { StatusBarDirective } from './components/status-bar/status-bar.directive'
+import { ACLPermissionDirective } from './services/acl-service/acl-directive'
 
 @NgModule({
   providers:[
@@ -15,7 +16,7 @@ import { StatusBarDirective } from './components/status-bar/status-bar.directive
     AuthGuard
   ],
   declarations: [
-    WebConsoleComponent, PageNotFoundComponent, StatusBarComponent, StatusBarDirective
+    WebConsoleComponent, PageNotFoundComponent, StatusBarComponent, StatusBarDirective, ACLPermissionDirective
   ],
   imports:[
     CommonModule,
@@ -24,7 +25,8 @@ import { StatusBarDirective } from './components/status-bar/status-bar.directive
   ],
   exports: [
     WebConsoleComponent,
-    RouterModule
+    RouterModule,
+    ACLPermissionDirective
   ]
 })
 export class WebConsoleCoreModule {
