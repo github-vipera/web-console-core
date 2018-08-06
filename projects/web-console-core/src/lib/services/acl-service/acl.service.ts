@@ -1,5 +1,4 @@
-import { Injectable } from "@angular/core";
-import { Observable } from 'rxjs';
+import { Injectable,  OnInit, OnDestroy } from "@angular/core";
 import { MotifConnectorService } from '../motif-connector/motif-connector.service'
 import { NGXLogger } from 'ngx-logger';
 
@@ -7,7 +6,7 @@ import { NGXLogger } from 'ngx-logger';
 @Injectable({
     providedIn: 'root'
 })
-export class ACLService {
+export class ACLService implements OnInit, OnDestroy {
 
     /**
      * List of cached permissions
@@ -27,6 +26,19 @@ export class ACLService {
             let permission = permissions[i];
             this.addPermission(permission);
         }
+    }
+
+    ngOnInit(): void {
+        this.logger.debug("ACLService", "init")
+        this.loadPermissions();
+    }
+  
+    ngOnDestroy(): void {
+    }
+
+    private loadPermissions():void {
+        //load remotely permissions
+        //TODO!!
     }
 
     /**
