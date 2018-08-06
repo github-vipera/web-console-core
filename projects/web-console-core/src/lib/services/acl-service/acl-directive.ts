@@ -11,7 +11,6 @@ export class ACLPermissionDirective implements OnInit, OnDestroy {
 
     constructor(private logger: NGXLogger,
         private aclService:ACLService,
-        private aclService:ACLService,
         private templateRef: TemplateRef<any>,
         private viewContainer: ViewContainerRef) {
             this.logger.debug("ACLPermissionDirective", "ctor")
@@ -52,7 +51,7 @@ export class ACLPermissionDirective implements OnInit, OnDestroy {
     private checkPermission():boolean {
         this.logger.debug("ACLPermissionDirective", "Checking permission for", this._aclPermission)
         if (typeof this._aclPermission==='string'){
-            return this.aclService.can(this._aclPermission);
+            return this.aclService.canAll(this._aclPermission);
         } else {
             return this.aclService.canAll(this._aclPermission);
         }
