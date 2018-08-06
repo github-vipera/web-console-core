@@ -60,3 +60,27 @@ this.motifQueryService.query(endpoint, pageIndex, pageSize, sort, filter).subscr
     console.log("Get Users List done: ",queryResponse);
 },reject);
 ```
+
+## Acl Service (User Permissions)
+
+The AclService allows you to manage the permissions on the elements of the web console. For example, if a user can not create users, it will not even be able to see the "add user" button.
+For this reason the AclService is able to return if a specific recorded action is available for the logged in user.
+
+For a more convenient integration within HTML templates there are two directives that allow you to conditionally display DOM elements in relation to ACL permissions:
+
+
+| Directive          | Input           | Description |
+|--------------------|-----------------|-------------|
+| aclPermission      | string or string[] | all permissions specified (one or more) must be granted             |
+| aclPermissionOneOf | string or string[] | at least one of the specified permissions must be granted             |
+
+Here an example:
+
+```html
+    <ng-template [aclPermission]="['userAdd']">
+      <button id='add-user-button' type='button'>Add New User</button>
+    </ng-template>
+```
+
+
+
