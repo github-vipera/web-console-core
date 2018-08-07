@@ -6,17 +6,17 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService, AuthGuard } from './services/auth-service/auth.service';
 import { WebConsoleConfig } from './config/WebConsoleConfig';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
-import { StatusBarComponent } from './components/status-bar/status-bar.component'
-import { StatusBarDirective } from './components/status-bar/status-bar.directive'
 import { ACLPermissionDirective } from './services/acl-service/acl-directive'
+import { StatusBarComponent, StatusBarDirective, StatusBarService } from './components/status-bar/index'
 
 @NgModule({
   providers:[
     { provide: HTTP_INTERCEPTORS, useClass: AuthService, multi: true },
-    AuthGuard
+    AuthGuard,
+    StatusBarService
   ],
   declarations: [
-    WebConsoleComponent, PageNotFoundComponent, StatusBarComponent, StatusBarDirective, ACLPermissionDirective
+    WebConsoleComponent, PageNotFoundComponent, ACLPermissionDirective, StatusBarComponent, StatusBarDirective
   ],
   imports:[
     CommonModule,
@@ -26,7 +26,8 @@ import { ACLPermissionDirective } from './services/acl-service/acl-directive'
   exports: [
     WebConsoleComponent,
     RouterModule,
-    ACLPermissionDirective
+    ACLPermissionDirective,
+    StatusBarComponent, StatusBarDirective
   ]
 })
 export class WebConsoleCoreModule {
