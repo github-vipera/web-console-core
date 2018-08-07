@@ -13,22 +13,22 @@ export class StatusBarService {
     private subject = new Subject<Array<StatusBarItem>>();
   
     constructor(private logger:NGXLogger){
-        this.logger.debug("DynamicContainerService", "ctor")
+        this.logger.debug("StatusBarService", "ctor")
     }
   
     public addItem(item: StatusBarItem):StatusBarService {
-      this.logger.debug("DynamicContainerService", "addItem")
+      this.logger.debug("StatusBarService", "addItem")
       let itemIndex = this.getItemIndex(item.id);
       if (itemIndex<0){
         this._items.push(item);  
         this.notifySubject();
       } else {
-        this.logger.warn("DynamicContainerService", "This item id already exits:", item);
+        this.logger.warn("StatusBarService", "This item id already exits:", item);
       }
       return this;
     }
   
-    public removeItemById(id:string){
+    public removeItem(id:string){
       let itemIndex = this.getItemIndex(id);
       if (itemIndex>=0){
         this._items.splice(itemIndex, 1);
@@ -49,7 +49,7 @@ export class StatusBarService {
     }
   
     public getItems():Array<StatusBarItem> {
-      this.logger.debug("DynamicContainerService", "getItems", this._items)
+      this.logger.debug("StatusBarService", "getItems", this._items)
       return this._items;
     }
   
