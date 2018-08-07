@@ -7,7 +7,7 @@ import { AuthService, AuthGuard } from './services/auth-service/auth.service';
 import { WebConsoleConfig } from './config/WebConsoleConfig';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 import { ACLPermissionDirective } from './services/acl-service/acl-directive'
-import { StatusBarComponent, StatusBarDirective, StatusBarService } from './components/status-bar/index'
+import { StatusBarComponent, StatusBarDirective, StatusBarService, MainStatusBarItemComponent } from './components/status-bar/index'
 
 @NgModule({
   providers:[
@@ -16,13 +16,14 @@ import { StatusBarComponent, StatusBarDirective, StatusBarService } from './comp
     StatusBarService
   ],
   declarations: [
-    WebConsoleComponent, PageNotFoundComponent, ACLPermissionDirective, StatusBarComponent, StatusBarDirective
+    WebConsoleComponent, PageNotFoundComponent, ACLPermissionDirective, StatusBarComponent, StatusBarDirective, MainStatusBarItemComponent
   ],
   imports:[
     CommonModule,
     HttpClientModule,
     RouterModule.forChild([])
   ],
+  entryComponents:[ MainStatusBarItemComponent ],
   exports: [
     WebConsoleComponent,
     RouterModule,

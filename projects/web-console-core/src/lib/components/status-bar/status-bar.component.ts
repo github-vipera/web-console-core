@@ -6,8 +6,23 @@ import { StatusBarDirective }                   from './status-bar.directive';
 import { NGXLogger }                            from 'ngx-logger'
 
 @Component({ 
+  styleUrls: ['./status-bar.component.scss'],
+  /*
+  styles: [`
+    :host {
+      font-size: .56rem;
+      color: #787f84;
+      font-family: Montserrat;
+      text-transform: uppercase;
+      width: 100%;
+    },
+    .wc-status-bar-container {
+      display:flex;
+      width: 100%;
+    }
+  `],*/
   selector: 'wc-status-bar',
-  template: `<div class="wc-status-barr"><ng-template wc-status-bar-host></ng-template></div>`
+  template: `<div class="wc-status-bar-container"><ng-template wc-status-bar-host></ng-template></div>`
 })
 export class StatusBarComponent implements OnInit, OnDestroy {
 

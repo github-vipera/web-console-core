@@ -1,0 +1,13 @@
+
+.wc-status-bar-container {
+    display:flex;
+    width: 100%;
+}
+
+:host {
+    font-size: .56rem;
+    color: #787f84;
+    font-family: Montserrat;
+    text-transform: uppercase;
+    width: 100%;
+}

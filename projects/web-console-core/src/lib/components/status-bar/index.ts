@@ -3,6 +3,7 @@ export * from './status-bar-item.component';
 export * from './status-bar.component';
 export * from './status-bar.directive';
 export * from './status-bar.service';
+export * from './core-items/status-bar-default-text';
 
 
 

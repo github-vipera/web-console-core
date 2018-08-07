@@ -3,6 +3,9 @@ import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { WebConsolePluginManagerService, ActivablePlugin } from '../../services/web-console-plugin-manager/web-console-plugin-manager.service';
+import { MainStatusBarItemComponent } from '../status-bar/core-items/status-bar-default-text'
+import { StatusBarService } from '../status-bar/status-bar.service'
+import { StatusBarItem } from '../status-bar/status-bar-item'
 
 @Component({
   selector: 'web-console',
@@ -19,7 +22,11 @@ export class WebConsoleComponent implements OnInit {
     message:string
   };
 
-  public constructor(private router: Router, private authService:AuthService ,private navService:NavigationService, private pluginManager:WebConsolePluginManagerService) {
+  public constructor(private router: Router, 
+    private authService:AuthService ,
+    private navService:NavigationService, 
+    private pluginManager:WebConsolePluginManagerService,
+    private statusBarService:StatusBarService) {
     console.log("Web Console component constructor");
     this.initErrorBox();
   }
@@ -38,8 +45,15 @@ export class WebConsoleComponent implements OnInit {
     console.log("WebConsoleComponent init done");
     //this.initStaticRouting();
     this.createRoutingConfigByMotifCatalog();
+
+    //initialize the status bar
+    this.initStatusBar();
+
   }
 
+  private initStatusBar(){
+    this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-status", MainStatusBarItemComponent, {}));
+  }
 
   private createRoutingConfigByMotifCatalog(){
     this.loadPluginList();
