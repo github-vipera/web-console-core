@@ -2,8 +2,11 @@ import { Injectable, Type }           from '@angular/core';
 import { StatusBarItem }              from './status-bar-item';
 import { Observable }                 from 'rxjs';
 import { Subject }                    from 'rxjs/Subject';
+import { BehaviorSubject }            from 'rxjs/BehaviorSubject';
 import { NGXLogger }                  from 'ngx-logger'
-import { THROW_IF_NOT_FOUND } from '../../../../../../node_modules/@angular/core/src/di/injector';
+import { first } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
+import * as Rx from "rxjs";
 
 @Injectable({
     providedIn:'root'
@@ -14,9 +17,9 @@ export class StatusBarService {
     private subject = new Subject<Array<StatusBarItem>>();
 
     //Main Status Text value
-    private statusText:string = "Ready.";
-    private statusTextSubject = new Subject<string>();
-  
+    private statusText = new Rx.BehaviorSubject<string>("Ready.");
+
+
     constructor(private logger:NGXLogger){
         this.logger.debug("StatusBarService", "ctor")
     }
@@ -71,17 +74,11 @@ export class StatusBarService {
       this.subject.next(this._items);    
     }
 
-    public getStatusObservable():Observable<string>{
-      return this.statusTextSubject.asObservable();       
-    }
-
-    public getStatus():string {
-      return this.statusText;
-    }
-
     public setStatus(statusText:string):void{
-      this.statusText = statusText;
-      this.statusTextSubject.next(this.statusText);
+      this.statusText.next(statusText);
     }
-  
+    
+    public getStatus():Observable<string>{
+      return this.statusText.asObservable()
+    }
 }

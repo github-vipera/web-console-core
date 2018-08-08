@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnDestroy  } from '@angular/core';
 import { StatusBarItemComponent }      from '../status-bar-item.component';
 import { StatusBarService } from '../status-bar.service'
+import { first } from 'rxjs/operators';
 
 @Component({
   styles: [`
@@ -23,8 +24,7 @@ export class MainStatusBarItemComponent implements StatusBarItemComponent, OnIni
   constructor(private sbService:StatusBarService){}
 
   ngOnInit() {
-    this.statusText = this.sbService.getStatus();
-    this.sbService.getStatusObservable().subscribe(statusText => { this.statusText = statusText; })
+    this.sbService.getStatus().subscribe(statusText => { this.statusText = statusText; })
   }
   ngOnDestroy(){
   }
