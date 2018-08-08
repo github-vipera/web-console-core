@@ -4,6 +4,7 @@ import { NavigationService } from '../../services/navigation-service/navigation.
 import { AuthService } from '../../services/auth-service/auth.service';
 import { WebConsolePluginManagerService, ActivablePlugin } from '../../services/web-console-plugin-manager/web-console-plugin-manager.service';
 import { MainStatusBarItemComponent } from '../status-bar/core-items/status-bar-default-text'
+import { MainStatusBarProgressComponent } from '../status-bar/core-items/status-bar-progress'
 import { StatusBarService } from '../status-bar/status-bar.service'
 import { StatusBarItem } from '../status-bar/status-bar-item'
 
@@ -53,6 +54,7 @@ export class WebConsoleComponent implements OnInit {
 
   private initStatusBar(){
     this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-status", MainStatusBarItemComponent, {}));
+    this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-progress-status", MainStatusBarProgressComponent, {}));
   }
 
   private createRoutingConfigByMotifCatalog(){

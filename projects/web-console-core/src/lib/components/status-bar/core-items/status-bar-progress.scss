@@ -1,0 +1,14 @@
+.spinner {
+    height: 13px;
+    width: 13px;
+    animation: spinner_rotate 0.8s infinite ease-in-out;
+    border: 2px solid rgb(196, 187, 187);
+    border-right-color: transparent;
+    border-radius: 50%;
+  }
+  
+  @keyframes spinner_rotate {
+    0%    { transform: rotate(0deg); }
+    100%  { transform: rotate(360deg); }
+  }
+  

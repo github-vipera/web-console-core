@@ -4,6 +4,6 @@ export * from './status-bar.component';
 export * from './status-bar.directive';
 export * from './status-bar.service';
 export * from './core-items/status-bar-default-text';
-
+export * from './core-items/status-bar-progress';
 
 
