@@ -34,7 +34,7 @@ export class MotifQuerySort {
 
     public encode(params:HttpParams):HttpParams {
         if (this.fields.length==0){
-            return null;
+            return params;
         }
         let sortString = "";
         for (var i=0;i<this.fields.length;i++){
@@ -117,7 +117,7 @@ export class MotifQueryFilter {
 
     public encode(params:HttpParams):HttpParams {
         if (this.fields.length==0){
-            return null;
+            return params;
         }
         for (var i=0;i<this.fields.length;i++){
             let filterField:MotifQueryFilterField = this.fields[i];
@@ -158,6 +158,11 @@ export class MotifQueryFilter {
         }
         else if (filterOperator===MotifQueryFilterFieldOperator.NotEqual){
             return ":not";
+        }
+        else if (filterOperator===MotifQueryFilterFieldOperator.Like){
+            return ":like";
+        } else {
+            return "";
         }
     }
 }
@@ -208,6 +213,8 @@ export class MotifQueryService {
             }
             options.params = params;
             options.observe = "response"; // => to receive the full response with headers
+
+            this.logger.debug("MotifQueryService","query params", params);
 
             let observable = this.motifConnector.get(url,options).subscribe((response) => {
                 this.logger.debug("MotifQueryService","Get Users List done",response.url);
