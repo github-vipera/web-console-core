@@ -34,7 +34,7 @@ export class MotifQuerySort {
 
     public encode(params:HttpParams):HttpParams {
         if (this.fields.length==0){
-            return null;
+            return params;
         }
         let sortString = "";
         for (var i=0;i<this.fields.length;i++){
@@ -57,9 +57,10 @@ export enum MotifQueryFilterFieldOperator {
     NotEqual,
     GreaterThan,
     LessThan,
-    Between,
+    //Between,
     LessThanEqual,
-    GreaterThanEqual
+    GreaterThanEqual,
+    Like
 }
 
 export interface MotifQueryFilterField {
@@ -77,10 +78,12 @@ export class MotifQueryFilter {
         return this;
     }
 
+    /*
     public between(fieldName:string, value1:any, value2:any):MotifQueryFilter{
         this.fields.push({ fieldName: fieldName, filterOperator: MotifQueryFilterFieldOperator.Between, value: value1, value2: value2});
         return this;
     }
+    */
 
     public equals(fieldName:string, value:any):MotifQueryFilter{
         this.fields.push({ fieldName: fieldName, filterOperator: MotifQueryFilterFieldOperator.Equals, value: value});
@@ -107,48 +110,59 @@ export class MotifQueryFilter {
         return this;
     }
 
+    public like(fieldName:string, value:any):MotifQueryFilter{
+        this.fields.push({ fieldName: fieldName, filterOperator: MotifQueryFilterFieldOperator.Like, value: value});
+        return this;
+    }
+
     public encode(params:HttpParams):HttpParams {
         if (this.fields.length==0){
-            return null;
+            return params;
         }
         for (var i=0;i<this.fields.length;i++){
             let filterField:MotifQueryFilterField = this.fields[i];
             let operator = this.encodeOperator(filterField.filterOperator);
             let valueStr = this.encodeValue(filterField);
-            params = params.set(filterField.fieldName, operator + valueStr);
+            params = params.set(filterField.fieldName + operator, valueStr);
         }
         return params;
     }
 
     private encodeValue(filterField:MotifQueryFilterField):string{
-        if (filterField.filterOperator===MotifQueryFilterFieldOperator.Between){
-            return filterField.value +","+ filterField.value2;
-        } else {
+        //if (filterField.filterOperator===MotifQueryFilterFieldOperator.Between){
+        //    return filterField.value +","+ filterField.value2;
+        //} else {
             return filterField.value;
-        }
+        //}
     }
 
     private encodeOperator(filterOperator:MotifQueryFilterFieldOperator):string{
+        /*
         if (filterOperator===MotifQueryFilterFieldOperator.Between){
             return "bt:";
-        }
-        else if (filterOperator===MotifQueryFilterFieldOperator.Equals){
+        }*/
+        if (filterOperator===MotifQueryFilterFieldOperator.Equals){
             return "";
         }
         else if (filterOperator===MotifQueryFilterFieldOperator.GreaterThan){
-            return "gt:";
+            return ":gt";
         }
         else if (filterOperator===MotifQueryFilterFieldOperator.GreaterThanEqual){
-            return "gte:";
+            return ":gte";
         }
         else if (filterOperator===MotifQueryFilterFieldOperator.LessThan){
-            return "lt:";
+            return ":lt";
         }
         else if (filterOperator===MotifQueryFilterFieldOperator.LessThanEqual){
-            return "lte:";
+            return ":lte";
         }
         else if (filterOperator===MotifQueryFilterFieldOperator.NotEqual){
-            return "not:";
+            return ":not";
+        }
+        else if (filterOperator===MotifQueryFilterFieldOperator.Like){
+            return ":like";
+        } else {
+            return "";
         }
     }
 }
@@ -199,6 +213,8 @@ export class MotifQueryService {
             }
             options.params = params;
             options.observe = "response"; // => to receive the full response with headers
+
+            this.logger.debug("MotifQueryService","query params", params);
 
             let observable = this.motifConnector.get(url,options).subscribe((response) => {
                 this.logger.debug("MotifQueryService","Get Users List done",response.url);
