@@ -82,5 +82,79 @@ Here an example:
     </ng-template>
 ```
 
+## Status Bar Service
 
+The StatusBarService allows you to manage the status bar of the web console. It lets you display an information text in the default area, show a busy indicator or add and remove custom items.
+
+To use the service just import it as follows:
+
+```typescript
+import { StatusBarService } from 'web-console-core'
+
+constructor(private statusBarService:StatusBarService) {
+}
+
+```
+
+To change the text displayed in the statusbar just call the ***setStatus*** method:
+
+```typescript
+    this.statusBarService.setStatus("Hello Console!");
+```
+
+To show the busy indicator you simply need to call the ***setBusyIndicatorVisible*** method:
+
+```typescript
+      this.statusBarService.setBusyIndicatorVisibile(true);
+```
+
+and at the end of your process call the show again to dismiss it:
+
+```typescript
+      this.statusBarService.setBusyIndicatorVisibile(false);
+```
+
+### Custom Status Bar Item
+
+If you want you can add custom elements to the Status Bar. To do this just create a component that implements ***StatusBarItemComponent*** and add it with a unique ID through the ***StatusBarService*** service.
+
+Here is an example:
+
+
+This is the item component:
+```typescript
+
+import { Component, Input } from '@angular/core';
+import { StatusBarItemComponent }      from 'web-console-core';
+import { timer } from 'rxjs';
+
+@Component({
+  styleUrls: [
+    './test.scss'
+  ],
+  template: `
+    <div style="display:flex;margin-right:24px;">
+      <div class="info license">
+        {{dateTime  | date:'h:mm.ss a' }}
+      </div>
+      <div class="license">ViperaOSGI • ver. 1.10 • Issued 02.25.2016 • <b class="warn">Expires 12.31.2018</b></div>
+    </div>
+  `
+})
+export class MyCustomStatusBarItemComponent implements StatusBarItemComponent {
+  @Input() data: any;
+  dateTime:Date = new Date;
+
+  constructor(){
+    timer(0, 1000).subscribe(x=>{
+      this.dateTime = new Date();
+    });
+  }
+}
+```
+
+And this is the registration on StatusBarService:
+```typescript
+    this.statusBarService.addItem(new StatusBarItem("mycustom-sb-item", MyCustomStatusBarItemComponent, {}));
+```
 
