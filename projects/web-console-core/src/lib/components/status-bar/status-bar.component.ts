@@ -35,7 +35,7 @@ export class StatusBarComponent implements OnInit, OnDestroy {
     ngOnInit() {
       this.logger.debug("StatusBarComponent", "ngOnInit")
 
-      this.dcService.getDynamicItems().subscribe(items => { this.loadItems(); });
+      this.dcService.getStructureChange().subscribe(items => { this.loadItems(); });
 
       this.loadItems()
     }

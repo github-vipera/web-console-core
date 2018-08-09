@@ -13,12 +13,15 @@ import * as Rx from "rxjs";
 })
 export class StatusBarService {
 
+    //Statusbar structure
     private _items:Array<StatusBarItem> = new Array();
-    private subject = new Subject<Array<StatusBarItem>>();
-
+    private _itemsSubject = new Subject<Array<StatusBarItem>>();
+    
     //Main Status Text value
-    private statusText = new Rx.BehaviorSubject<string>("Ready.");
+    private _statusText = new Rx.BehaviorSubject<string>("Ready.");
 
+    //Busy Indicator
+    private _busyIndicatorVisible = new Rx.BehaviorSubject<boolean>(false);
 
     constructor(private logger:NGXLogger){
         this.logger.debug("StatusBarService", "ctor")
@@ -29,7 +32,7 @@ export class StatusBarService {
       let itemIndex = this.getItemIndex(item.id);
       if (itemIndex<0){
         this._items.push(item);  
-        this.notifySubject();
+        this.notifyStructureChange();
       } else {
         this.logger.warn("StatusBarService", "This item id already exits:", item);
       }
@@ -40,7 +43,7 @@ export class StatusBarService {
       let itemIndex = this.getItemIndex(id);
       if (itemIndex>=0){
         this._items.splice(itemIndex, 1);
-        this.notifySubject();
+        this.notifyStructureChange();
       } else {
         //not found
       }
@@ -61,24 +64,33 @@ export class StatusBarService {
       return this._items;
     }
   
-    public getDynamicItems(): Observable<Array<StatusBarItem>> {
-      return this.subject.asObservable();
+    public getStructureChange(): Observable<Array<StatusBarItem>> {
+      return this._itemsSubject.asObservable();
     }
   
     public clear(): void {
        this._items = new Array();
-       this.notifySubject();
+       this.notifyStructureChange();
     }
   
-    private notifySubject(){
-      this.subject.next(this._items);    
+    private notifyStructureChange(){
+      this._itemsSubject.next(this._items);    
     }
 
     public setStatus(statusText:string):void{
-      this.statusText.next(statusText);
+      this._statusText.next(statusText);
     }
     
     public getStatus():Observable<string>{
-      return this.statusText.asObservable()
+      return this._statusText.asObservable()
     }
+
+    public setBusyIndicatorVisibile(visible:boolean):void{
+      this._busyIndicatorVisible.next(visible)
+    }
+    
+    public isBusyIndicatorVisible():Observable<boolean>{
+      return this._busyIndicatorVisible.asObservable()
+    }
+
 }
