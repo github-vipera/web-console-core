@@ -8,10 +8,12 @@ import { WebConsoleConfig } from './config/WebConsoleConfig';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 import { ACLPermissionDirective } from './services/acl-service/acl-directive'
 import { StatusBarComponent, StatusBarDirective, StatusBarService, MainStatusBarItemComponent, MainStatusBarProgressComponent } from './components/status-bar/index'
+import { MotifActivityIndicatorService } from './services/motif-connector/motif-activity-indicator.service'
 
 @NgModule({
   providers:[
     { provide: HTTP_INTERCEPTORS, useClass: AuthService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MotifActivityIndicatorService, multi: true },
     AuthGuard,
     StatusBarService
   ],
