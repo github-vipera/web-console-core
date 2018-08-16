@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { ACLPermissionDirective } from './services/acl-service/acl-directive'
 import { StatusBarComponent, StatusBarDirective, StatusBarService, MainStatusBarItemComponent, MainStatusBarProgressComponent } from './components/status-bar/index'
 import { MotifActivityIndicatorService } from './services/motif-connector/motif-activity-indicator.service'
+import { WCMainMenuComponent } from './components/main-menu/main-menu.component'
 
 @NgModule({
   providers:[
@@ -18,7 +19,14 @@ import { MotifActivityIndicatorService } from './services/motif-connector/motif-
     StatusBarService
   ],
   declarations: [
-    WebConsoleComponent, PageNotFoundComponent, ACLPermissionDirective, StatusBarComponent, StatusBarDirective, MainStatusBarItemComponent, MainStatusBarProgressComponent
+    WebConsoleComponent, 
+    PageNotFoundComponent, 
+    ACLPermissionDirective, 
+    StatusBarComponent, 
+    StatusBarDirective, 
+    MainStatusBarItemComponent, 
+    MainStatusBarProgressComponent,
+    WCMainMenuComponent
   ],
   imports:[
     CommonModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
 import { AuthService } from '../../services/auth-service/auth.service';
@@ -7,6 +7,7 @@ import { MainStatusBarItemComponent } from '../status-bar/core-items/status-bar-
 import { MainStatusBarProgressComponent } from '../status-bar/core-items/status-bar-progress'
 import { StatusBarService } from '../status-bar/status-bar.service'
 import { StatusBarItem } from '../status-bar/status-bar-item'
+import { WCMainMenuComponent } from '../main-menu/main-menu.component'
 
 @Component({
   selector: 'web-console',
@@ -17,6 +18,9 @@ export class WebConsoleComponent implements OnInit {
   //routes:Array<Route> = [];
   
   plugins:Array<ActivablePlugin>
+
+  @ViewChild(WCMainMenuComponent) mainMenu:WCMainMenuComponent;
+
   
   errorBox:{
     show:boolean,
@@ -123,6 +127,14 @@ export class WebConsoleComponent implements OnInit {
     this.authService.logout();
   }
   
+  onMainMenuClicked(menuId:string){
+    this.authService.logout();
+  }
+
+  showMainMenu(){
+    this.mainMenu.show();
+  }
+
 }
 
 

@@ -1,0 +1,21 @@
+<div class="wc-main-menu-popover" [style.display]="(visible) ? 'block' : 'none' " (blur)="onComponentBlur()" (focus)="onDivFocus()" (focusout)="onDivFocusOut()" tabindex="-1">
+
+    <div class="wc-main-menu-popover-content">
+        <div class="wc-main-menu-popover-header">
+            <span class="wc-main-menu-popover-header-title">
+                    Admin (admin@vipera.com)
+            </span>
+            <a href="#" class="wc-main-menu-popover-header-close-btn"></a>
+        </div>
+        <div class="wc-main-menu-popover-menu-container">
+            <div class="wc-main-menu-popover-menu-item-divider"></div>
+            <ul class="wc-main-menu-popover-menu-item-list">
+                <li (click)="onMenuClicked('profile')">Profile</li>
+                <li (click)="onMenuClicked('settings')">Settings</li>
+                <div class="wc-main-menu-popover-menu-item-divider"></div>
+                <li (click)="onMenuClicked('logout')">Logout</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
