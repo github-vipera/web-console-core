@@ -15,3 +15,5 @@ export * from "./lib/web-console-core.module"
 export * from "./lib/web-console-logger.module"
 export * from "./lib/types/web-console-logger-level"
 export * from "./lib/components/status-bar/index"
+export * from './lib/config/WebConsoleConfig'
+export * from './lib/variables'

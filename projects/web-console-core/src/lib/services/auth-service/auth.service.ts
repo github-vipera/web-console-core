@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams } from "@angular/common/http";
+import { Injectable, Inject, Optional } from "@angular/core";
+import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams } from "@angular/common/http";
 import { Observable} from "rxjs";
 import {tap} from 'rxjs/operators'
 import { MotifConnectorService } from "../motif-connector/motif-connector.service";
@@ -11,11 +11,22 @@ export const LOGIN_PATH:string = '/oauth2/token';
 
 const AUTH_TOKEN_KEY:string = "AuthToken"
 
+import { WC_OAUTH_BASE_PATH, COLLECTION_FORMATS }                     from '../../variables';
+
+
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService implements HttpInterceptor{
-    constructor(private motifConnector:MotifConnectorService, private webConsoleConfig:WebConsoleConfig, private router: Router){
+
+    private _basePath:string = '';
+
+    constructor(protected httpClient: HttpClient, 
+                @Optional()@Inject(WC_OAUTH_BASE_PATH) basePath: string, 
+                private webConsoleConfig:WebConsoleConfig, 
+                @Optional()private router: Router){
+                    this._basePath = basePath;
+                    console.log("AuthService basePath:", this._basePath)
     }
 
     public setToken(value:string):void{
@@ -62,22 +73,27 @@ export class AuthService implements HttpInterceptor{
             .append("client_secret", "123456789")
             .append("grant_type", "password");
         
-        return this.motifConnector.post(LOGIN_PATH,httpParams).pipe(
+        let postUrl = `${this._basePath}${LOGIN_PATH}`;
+        console.log("AuthService login URL: >" + postUrl+"< ", ">" + this._basePath+"<")
+        return this.httpClient.post(postUrl,httpParams).pipe(
             tap((resp) => {
-                console.log("login",resp)
+                console.log("AuthService login response: ",resp)
                 let token = resp.access_token;
                 let refreshToken = resp.refresh_token;
                 this.setToken(token);
                 this.onAuthorizationSuccess();
+                console.log("AuthService login done.")
             },(err) => {
-                console.log("login error",err);
+                console.error("login error",err);
             }
         ));
     }
 
     logout(){
         this.invalidateToken();
-        this.router.navigate([this.webConsoleConfig.loginRoute]);
+        if (this.router){
+            this.router.navigate([this.webConsoleConfig.loginRoute]);
+        }
     }
 
     createTokenData(value:string): TokenData{
@@ -93,11 +109,15 @@ export class AuthService implements HttpInterceptor{
     }
 
     onAuthorizationSuccess():void {
-        this.router.navigate([this.webConsoleConfig.dashboardRoute]);
+        if (this.router){
+            this.router.navigate([this.webConsoleConfig.dashboardRoute]);
+        }
     }
 
     onAuthorizationFailure():void {
-        this.router.navigate([this.webConsoleConfig.loginRoute]);
+        if (this.router){
+            this.router.navigate([this.webConsoleConfig.loginRoute]);
+        }
     }
 
     isAuthenticated():boolean {

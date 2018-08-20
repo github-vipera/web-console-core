@@ -38,7 +38,8 @@ import { WCMainMenuComponent } from './components/main-menu/main-menu.component'
     WebConsoleComponent,
     RouterModule,
     ACLPermissionDirective,
-    StatusBarComponent, StatusBarDirective
+    StatusBarComponent, 
+    StatusBarDirective
   ]
 })
 export class WebConsoleCoreModule {
