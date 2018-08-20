@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MotifConnectorService } from "./motif-connector.service"
 import { NGXLogger } from 'ngx-logger';
-import { HttpParams } from '@angular/common/http';
+import { HttpParams, HttpClient } from '@angular/common/http';
+
+import { WC_API_BASE_PATH, COLLECTION_FORMATS }                     from '../../variables';
 
 
 export enum MotifQuerySortDirection {
@@ -184,10 +185,14 @@ export interface MotifQueryResults {
     providedIn: 'root'
 })
 export class MotifQueryService {
+    
+    private _basePath:string = '';
 
-    constructor(private motifConnector:MotifConnectorService, private logger: NGXLogger) { 
+    constructor(private httpClient:HttpClient, 
+                @Optional()@Inject(WC_API_BASE_PATH) basePath: string, 
+                private logger: NGXLogger) { 
         this.logger.debug("MotifQueryService","constructor");
-
+        this._basePath = basePath;
     }
 
     public query(url:string,pageIndex?:number,pageSize?:number,sort?:MotifQuerySort,filter?:MotifQueryFilter,options?:any):Observable<MotifQueryResults>{
@@ -207,17 +212,13 @@ export class MotifQueryService {
                 params = filter.encode(params);
             }
 
-            // Create Options
-            if (!options){
-                options = {};
-            }
-            options.params = params;
-            options.observe = "response"; // => to receive the full response with headers
+            //observe:'response'  => to receive the full response with headers
 
             this.logger.debug("MotifQueryService","query params", params);
 
-            let observable = this.motifConnector.get(url,options).subscribe((response) => {
-                this.logger.debug("MotifQueryService","Get Users List done",response.url);
+            let requestURL = `${this._basePath}/${url}`
+            let observable = this.httpClient.get(requestURL,{ params: params, observe:'response'}).subscribe((response) => {
+                this.logger.debug("MotifQueryService","Query done for: ",requestURL);
 
                 let pageIndexRes = response.headers.get('x-page');
                 let pageSizeRes = response.headers.get('x-page-size');
@@ -227,10 +228,10 @@ export class MotifQueryService {
 
                 let results:MotifQueryResults = {
                     data : response.body,
-                    pageIndex: pageIndexRes,
-                    pageSize: pageSizeRes,
-                    totalPages: totalPagesRes,
-                    totalRecords: totalRecordsRes,
+                    pageIndex: Number(pageIndexRes),
+                    pageSize: Number(pageSizeRes),
+                    totalPages: Number(totalPagesRes),
+                    totalRecords: Number(totalRecordsRes),
                     link:linkRes,
                     sort:sort,
                     filter:filter
