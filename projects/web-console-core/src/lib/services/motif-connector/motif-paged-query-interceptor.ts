@@ -1,8 +1,8 @@
 import { Injectable, Inject, Optional } from "@angular/core";
 import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams } from "@angular/common/http";
 import { Observable} from "rxjs";
-import { tap } from 'rxjs/operators'
-import { MotifPagedQuery } from './motif-query.service'
+import { tap, map, catchError } from 'rxjs/operators'
+import { MotifPagedQuery, MotifQueryResults } from './motif-query.service'
 import { NGXLogger } from 'ngx-logger'
 
 export const MOTIF_PAGED_QUERY_PARAM = "__$motif_paged_query"
@@ -35,11 +35,15 @@ export class MotifPagedQueryInterceptor implements HttpInterceptor {
             this.logger.debug("MotifPagedQueryInterceptor paged request params", request.params);
 
         }
+
         return next.handle(request).pipe(tap(() => {
-            this.logger.trace("MotifPagedQueryInterceptor Interceptor req done", request);
+            
         },(res:any) => {
-            this.logger.trace("MotifPagedQueryInterceptor Interceptor res", res);
-        }))
+
+        }));
+
+        
+
     }
 
 }

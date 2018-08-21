@@ -1,3 +1,5 @@
+import { MOTIF_PAGED_QUERY_PARAM } from "./lib/services/motif-connector/motif-paged-query-interceptor";
+
 /*
  * Public API Surface of web-console-core
  */
@@ -17,3 +19,4 @@ export * from "./lib/types/web-console-logger-level"
 export * from "./lib/components/status-bar/index"
 export * from './lib/config/WebConsoleConfig'
 export * from './lib/variables'
+export * from './lib/services/motif-connector/motif-paged-query-interceptor'

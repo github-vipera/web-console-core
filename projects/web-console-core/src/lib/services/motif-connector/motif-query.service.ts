@@ -1,7 +1,7 @@
 import { Injectable, Inject, Optional } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
-import { HttpParams, HttpClient } from '@angular/common/http';
+import { HttpParams, HttpClient, HttpResponse } from '@angular/common/http';
 
 import { WC_API_BASE_PATH, COLLECTION_FORMATS }                     from '../../variables';
 
@@ -189,7 +189,7 @@ export class MotifQueryFilter {
     }
 }
 
-export interface MotifQueryResults {
+export class MotifQueryResults {
     pageIndex:number;
     pageSize:number;
     totalRecords:number;
@@ -198,6 +198,26 @@ export interface MotifQueryResults {
     link?:string;
     sort?:MotifQuerySort;
     filter?:any;
+
+    public static fromHttpResponse(response:HttpResponse<any>):MotifQueryResults {
+        let pageIndexRes = response.headers.get('x-page');
+        let pageSizeRes = response.headers.get('x-page-size');
+        let totalPagesRes = response.headers.get('x-total-pages');
+        let totalRecordsRes = response.headers.get('x-total-records');
+        let linkRes = response.headers.get('Link');
+
+        let results:MotifQueryResults = {
+            data : response.body,
+            pageIndex: Number(pageIndexRes),
+            pageSize: Number(pageSizeRes),
+            totalPages: Number(totalPagesRes),
+            totalRecords: Number(totalRecordsRes),
+            link:linkRes,
+            sort:null,
+            filter:null
+        };
+        return results;
+    }
 }
 
 export class MotifPagedQuery {
