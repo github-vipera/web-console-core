@@ -10,11 +10,13 @@ import { ACLPermissionDirective } from './services/acl-service/acl-directive'
 import { StatusBarComponent, StatusBarDirective, StatusBarService, MainStatusBarItemComponent, MainStatusBarProgressComponent } from './components/status-bar/index'
 import { MotifActivityIndicatorService } from './services/motif-connector/motif-activity-indicator.service'
 import { WCMainMenuComponent } from './components/main-menu/main-menu.component'
+import { MotifPagedQueryInterceptor } from './services/motif-connector/motif-paged-query-interceptor'
 
 @NgModule({
   providers:[
     { provide: HTTP_INTERCEPTORS, useClass: AuthService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: MotifActivityIndicatorService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MotifPagedQueryInterceptor, multi: true },
     AuthGuard,
     StatusBarService
   ],
