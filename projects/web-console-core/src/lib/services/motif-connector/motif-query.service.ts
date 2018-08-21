@@ -18,7 +18,6 @@ export interface MotifQueryFieldSort {
 
 export class MotifQuerySort {
     private fields:Array<MotifQueryFieldSort> = [];
-
     
     public orderDescendingBy(fieldName:string):MotifQuerySort{
         return this.addField(fieldName, MotifQuerySortDirection.Descending);
@@ -31,6 +30,16 @@ export class MotifQuerySort {
     public addField(fieldName:string, direction:MotifQuerySortDirection):MotifQuerySort{
         this.fields.push({ fieldName: fieldName, direction: direction});
         return this;
+    }
+
+    public static fromJSON(jsonData:any):MotifQuerySort {
+        let sort:MotifQuerySort = new MotifQuerySort();
+        sort.fields = jsonData;
+        return sort;
+    }
+
+    public toJSON():any {
+        return this.fields;
     }
 
     public encode(params:HttpParams):HttpParams {
@@ -51,6 +60,7 @@ export class MotifQuerySort {
         params = params.set("sort", sortString);
         return params;
     }
+
 }
 
 export enum MotifQueryFilterFieldOperator {
@@ -85,6 +95,17 @@ export class MotifQueryFilter {
         return this;
     }
     */
+
+   public static fromJSON(jsonData:any):MotifQueryFilter{
+        let ret:MotifQueryFilter = new MotifQueryFilter();
+        ret.fields = jsonData;
+        return ret;
+    }
+
+    public toJSON():any {
+        return this.fields;
+    }
+
 
     public equals(fieldName:string, value:any):MotifQueryFilter{
         this.fields.push({ fieldName: fieldName, filterOperator: MotifQueryFilterFieldOperator.Equals, value: value});
@@ -168,7 +189,6 @@ export class MotifQueryFilter {
     }
 }
 
-
 export interface MotifQueryResults {
     pageIndex:number;
     pageSize:number;
@@ -180,6 +200,67 @@ export interface MotifQueryResults {
     filter?:any;
 }
 
+export class MotifPagedQuery {
+    public pageIndex:number;
+    public pageSize:number;
+    public sort?:MotifQuerySort;
+    public filter?:MotifQueryFilter;
+    public options?:any;
+
+    public encode(paramsx:HttpParams):HttpParams {
+        
+        let params = new HttpParams()
+        .set('page_size', "" + this.pageSize)
+        .set('page', "" + this.pageIndex)
+
+        if (this.sort){
+            params = this.sort.encode(params);
+        }
+        if (this.filter){
+            params = this.filter.encode(params);
+        }
+ 
+        return params;
+    }
+
+    public toJSON():any{
+        let ret = {
+            pageIndex: this.pageIndex,
+            pageSize: this.pageSize
+        };      
+    
+        if (this.sort){
+            ret["sort"] = this.sort.toJSON();
+        }
+
+        if (this.filter){
+            ret["filter"] = this.filter.toJSON();
+        }
+
+        if (this.options){
+            ret["options"] = this.options;
+        }
+
+        return ret;
+    }
+
+    public static fromJSON(jsonData:any):MotifPagedQuery{
+        let pagedQuery = new MotifPagedQuery();
+        pagedQuery.pageIndex = jsonData.pageIndex;
+        pagedQuery.pageSize = jsonData.pageSize;
+        if (jsonData.sort){
+            pagedQuery.sort = MotifQuerySort.fromJSON(jsonData.sort);
+        }
+        if (jsonData.filter){
+            pagedQuery.filter = MotifQueryFilter.fromJSON(jsonData.filter);
+        }
+        if (jsonData.options){
+            pagedQuery.options = jsonData.options;
+        }
+        return pagedQuery;
+    }
+
+}
 
 @Injectable({
     providedIn: 'root'
