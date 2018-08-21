@@ -1,4 +1,73 @@
-# WebConsoleCoreApp
+# Web Console Core Module
+
+
+
+## Web Console Component
+
+The `WebConsoleComponent` component is the main component that implements the container for your new web console.
+
+
+
+## Motif API Base Path
+
+To communicate with Motif's REST endpoints it is necessary to configure the pointings by injecting two variables: `WC_API_BASE_PATH` and `WC_OAUTH_BASE_PATH`.
+
+To assign these two variables, you must provide them in your main App Module:
+
+```typescript
+@NgModule({
+
+  declarations: [
+    AppComponent 
+  ],
+
+  imports: [
+    BrowserModule,  
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    ),
+    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF}),
+    BrowserAnimationsModule
+  ],
+
+  providers: [ 
+    { provide: WC_API_BASE_PATH, useValue: environment.API_BASE_PATH }, 
+    { provide: WC_OAUTH_BASE_PATH, useValue: environment.OAUTH_BAS_PATH }
+  ],
+
+  bootstrap: [AppComponent]
+
+})
+
+export class AppModule { 
+
+    constructor(private logger: NGXLogger){
+    this.logger.info("AppModule" ,"Starting application");
+  }
+
+}
+```
+
+In this example, the values of the variables are retrieved from the structures contained in the environment.ts file:
+
+```typescript
+export const environment = {
+  production: false,
+  API_BASE_PATH: '/rest/v2',
+  OAUTH_BAS_PATH: ''
+};
+```
+
+
+
+## Auth Service
+
+In order to use Motif's services, the user must first authenticate himself. For this Motif exposes an OAuth2 system. Web Console exposes an absolutely transparent and easy to use OAuth2 authentication system.
+
+The `AuthService` in addition to allowing you to log in on Motif is able to intercept all Http communications and check if the authentication is valid.
+
+
 
 ## Logger Service
 
@@ -37,29 +106,63 @@ and use it:
 this.logger.debug("MotifQueryService","constructor");
 ```
 
+
+
 ## Querying Data ##
 
 #### Paging Queries ####
+The querying of the MOTIF queries it is performed thanks to an Http Interceptor mechanism. 
+
+In a paged query, the data is returned in blocks of fixed length (*page_size*).  A resultset can therefore consist of a number of pages equal to *numer_of_total_records / page_size*.
+
+When we ask MOTIF to have paginated data, it must be done by specifying the page you want (*page_index*) and the max number of rows in a page (*page_size*). It will reply with the data and the total number of pages available. In this way you will be able to build a paging UI.
+
+**Attention**: pagination is not available for all APIs, but only those that can return a quantity of data that can be paged.
+
+
+
+To execute a paged query, you need to pass an object of type `MotifPagedQuery` to the call that implements it.
+
 This is an example of paged query:
 
 ```typescript
-const USERS_LIST_ENDPOINT =  "/rest/v2/platform/domains/{0}/users"
 
-let domain = "Default";
-let endpoint = String.Format(USERS_LIST_ENDPOINT, domain);
-let pageIndex = 1;
-let pageSize = 2;
+let pagedQuery:MotifPagedQuery = new MotifPagedQuery();
+pagedQuery.pageIndex = 1;
+pagedQuery.pageSize = 15;
 
-let sort = new MotifQuerySort();
-sort.orderAscendingBy("username").orderDescendingBy("last_login");
+let sort:MotifQuerySort = ....; 
+pagedQuery.sort = sort;
 
-let filter =  new MotifQueryFilter();
-filter.equals("username", "john_doe").greaterThan("register_date", "1-1-2018").between("logins", 10,20);
+let filter:MotifQueryFilter = ....;
+pagedQuery.filter = filter;
 
-this.motifQueryService.query(endpoint, pageIndex, pageSize, sort, filter).subscribe((queryResponse) => {
-    console.log("Get Users List done: ",queryResponse);
-},reject);
+this.usersService.getUsersList("Default", "response", false, pagedQuery).subscribe((response)=>{
+
+        let results:MotifQueryResults = MotifQueryResults.fromHttpResponse(response);
+
+    	this.usersList = results.data;
+        this.totalPages = results.totalPages;
+        this.totalRecords = results.totalRecords;
+        this.currentPage = results.pageIndex;
+        this.gridView = {
+          data: this.usersList,
+          total: results.totalRecords
+        }
+        this.currentPage = results.pageIndex;
+
+ }, error=>{
+    console.log("test query error: ", error);
+});
 ```
+
+As you can see from the example, the call returns an HttpResponse object and not directly a list of User as you would expect.
+
+In this case you can easily transform the Response into an object of type `MotifQueryResults` by executing the static `fromHttpResponse`.
+
+The `MotifQueryRestults` object contains all the necessary information about the oagination and the paginated data returned.
+
+
 
 ## Acl Service (User Permissions)
 
@@ -81,6 +184,8 @@ Here an example:
       <button id='add-user-button' type='button'>Add New User</button>
     </ng-template>
 ```
+
+
 
 ## Status Bar Service
 
@@ -114,7 +219,9 @@ and at the end of your process call the show again to dismiss it:
       this.statusBarService.setBusyIndicatorVisibile(false);
 ```
 
-### Custom Status Bar Item
+### 
+
+## Custom Status Bar Item
 
 If you want you can add custom elements to the Status Bar. To do this just create a component that implements ***StatusBarItemComponent*** and add it with a unique ID through the ***StatusBarService*** service.
 
@@ -157,4 +264,39 @@ And this is the registration on StatusBarService:
 ```typescript
     this.statusBarService.addItem(new StatusBarItem("mycustom-sb-item", MyCustomStatusBarItemComponent, {}));
 ```
+
+
+
+## UI Components
+
+Inside the UI Kit you can find a series of components that will help you in creating the UI of your web-console.
+
+The components are divided into the following categories:
+
+- Core (Containers, Panels, Edit Controls, etc...)
+
+- Data (Gauges, Lines, Dashboard Labels, etc...)
+
+- Charts (Swimlane NgxCharts: https://github.com/swimlane/ngx-charts)
+
+- Kendo (the complete KendoUI suite: https://www.telerik.com/kendo-angular-ui/)
+
+
+Here is a list:
+
+| Component Name   | Descirption |
+| ---------------- | ----------- |
+| Overlay Pane     |             |
+| Switch Button    |             |
+| Dashboard Header |             |
+| Dashboard        |             |
+| Panel            |             |
+| Slide Down Panel |             |
+| Tabs             |             |
+| Counter          |             |
+| Gauge            |             |
+| Property Editor  |             |
+| Grid Cell Editor |             |
+| Kendo Components |             |
+| Charts           |             |
 
