@@ -1,4 +1,71 @@
-# Web Console UI Kit
+# Web Console Core Module
+
+
+
+## Web Console Component
+
+The `WebConsoleComponent` component is the main component that implements the container for your new web console.
+
+
+
+## Motif API Base Path
+
+To communicate with Motif's REST endpoints it is necessary to configure the pointings by injecting two variables: `WC_API_BASE_PATH` and `WC_OAUTH_BASE_PATH`.
+
+To assign these two variables, you must provide them in your main App Module:
+
+```typescript
+@NgModule({
+
+  declarations: [
+    AppComponent 
+  ],
+
+  imports: [
+    BrowserModule,  
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    ),
+    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF}),
+    BrowserAnimationsModule
+  ],
+
+  providers: [ 
+    { provide: WC_API_BASE_PATH, useValue: environment.API_BASE_PATH }, 
+    { provide: WC_OAUTH_BASE_PATH, useValue: environment.OAUTH_BAS_PATH }
+  ],
+
+  bootstrap: [AppComponent]
+
+})
+
+export class AppModule { 
+
+    constructor(private logger: NGXLogger){
+    this.logger.info("AppModule" ,"Starting application");
+  }
+
+}
+```
+
+In this example, the values of the variables are retrieved from the structures contained in the environment.ts file:
+
+```typescript
+export const environment = {
+  production: false,
+  API_BASE_PATH: '/rest/v2',
+  OAUTH_BAS_PATH: ''
+};
+```
+
+
+
+## Auth Service
+
+In order to use Motif's services, the user must first authenticate himself. For this Motif exposes an OAuth2 system. Web Console exposes an absolutely transparent and easy to use OAuth2 authentication system.
+
+The `AuthService` in addition to allowing you to log in on Motif is able to intercept all Http communications and check if the authentication is valid.
 
 
 
