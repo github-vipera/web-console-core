@@ -267,36 +267,4 @@ And this is the registration on StatusBarService:
 
 
 
-## UI Components
-
-Inside the UI Kit you can find a series of components that will help you in creating the UI of your web-console.
-
-The components are divided into the following categories:
-
-- Core (Containers, Panels, Edit Controls, etc...)
-
-- Data (Gauges, Lines, Dashboard Labels, etc...)
-
-- Charts (Swimlane NgxCharts: https://github.com/swimlane/ngx-charts)
-
-- Kendo (the complete KendoUI suite: https://www.telerik.com/kendo-angular-ui/)
-
-
-Here is a list:
-
-| Component Name   | Descirption |
-| ---------------- | ----------- |
-| Overlay Pane     |             |
-| Switch Button    |             |
-| Dashboard Header |             |
-| Dashboard        |             |
-| Panel            |             |
-| Slide Down Panel |             |
-| Tabs             |             |
-| Counter          |             |
-| Gauge            |             |
-| Property Editor  |             |
-| Grid Cell Editor |             |
-| Kendo Components |             |
-| Charts           |             |
 
