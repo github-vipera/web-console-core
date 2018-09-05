@@ -29,22 +29,32 @@ export class AuthService implements HttpInterceptor{
                     console.log("AuthService basePath:", this._basePath)
     }
 
-    public setToken(value:string):void{
-        let data=this.createTokenData(value);
+    public setTokenData(refreshToken:string, accessToken:string):void{
+        let data=this.createTokenData(refreshToken, accessToken);
         localStorage.setItem(AUTH_TOKEN_KEY,JSON.stringify(data))   
     }
 
-    public getToken():string{
+    public getTokenData():TokenData {
         let data:TokenData = JSON.parse(localStorage.getItem(AUTH_TOKEN_KEY));
-        return data != null ? data.token : null;
+        return data;
+    }
+
+    public getRefreshToken():string{
+        let data:TokenData = this.getTokenData();
+        return data != null ? data.refreshToken : null;
+    }
+
+    public getAccessToken():string{
+        let data:TokenData = this.getTokenData();
+        return data != null ? data.accessToken : null;
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
         console.log("intercept request");
-        let token = this.getToken();
+        let token = this.getAccessToken();
         if(token){
             request = request.clone({
-                setHeaders: { 
+                setHeaders: {  
                     Authorization: `Bearer ${token}`
                 }
             });
@@ -78,9 +88,9 @@ export class AuthService implements HttpInterceptor{
         return this.httpClient.post(postUrl,httpParams).pipe(
             tap((resp) => {
                 console.log("AuthService login response: ",resp)
-                let token = resp.access_token;
+                let accessToken = resp.access_token;
                 let refreshToken = resp.refresh_token;
-                this.setToken(token);
+                this.setTokenData(refreshToken, accessToken);
                 this.onAuthorizationSuccess();
                 console.log("AuthService login done.")
             },(err) => {
@@ -96,10 +106,11 @@ export class AuthService implements HttpInterceptor{
         }
     }
 
-    createTokenData(value:string): TokenData{
+    createTokenData(refreshToken:string, accessToken:string): TokenData {
         let millis = Date.now();
         return {
-            token:value,
+            refreshToken:refreshToken,
+            accessToken:accessToken,
             timestamp: millis
         }
     }
@@ -121,12 +132,13 @@ export class AuthService implements HttpInterceptor{
     }
 
     isAuthenticated():boolean {
-        return this.getToken()? true:false;
+        return this.getTokenData() ? true : false;
     }
 }
 
 export interface TokenData {
-    token:string
+    refreshToken:string,
+    accessToken:string,
     timestamp:number
 }
 
