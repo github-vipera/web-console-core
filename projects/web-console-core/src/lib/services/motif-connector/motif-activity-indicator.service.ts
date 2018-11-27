@@ -20,9 +20,13 @@ export class MotifActivityIndicatorService implements HttpInterceptor{
         return next.handle(request).pipe(tap(event => {
             if (event instanceof HttpResponse) {
                 this.sbService.setBusyIndicatorVisibile(false);
-	        }
+            } else if (event instanceof HttpErrorResponse) {
+                this.sbService.setBusyIndicatorVisibile(false);
+            }
         },(res:any) => {
             if(res instanceof HttpResponse){
+                this.sbService.setBusyIndicatorVisibile(false);
+            } else if (res instanceof HttpErrorResponse) {
                 this.sbService.setBusyIndicatorVisibile(false);
             }
         }))
