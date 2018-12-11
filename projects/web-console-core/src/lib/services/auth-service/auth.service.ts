@@ -62,11 +62,9 @@ export class AuthService implements HttpInterceptor{
         return next.handle(request).pipe(tap(() => {
             console.log("Interceptor req done");
         },(res:any) => {
-            if(res instanceof HttpResponse){
-                if(res.status === 401){
-                    this.invalidateToken();
-                    this.notifyUnauthorized();
-                }
+            if(res.status && res.status === 401){
+                this.invalidateToken();
+                this.notifyUnauthorized();
             }
         }))
     }
@@ -116,7 +114,9 @@ export class AuthService implements HttpInterceptor{
     }
 
     notifyUnauthorized(): void {
-        console.error("Unauthorized")
+        if (this.router){
+            this.router.navigate([this.webConsoleConfig.loginRoute]);
+        }
     }
 
     onAuthorizationSuccess():void {
