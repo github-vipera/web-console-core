@@ -6,6 +6,7 @@ import { WebAdminModulesProvider } from './web-admin-modules-provider.module';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard, WebConsoleComponent, PageNotFoundComponent } from 'web-console-core'
 import { LoginComponent } from './login/login/login.component';
+import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'web-console-core'
 
 const routes:Routes = [
   {
@@ -31,11 +32,12 @@ const routes:Routes = [
   ],
   imports: [
     BrowserModule , WebAdminModulesProvider,
-    RouterModule.forRoot(routes,{enableTracing:true})
+    RouterModule.forRoot(routes,{enableTracing:true}),
+    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF})
   ],
   providers: [WebAdminModulesProvider],
   entryComponents: [ExtComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule { 
+export class AppModule {
 }
