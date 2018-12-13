@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationService, AuthService } from 'web-console-core';
+import { NGXLogger } from 'web-console-core'
 
 @Component({
   selector: 'app-login',
@@ -8,8 +9,8 @@ import { NavigationService, AuthService } from 'web-console-core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private navService:NavigationService,private authService:AuthService) { 
-      
+  constructor(private navService:NavigationService,private authService:AuthService, private logger:NGXLogger) {
+
   }
 
   ngOnInit() {}

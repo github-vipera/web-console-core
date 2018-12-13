@@ -1,8 +1,7 @@
 import { Injectable, Inject, Optional } from "@angular/core";
-import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams } from "@angular/common/http";
-import { Observable} from "rxjs";
-import {tap} from 'rxjs/operators'
-import { MotifConnectorService } from "../motif-connector/motif-connector.service";
+import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams, HttpResponseBase, HttpEventType } from "@angular/common/http";
+import { Observable, throwError, BehaviorSubject} from "rxjs";
+import {tap, catchError, switchMap, finalize, filter, take, map} from 'rxjs/operators'
 import { WebConsoleConfig } from "../../config/WebConsoleConfig";
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
@@ -19,7 +18,11 @@ import { WC_OAUTH_BASE_PATH, COLLECTION_FORMATS }                     from '../.
 })
 export class AuthService implements HttpInterceptor{
 
+    private clientId:string = "123456789";
+    private clientSecret:string = "123456789";
     private _basePath:string = '';
+    private _isRefreshingToken = false;
+    private tokenAwaiter: BehaviorSubject<TokenData> = new BehaviorSubject<TokenData>(null);
 
     constructor(protected httpClient: HttpClient, 
                 @Optional()@Inject(WC_OAUTH_BASE_PATH) basePath: string, 
@@ -29,9 +32,10 @@ export class AuthService implements HttpInterceptor{
                     console.log("AuthService basePath:", this._basePath)
     }
 
-    public setTokenData(refreshToken:string, accessToken:string):void{
-        let data=this.createTokenData(refreshToken, accessToken);
-        localStorage.setItem(AUTH_TOKEN_KEY,JSON.stringify(data))   
+    public setTokenData(refreshToken:string, accessToken:string, expiresIn:number):TokenData{
+        let data = this.createTokenData(refreshToken, accessToken, expiresIn);
+        localStorage.setItem(AUTH_TOKEN_KEY,JSON.stringify(data));
+        return data;
     }
 
     public getTokenData():TokenData {
@@ -49,26 +53,92 @@ export class AuthService implements HttpInterceptor{
         return data != null ? data.accessToken : null;
     }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
-        console.log("intercept request");
+
+    private injectAccessToken(request:HttpRequest<any>):HttpRequest<any> {
         let token = this.getAccessToken();
         if(token){
-            request = request.clone({
+            return request.clone({
                 setHeaders: {  
                     Authorization: `Bearer ${token}`
                 }
             });
         }
-        return next.handle(request).pipe(tap(() => {
-            console.log("Interceptor req done");
-        },(res:any) => {
-            if(res instanceof HttpResponse){
-                if(res.status === 401){
+        return request;
+    }
+
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
+        console.log("intercept request");
+        request = this.injectAccessToken(request);
+
+        return next.handle(request).pipe(
+            catchError((error:any) => {
+                if (error instanceof HttpErrorResponse) {
+                    let errorBody:any = error.error;
+                    if (error.status == 401 &&
+                        errorBody.code == "E:V_OAUTH2_INVALID_TOKEN" &&
+                        errorBody.details.startsWith("E:V_OAUTH2_EXPIRED_TOKEN")) {
+                        return this.handleUnauthorized(request, next);
+                    }
+                }
+                return throwError(error);
+            }));
+    }
+
+    handleUnauthorized(request: HttpRequest<any>, next: HttpHandler) {
+        if (!this._isRefreshingToken) {
+            this._isRefreshingToken = true;
+
+            this.tokenAwaiter.next(null);
+
+            return this.refreshToken(next).pipe(
+                switchMap((newToken: TokenData) => {
+                    if (newToken) {
+                        this.tokenAwaiter.next(newToken);
+                        return next.handle(this.injectAccessToken(request));
+                    }
                     this.invalidateToken();
                     this.notifyUnauthorized();
-                }
-            }
-        }))
+                }),
+                catchError(error => {
+                    this.invalidateToken();
+                    this.notifyUnauthorized();
+                    return throwError(error);
+                }),
+                finalize(() => {
+                    this._isRefreshingToken = false;
+                }));
+        } else {
+            // enqueue request
+            return this.tokenAwaiter.pipe(
+                filter(token => token != null),
+                take(1), // emit only the first
+                switchMap(token => {
+                    return next.handle(this.injectAccessToken(request));
+                }));
+        }
+    }
+
+    refreshToken(next: HttpHandler): Observable<TokenData> {
+        return next.handle(this.createRefreshTokenRequest()).pipe(
+            filter((event: HttpEvent<any>) => event.type == HttpEventType.Response),
+            map((event: HttpResponse<any>) => {
+                return this.extractTokenDataFromEvent(event);
+            }), catchError((err) => {
+                console.error("Refresh token failed");
+                return throwError(err);
+            }));
+    }
+
+    createRefreshTokenRequest(): HttpRequest<any> {
+        let httpParams = new HttpParams()
+            .append("client_id", this.clientId)
+            .append("client_secret", this.clientSecret)
+            .append("refresh_token", this.getRefreshToken())
+            .append("grant_type", "refresh_token");
+
+        let postUrl = `${this._basePath}${LOGIN_PATH}`;
+        console.log("AuthService refreshToken URL: >" + postUrl + "< ", ">" + this._basePath + "<")
+        return new HttpRequest("POST", postUrl, httpParams);
     }
 
     invalidateToken(){
@@ -79,8 +149,8 @@ export class AuthService implements HttpInterceptor{
         let httpParams = new HttpParams()
             .append("username", request.userName)
             .append("password", request.password)
-            .append("client_id", "123456789")
-            .append("client_secret", "123456789")
+            .append("client_id", this.clientId)
+            .append("client_secret", this.clientSecret)
             .append("grant_type", "password");
         
         let postUrl = `${this._basePath}${LOGIN_PATH}`;
@@ -90,7 +160,8 @@ export class AuthService implements HttpInterceptor{
                 console.log("AuthService login response: ",resp)
                 let accessToken = resp.access_token;
                 let refreshToken = resp.refresh_token;
-                this.setTokenData(refreshToken, accessToken);
+                let expiresIn = resp.expires_in;
+                this.setTokenData(refreshToken, accessToken, expiresIn);
                 this.onAuthorizationSuccess();
                 console.log("AuthService login done.")
             },(err) => {
@@ -106,17 +177,24 @@ export class AuthService implements HttpInterceptor{
         }
     }
 
-    createTokenData(refreshToken:string, accessToken:string): TokenData {
-        let millis = Date.now();
+    createTokenData(refreshToken:string, accessToken:string, expiresIn:number): TokenData {
         return {
             refreshToken:refreshToken,
             accessToken:accessToken,
-            timestamp: millis
+            timestamp: Date.now(),
+            expiresIn: expiresIn
         }
     }
 
+    extractTokenDataFromEvent(response: HttpResponse<any>):TokenData {
+        let body = response.body;
+        return this.setTokenData(body.refresh_token, body.access_token, body.expiresIn);
+    }
+
     notifyUnauthorized(): void {
-        console.error("Unauthorized")
+        if (this.router){
+            this.router.navigate([this.webConsoleConfig.loginRoute]);
+        }
     }
 
     onAuthorizationSuccess():void {
@@ -139,12 +217,13 @@ export class AuthService implements HttpInterceptor{
 export interface TokenData {
     refreshToken:string,
     accessToken:string,
-    timestamp:number
+    timestamp:number,
+    expiresIn:number
 }
 
 export interface LoginRequest{
     userName?:string,
-    password?:string
+    password?:string,
     [propName: string]: string
 }
 
