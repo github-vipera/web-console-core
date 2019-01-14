@@ -2,11 +2,9 @@
   "name": "web-console-core",
   "version": "0.0.20",
   "peerDependencies": {
-    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
-    "@angular/core": "^6.0.0-rc.0 || ^6.0.0",
-    "@angular/router": "^6.0.0-rc.0 || ^6.0.0"
-  },
-  "dependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/core": "^7.0.0",
+    "@angular/router": "^7.0.0",
     "ngx-logger": "^3.0.5"
   }
 }
