@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login/login.component';
 import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'web-console-core'
 import { WC_API_BASE_PATH, WC_OAUTH_BASE_PATH } from 'web-console-core'
 import { environment } from '../environments/environment';
+import { ExtComponentB } from './extensions/ext.component.1'
 
 const routes:Routes = [
   {
@@ -30,6 +31,7 @@ const routes:Routes = [
   declarations: [
     AppComponent,
     ExtComponent,
+    ExtComponentB,
     LoginComponent
   ],
   imports: [
@@ -41,7 +43,7 @@ const routes:Routes = [
     { provide: WC_API_BASE_PATH, useValue: environment.API_BASE_PATH },
     { provide: WC_OAUTH_BASE_PATH, useValue: environment.OAUTH_BAS_PATH },
     WebAdminModulesProvider],
-  entryComponents: [ExtComponent],
+  entryComponents: [ExtComponent, ExtComponentB],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -4,11 +4,11 @@ import { PluginView,MotifConnectorService } from 'web-console-core';
 //import { Observable, forkJoin } from 'rxjs';
 @Component({
   selector: 'app-root',
-  templateUrl: './ext.component.html',
+  templateUrl: './ext.component.1.html',
   styleUrls: ['./ext.component.css']
 })
-@PluginView("ext")
-export class ExtComponent implements OnInit{
+@PluginView("extb")
+export class ExtComponentB implements OnInit{
 
   curr_date = new Date();
 
