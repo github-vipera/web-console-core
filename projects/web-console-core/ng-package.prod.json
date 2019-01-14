@@ -2,7 +2,11 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/web-console-core",
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "src/public_api.ts",
+	"umdModuleIds": {
+		"lodash": "_",
+		"ngx-logger": "NgxLogger"
+    }
   },
   "whitelistedNonPeerDependencies": [
     "ngx-logger"
