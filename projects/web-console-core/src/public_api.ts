@@ -20,3 +20,4 @@ export * from "./lib/components/status-bar/index"
 export * from './lib/config/WebConsoleConfig'
 export * from './lib/variables'
 export * from './lib/services/motif-connector/motif-paged-query-interceptor'
+export * from './lib/components/top-bar'
