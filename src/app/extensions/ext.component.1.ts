@@ -7,7 +7,13 @@ import { PluginView,MotifConnectorService } from 'web-console-core';
   templateUrl: './ext.component.1.html',
   styleUrls: ['./ext.component.css']
 })
-@PluginView("extb")
+@PluginView("extb" /*,
+{
+  dependencies: [
+    { name: "paperino", version: "1.1.0"}
+  ]
+}*/
+)
 export class ExtComponentB implements OnInit{
 
   curr_date = new Date();

@@ -1,3 +1,4 @@
+import { WCTopBarContentDirective } from './components/top-bar/wc-top-bar-content-directive';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { RouterModule } from '@angular/router'
 import { CommonModule } from '@angular/common';
@@ -11,6 +12,9 @@ import { StatusBarComponent, StatusBarDirective, StatusBarService, MainStatusBar
 import { MotifActivityIndicatorService } from './services/motif-connector/motif-activity-indicator.service'
 import { WCMainMenuComponent } from './components/main-menu/main-menu.component'
 import { MotifPagedQueryInterceptor } from './services/motif-connector/motif-paged-query-interceptor'
+import { WCTopBarService } from './components/top-bar/wc-top-bar-service';
+import { WCTopBarComponent } from './components/top-bar/wc-top-bar-component';
+import { WCTopBarItem } from './components/top-bar/wc-top-bar-item';
 
 @NgModule({
   providers:[
@@ -18,17 +22,21 @@ import { MotifPagedQueryInterceptor } from './services/motif-connector/motif-pag
     { provide: HTTP_INTERCEPTORS, useClass: MotifActivityIndicatorService, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: MotifPagedQueryInterceptor, multi: true },
     AuthGuard,
-    StatusBarService
+    StatusBarService,
+    WCTopBarService,
+    AuthService
   ],
   declarations: [
-    WebConsoleComponent, 
-    PageNotFoundComponent, 
-    ACLPermissionDirective, 
-    StatusBarComponent, 
-    StatusBarDirective, 
-    MainStatusBarItemComponent, 
+    WebConsoleComponent,
+    PageNotFoundComponent,
+    ACLPermissionDirective,
+    WCTopBarContentDirective,
+    StatusBarComponent,
+    StatusBarDirective,
+    MainStatusBarItemComponent,
     MainStatusBarProgressComponent,
-    WCMainMenuComponent
+    WCMainMenuComponent,
+    WCTopBarComponent
   ],
   imports:[
     CommonModule,
@@ -40,7 +48,7 @@ import { MotifPagedQueryInterceptor } from './services/motif-connector/motif-pag
     WebConsoleComponent,
     RouterModule,
     ACLPermissionDirective,
-    StatusBarComponent, 
+    StatusBarComponent,
     StatusBarDirective
   ]
 })
@@ -54,7 +62,7 @@ export class WebConsoleCoreModule {
       ngModule: WebConsoleCoreModule,
       providers: [
         {
-          provide :WebConsoleConfig,
+          provide : WebConsoleConfig,
           useValue: config,
         }
       ]

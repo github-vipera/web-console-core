@@ -2,13 +2,15 @@
     <header>
         <div class="description">Vipera Motif Web Console • mw_uat_1 • 52.28.189.225</div>
         <div class="logo"><img src="assets/img/logo.svg"></div>
+        <wc-top-bar></wc-top-bar>
+        <!--
         <div class="cmd"><button (click)="showMainMenu()" class="main-menu-button">AD</button></div>
         <wc-main-menu (menuClick)="onMainMenuClicked($event)"></wc-main-menu>
-
+        -->
     </header>
     <nav class="routing-container">
         <a class="plugin-link" *ngFor="let plugin of plugins" routerLink="{{plugin.link}}">
-            
+
             <svg *ngIf="plugin.baseInfo.customIcon;else other_icon"><use [attr.xlink:href]="plugin.baseInfo.customIcon"></use></svg>
             <ng-template #other_icon>
                 <svg *ngIf="plugin.baseInfo.iconName;else default_icon"><use [attr.xlink:href]="'assets/img/icons.svg#'+plugin.baseInfo.iconName"></use></svg>
@@ -16,7 +18,7 @@
                     <svg><use xlink:href="assets/img/icons.svg#ico-plugins"></use></svg>
                 </ng-template>
             </ng-template>
-            
+
            <span>{{plugin.label}}</span>
         </a>
     </nav>
@@ -25,7 +27,7 @@
             <p class="error-msg">{{errorBox.message}}</p>
         </div>-->
         <section class="contents">
-            <router-outlet></router-outlet>        
+            <router-outlet></router-outlet>
         </section>
     </main>
     <footer>

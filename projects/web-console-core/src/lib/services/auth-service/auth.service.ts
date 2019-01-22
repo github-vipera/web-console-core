@@ -9,9 +9,14 @@ export const TOKEN_NOT_AVAILABLE:string = "TOKEN_NOT_AVAILABLE";
 export const LOGIN_PATH:string = '/oauth2/token';
 
 const AUTH_TOKEN_KEY:string = "AuthToken"
+const AUTH_LOGON_INFO:string = "LogonInfo"
 
 import { WC_OAUTH_BASE_PATH, COLLECTION_FORMATS }                     from '../../variables';
 
+export interface LogonInfo {
+  userName: string;
+  accessTime: Date;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -23,10 +28,11 @@ export class AuthService implements HttpInterceptor{
     private _basePath:string = '';
     private _isRefreshingToken = false;
     private tokenAwaiter: BehaviorSubject<TokenData> = new BehaviorSubject<TokenData>(null);
+    private _currentUserName: string;
 
-    constructor(protected httpClient: HttpClient, 
-                @Optional()@Inject(WC_OAUTH_BASE_PATH) basePath: string, 
-                private webConsoleConfig:WebConsoleConfig, 
+    constructor(protected httpClient: HttpClient,
+                @Optional()@Inject(WC_OAUTH_BASE_PATH) basePath: string,
+                private webConsoleConfig:WebConsoleConfig,
                 @Optional()private router: Router){
                     this._basePath = basePath;
                     console.log("AuthService basePath:", this._basePath)
@@ -58,7 +64,7 @@ export class AuthService implements HttpInterceptor{
         let token = this.getAccessToken();
         if(token){
             return request.clone({
-                setHeaders: {  
+                setHeaders: {
                     Authorization: `Bearer ${token}`
                 }
             });
@@ -152,12 +158,13 @@ export class AuthService implements HttpInterceptor{
             .append("client_id", this.clientId)
             .append("client_secret", this.clientSecret)
             .append("grant_type", "password");
-        
+
         let postUrl = `${this._basePath}${LOGIN_PATH}`;
         console.log("AuthService login URL: >" + postUrl+"< ", ">" + this._basePath+"<")
         return this.httpClient.post(postUrl,httpParams).pipe(
             tap((resp) => {
-                console.log("AuthService login response: ",resp)
+                console.log("AuthService login response: ",resp);
+                this.storeLogonInfo(request.userName);
                 let accessToken = resp.access_token;
                 let refreshToken = resp.refresh_token;
                 let expiresIn = resp.expires_in;
@@ -175,7 +182,38 @@ export class AuthService implements HttpInterceptor{
         if (this.router){
             this.router.navigate([this.webConsoleConfig.loginRoute]);
         }
-    }
+        this.clearLogonInfo();
+      }
+
+      private storeLogonInfo(userName: string) {
+          const logonInfo: LogonInfo = {
+            userName: userName,
+            accessTime: new Date()
+          }
+          localStorage.setItem(AUTH_LOGON_INFO, JSON.stringify(logonInfo));
+      }
+
+      private clearLogonInfo() {
+         localStorage.removeItem(AUTH_LOGON_INFO);
+      }
+
+      public get logonInfo(): LogonInfo {
+        const rawData = localStorage.getItem(AUTH_LOGON_INFO);
+        if (rawData){
+          return JSON.parse(rawData);
+        } else {
+          return null;
+        }
+      }
+
+      public get currentUserName(): string {
+        const logonInfo = this.logonInfo;
+        if (logonInfo){
+          return logonInfo.userName;
+        } else {
+          return null;
+        }
+      }
 
     createTokenData(refreshToken:string, accessToken:string, expiresIn:number): TokenData {
         return {
@@ -212,6 +250,9 @@ export class AuthService implements HttpInterceptor{
     isAuthenticated():boolean {
         return this.getTokenData() ? true : false;
     }
+
+
+
 }
 
 export interface TokenData {
@@ -231,17 +272,17 @@ export interface LoginRequest{
     providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
- 
-    constructor(private router: Router, private authService:AuthService, private webConsoleConfig:WebConsoleConfig) { 
+
+    constructor(private router: Router, private authService:AuthService, private webConsoleConfig:WebConsoleConfig) {
 
     }
- 
+
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        
+
         if (this.authService.isAuthenticated()){
             return true;
         }
- 
+
         // not logged in so redirect to login page with the return url
         this.router.navigate([this.webConsoleConfig.loginRoute]);
         return false;
