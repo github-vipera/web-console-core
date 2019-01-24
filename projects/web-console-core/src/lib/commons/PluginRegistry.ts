@@ -1,20 +1,26 @@
+import { ServiceLocator } from './../service.locator';
+import { NGXLogger } from 'ngx-logger';
 //declare const require: any;
 //const _:any = require('lodash');
 import {Type} from '@angular/core'
 import { Route } from '@angular/router';
-import * as _ from 'lodash' 
+import * as _ from 'lodash'
+
 
 let instance:PluginRegistry = undefined;
 export class PluginRegistry {
+
     private pluginMap: { [key:string]:PluginRegistrationEntry; } = {};
+
     static getInstance():PluginRegistry{
         if(instance == null){
             instance = new PluginRegistry();
         }
         return instance;
     }
+
     private constructor(){
-        console.log("Create component registry");
+      //console.log"Create component registry");
     }
 
     private createRegistrationEntry(name:string,value:Type<any>,info:RegistrationInfo):PluginRegistrationEntry{
@@ -32,7 +38,7 @@ export class PluginRegistry {
     }
 
     registryPluginComponent(name:string,value:Type<any>,info?:RegistrationInfo){
-        console.log("registryPluginComponent",value);
+      //console.log"registryPluginComponent",value);
         const entry:PluginRegistrationEntry = this.createRegistrationEntry(name,value,info);
         this.pluginMap[name] = entry;
     }
@@ -53,7 +59,7 @@ export class PluginRegistry {
                 }
             }
 
-        });   
+        });
         return info;
     }*/
 
@@ -76,14 +82,14 @@ export class PluginRegistry {
         })
         return plugins;
     }
-    
+
 
     private checkDeps(entry:PluginRegistrationEntry,plugins:Array<PluginInfo>):boolean{
        try{
         _.forEach(entry.dependencies || [],(info:PluginInfo) => {
            if(_.findIndex(plugins || [],(single:PluginInfo) => {return info.name == single.name}) == -1){
               throw new Error("Plugin not found:" + info.name);
-           } 
+           }
         });
         return true;
        }catch(ex){
@@ -97,10 +103,10 @@ export class PluginRegistry {
 /**
  * Decorator for plugin registration
  * @param name plugin name; if route is null, this name are used as path
- * @param route 
+ * @param route
  */
 export function PluginView(name:string,info?:RegistrationInfo){
-    console.log("pluginview decorator called",name);
+    //console.debug("pluginview decorator called",name);
     return (target:Type<any>) => {
         PluginRegistry.getInstance().registryPluginComponent(name,target,info);
     }

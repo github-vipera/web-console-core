@@ -37,7 +37,8 @@ const routes:Routes = [
   imports: [
     BrowserModule , WebAdminModulesProvider,
     RouterModule.forRoot(routes,{enableTracing:true}),
-    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF})
+    LoggerModule
+//    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF})
   ],
   providers: [
     { provide: WC_API_BASE_PATH, useValue: environment.API_BASE_PATH },
@@ -47,4 +48,9 @@ const routes:Routes = [
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
+  constructor(private logger: NGXLogger){
+    this.logger.info('AppModule' , 'Starting application');
+  }
+
 }

@@ -1,3 +1,4 @@
+import { NGXLogger } from 'ngx-logger';
 import { Injectable } from "@angular/core";
 import { Routes, Route, Router } from "@angular/router";
 import { PluginInfo, PluginRegistry, PluginRegistrationEntry} from "../../commons/PluginRegistry";
@@ -9,8 +10,8 @@ import { WebConsoleConfig } from "../../config/WebConsoleConfig";
     providedIn:'root'
 })
 export class NavigationService {
-    constructor(private pluginManager:WebConsolePluginManagerService,private router:Router, private config:WebConsoleConfig ){
-        console.log("NavigationService");
+    constructor(private logger:NGXLogger, private pluginManager:WebConsolePluginManagerService,private router:Router, private config:WebConsoleConfig ){
+        this.logger.debug("NavigationService");
         let routes = this.getInitialRouteConfig()
         this.router.resetConfig(routes);
     }
@@ -18,11 +19,11 @@ export class NavigationService {
     public goToDashboard(){
         this.router.navigate([this.config.dashboardRoute]);
     }
-    
+
 
     public getInitialRouteConfig():Routes{
         let baseRoute:Route = this.findDashboardRoute(this.router.config);
-        console.log("base route",baseRoute);
+        this.logger.debug("base route",baseRoute);
         let pluginRoutes:Routes = this.createIntialPluginsRoutes();
         this.patchCompleteRoutes(baseRoute,pluginRoutes);
         return this.router.config;;
@@ -43,16 +44,16 @@ export class NavigationService {
         });
         return result;
     }
-    
+
     public async createRouteConfigFromCatalog():Promise<Array<Route>>{
         let catalog:Array<PluginInfo> = await this.pluginManager.getRemotePlugins();
-        console.log("Catalog:",catalog);
+        this.logger.debug("Catalog:",catalog);
         let baseRoute:Route = this.findDashboardRoute(this.router.config);
         let pluginRoutes = this.getActivableRoutesConfig(catalog);
         //return PluginRegistry.getInstance().getRouteConfig(catalog);
         this.patchCompleteRoutes(baseRoute,pluginRoutes);
         return this.router.config;
-    
+
     }
 
     patchCompleteRoutes(baseRoute:Route,catalog:Routes):void{
@@ -72,7 +73,7 @@ export class NavigationService {
     getActivableRoutesConfig(plugins:Array<PluginInfo>):Routes{
         let activablePlugins = PluginRegistry.getInstance().getActivablePlugins(plugins);
         let routes:Routes = [];
-        _.forEach(activablePlugins,(entry:PluginRegistrationEntry) => {          
+        _.forEach(activablePlugins,(entry:PluginRegistrationEntry) => {
             if(entry.routeDef){
                 routes.push(entry.routeDef);
             }else{
@@ -81,12 +82,12 @@ export class NavigationService {
                     component:entry.component
                 });
             }
-        });   
+        });
         return routes;
     }
 
     getInitialRoutes():void{
         let baseRoute:Route = this.findDashboardRoute(this.router.config);
-        
+
     }
 }

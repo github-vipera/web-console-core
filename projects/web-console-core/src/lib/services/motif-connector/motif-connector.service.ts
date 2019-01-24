@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MotifConnectorService {
-    constructor(private httpClient: HttpClient) { 
-        console.log("MotifConnectorService","constructor");
+    constructor(private logger:NGXLogger, private httpClient: HttpClient) {
+        this.logger.debug("MotifConnectorService","constructor");
     }
 
     post(url:string,request:ServiceRequest,options?:any):Observable<any>{

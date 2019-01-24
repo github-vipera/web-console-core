@@ -1,3 +1,4 @@
+import { NGXLogger } from 'ngx-logger';
 import { Component, ElementRef, OnInit, OnDestroy, AfterViewInit, HostListener, EventEmitter, Input, Output, HostBinding, NgZone } from '@angular/core';
 
 
@@ -10,13 +11,13 @@ export class WCMainMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @Output() menuClick: EventEmitter<string> = new EventEmitter<string>();
 
-    constructor(private elementRef:ElementRef, private _ngZone:NgZone){}
+    constructor(private logger: NGXLogger, private elementRef:ElementRef, private _ngZone:NgZone){}
 
     @Input()
     public visible:boolean=false;
 
     ngOnInit(){
-        console.log("WCMainMenuComponent elementRef:",this.elementRef.nativeElement.children[0])
+      this.logger.debug("WCMainMenuComponent elementRef:",this.elementRef.nativeElement.children[0])
     }
 
     ngOnDestroy(){}
@@ -28,10 +29,10 @@ export class WCMainMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     clickout(event) {
         if (this.visible){
             if(this.elementRef.nativeElement.contains(event.target)) {
-                console.log("WCMainMenuComponent clicked inside:",this.elementRef.nativeElement)
+                this.logger.debug("WCMainMenuComponent clicked inside:",this.elementRef.nativeElement)
             } else {
                 this.hide();
-                console.log("WCMainMenuComponent clicked outside:",this.elementRef.nativeElement)
+                this.logger.debug("WCMainMenuComponent clicked outside:",this.elementRef.nativeElement)
             }
         }
     }
@@ -40,7 +41,7 @@ export class WCMainMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostListener('document:keydown', ['$event'])
     handleKeyboardEvent(event: KeyboardEvent) {
         if (this.visible){
-            console.log("WCMainMenuComponent key down:",this.elementRef.nativeElement)
+            this.logger.debug("WCMainMenuComponent key down:",this.elementRef.nativeElement)
             let x = event.keyCode;
             if (x === 27) {
                 this.hide();
@@ -62,13 +63,13 @@ export class WCMainMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     onMenuClicked(menuItem:string):void{
         this.hide();
         setTimeout(()=>{
-            this.menuClick.emit(menuItem);        
+            this.menuClick.emit(menuItem);
         });
     }
 
       onDivFocus(){
       }
-      
+
       onDivFocusOut(){
       }
 

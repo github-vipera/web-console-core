@@ -8,6 +8,7 @@ import { MainStatusBarProgressComponent } from '../status-bar/core-items/status-
 import { StatusBarService } from '../status-bar/status-bar.service'
 import { StatusBarItem } from '../status-bar/status-bar-item'
 import { WCMainMenuComponent } from '../main-menu/main-menu.component'
+import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'web-console',
@@ -16,23 +17,24 @@ import { WCMainMenuComponent } from '../main-menu/main-menu.component'
 })
 export class WebConsoleComponent implements OnInit {
   //routes:Array<Route> = [];
-  
+
   plugins:Array<ActivablePlugin>
 
   @ViewChild(WCMainMenuComponent) mainMenu:WCMainMenuComponent;
 
-  
+
   errorBox:{
     show:boolean,
     message:string
   };
 
-  public constructor(private router: Router, 
+  public constructor(private router: Router,
     private authService:AuthService ,
-    private navService:NavigationService, 
+    private navService:NavigationService,
     private pluginManager:WebConsolePluginManagerService,
-    private statusBarService:StatusBarService) {
-    console.log("Web Console component constructor");
+    private statusBarService:StatusBarService,
+    private logger: NGXLogger) {
+    this.logger.debug("Web Console component constructor");
     this.initErrorBox();
   }
 
@@ -47,7 +49,7 @@ export class WebConsoleComponent implements OnInit {
    * Implements onInit event handler.
    */
   public ngOnInit(): void {
-    console.log("WebConsoleComponent init done");
+    this.logger.debug("WebConsoleComponent init done");
     //this.initStaticRouting();
     this.createRoutingConfigByMotifCatalog();
 
@@ -66,7 +68,7 @@ export class WebConsoleComponent implements OnInit {
     this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
       this.resetRouting(result);
       this.loadPluginList();
-      console.log("WebConsoleComponent routes",result);
+      this.logger.debug("WebConsoleComponent routes",result);
     },(err) => {
       console.error("Fail to crete routing:",err);
       //this.resetRouting([]);
@@ -81,21 +83,21 @@ export class WebConsoleComponent implements OnInit {
   }
 
   private loadPluginList(){
-    console.log("loadPluginList ...")
+    this.logger.debug("loadPluginList ...")
     this.plugins = this.pluginManager.getCurrentActivablePlugins();
-    console.log("loading done: ",this.plugins);
+    this.logger.debug("loading done: ",this.plugins);
   }
 
   private activatePlugin(plugin:ActivablePlugin){
-    console.log("activate plugin",plugin);
+    this.logger.debug("activate plugin",plugin);
   }
 
   private validateCurrentRoute():void{
     let url = this.router.routerState.snapshot.url;
-    console.log("active", "" +this.router.isActive(url,true));
+    this.logger.debug("active", "" +this.router.isActive(url,true));
     if(url){
       this.router.navigateByUrl(url).then((res:boolean) => {
-        console.log("navigateByUrl:",res)
+        this.logger.debug("navigateByUrl:",res)
       },(err) => {
          console.error("navigateByUrl err",err);
          //this.router.navigateByUrl('/');
@@ -106,7 +108,7 @@ export class WebConsoleComponent implements OnInit {
 
   /**
    * Reset routing config
-   * @param routes 
+   * @param routes
    */
   private resetRouting(routes:Array<Route>){
     this.router.resetConfig(routes);
@@ -122,11 +124,11 @@ export class WebConsoleComponent implements OnInit {
     this.errorBox.show = false;
     this.errorBox.message = null;
   }
-  
+
   doLogout():void{
     this.authService.logout();
   }
-  
+
   onMainMenuClicked(menuId:string){
     this.authService.logout();
   }

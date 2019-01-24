@@ -1,3 +1,4 @@
+import { NGXLogger } from 'ngx-logger';
 import { Injectable, Inject, Optional } from "@angular/core";
 import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams, HttpResponseBase, HttpEventType } from "@angular/common/http";
 import { Observable, throwError, BehaviorSubject} from "rxjs";
@@ -33,9 +34,10 @@ export class AuthService implements HttpInterceptor{
     constructor(protected httpClient: HttpClient,
                 @Optional()@Inject(WC_OAUTH_BASE_PATH) basePath: string,
                 private webConsoleConfig:WebConsoleConfig,
-                @Optional()private router: Router){
+                @Optional()private router: Router,
+                private logger: NGXLogger){
                     this._basePath = basePath;
-                    console.log("AuthService basePath:", this._basePath)
+                    this.logger.debug("AuthService basePath:", this._basePath)
     }
 
     public setTokenData(refreshToken:string, accessToken:string, expiresIn:number):TokenData{
@@ -73,7 +75,7 @@ export class AuthService implements HttpInterceptor{
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
-        console.log("intercept request");
+        this.logger.debug("intercept request");
         request = this.injectAccessToken(request);
 
         return next.handle(request).pipe(
@@ -143,7 +145,7 @@ export class AuthService implements HttpInterceptor{
             .append("grant_type", "refresh_token");
 
         let postUrl = `${this._basePath}${LOGIN_PATH}`;
-        console.log("AuthService refreshToken URL: >" + postUrl + "< ", ">" + this._basePath + "<")
+        this.logger.debug("AuthService refreshToken URL: >" + postUrl + "< ", ">" + this._basePath + "<")
         return new HttpRequest("POST", postUrl, httpParams);
     }
 
@@ -160,17 +162,17 @@ export class AuthService implements HttpInterceptor{
             .append("grant_type", "password");
 
         let postUrl = `${this._basePath}${LOGIN_PATH}`;
-        console.log("AuthService login URL: >" + postUrl+"< ", ">" + this._basePath+"<")
+        this.logger.debug("AuthService login URL: >" + postUrl+"< ", ">" + this._basePath+"<")
         return this.httpClient.post(postUrl,httpParams).pipe(
             tap((resp) => {
-                console.log("AuthService login response: ",resp);
+                this.logger.debug("AuthService login response: ",resp);
                 this.storeLogonInfo(request.userName);
                 let accessToken = resp.access_token;
                 let refreshToken = resp.refresh_token;
                 let expiresIn = resp.expires_in;
                 this.setTokenData(refreshToken, accessToken, expiresIn);
                 this.onAuthorizationSuccess();
-                console.log("AuthService login done.")
+                this.logger.debug("AuthService login done.")
             },(err) => {
                 console.error("login error",err);
             }
