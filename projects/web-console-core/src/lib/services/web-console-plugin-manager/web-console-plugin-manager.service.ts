@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { PluginRegistry , PluginInfo, PluginRegistrationEntry } from '../../commons/PluginRegistry';
 import { MotifConnectorService} from '../motif-connector/motif-connector.service';
 import * as _ from 'lodash'
+import { NGXLogger } from 'ngx-logger';
 
 const PLUGIN_LIST_ENTRYPOINT = "/rest/v2/registry/plugins?all=true&status=ACTIVE"
 
@@ -12,20 +13,20 @@ export class WebConsolePluginManagerService {
     private pluginCatalog:Array<PluginInfo>
     private activePluginsCache:Array<ActivablePlugin>
 
-    constructor(private connector:MotifConnectorService){
-        console.log("WebConsolePluginManagerService injected");
+    constructor(private logger:NGXLogger, private connector:MotifConnectorService){
+        this.logger.debug("WebConsolePluginManagerService injected");
     }
     /*
       async createRouteConfigFromCatalog():Promise<Array<Route>>{
         let catalog:Array<PluginInfo> = await this.fetchCatalog();
-        console.log("Catalog:",catalog);
+        this.logger.debug("Catalog:",catalog);
         return PluginRegistry.getInstance().getRouteConfig(catalog);
     }*/
 
     public async getRemotePlugins(){
         let catalog:Array<PluginInfo> = await this.fetchCatalog();
         this.pluginCatalog = catalog;
-        console.log("Catalog:",catalog);
+        this.logger.debug("Catalog:",catalog);
         return catalog;
     }
 
@@ -41,7 +42,7 @@ export class WebConsolePluginManagerService {
     private fetchCatalog():Promise<Array<PluginInfo>>{
         return new Promise<Array<PluginInfo>>((resolve,reject) => {
             this.connector.get(PLUGIN_LIST_ENTRYPOINT).subscribe((data) => {
-                console.log("Fetch plugin catalog done: ",data);
+                this.logger.debug("Fetch plugin catalog done: ",data);
                 this.setPluginCatalog(data);
                 resolve(data);
             },reject);
@@ -84,7 +85,7 @@ export class WebConsolePluginManagerService {
          _.forEach(entry.dependencies || [],(info:PluginInfo) => {
             if(_.findIndex(plugins || [],(single:PluginInfo) => {return info.name == single.name}) == -1){
                throw new Error("Plugin not found:" + info.name);
-            } 
+            }
          });
          return true;
         }catch(ex){

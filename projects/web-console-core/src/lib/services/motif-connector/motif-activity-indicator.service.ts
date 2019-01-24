@@ -1,3 +1,4 @@
+import { NGXLogger } from 'ngx-logger';
 import { Injectable } from "@angular/core";
 import { HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams } from "@angular/common/http";
 import { Observable} from "rxjs";
@@ -10,13 +11,13 @@ import { StatusBarService } from '../../components/status-bar/status-bar.service
 })
 export class MotifActivityIndicatorService implements HttpInterceptor{
 
-    constructor(private motifConnector:MotifConnectorService, private sbService:StatusBarService){
+    constructor(private logger:NGXLogger, private motifConnector:MotifConnectorService, private sbService:StatusBarService){
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
         this.sbService.setBusyIndicatorVisibile(true);
 
-        console.log("MotifActivityIndicatorService intercept request");
+        this.logger.debug("MotifActivityIndicatorService intercept request");
         return next.handle(request).pipe(tap(event => {
             if (event instanceof HttpResponse) {
                 this.sbService.setBusyIndicatorVisibile(false);

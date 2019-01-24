@@ -1,3 +1,5 @@
+import { ServiceLocator } from './service.locator';
+import { Injector } from '@angular/core';
 import { WCTopBarContentDirective } from './components/top-bar/wc-top-bar-content-directive';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { RouterModule } from '@angular/router'
@@ -15,6 +17,8 @@ import { MotifPagedQueryInterceptor } from './services/motif-connector/motif-pag
 import { WCTopBarService } from './components/top-bar/wc-top-bar-service';
 import { WCTopBarComponent } from './components/top-bar/wc-top-bar-component';
 import { WCTopBarItem } from './components/top-bar/wc-top-bar-item';
+import { NGXLogger } from 'ngx-logger';
+
 
 @NgModule({
   providers:[
@@ -53,8 +57,9 @@ import { WCTopBarItem } from './components/top-bar/wc-top-bar-item';
   ]
 })
 export class WebConsoleCoreModule {
-  constructor(){
-    console.log("WebCoreCoreModule created");
+  constructor(private logger:NGXLogger, private injector: Injector){
+    ServiceLocator.injector = injector;
+    this.logger.debug("WebCoreCoreModule created");
   }
 
   static withConfig(config:WebConsoleConfig): ModuleWithProviders {

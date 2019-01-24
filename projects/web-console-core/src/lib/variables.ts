@@ -8,3 +8,13 @@ export const COLLECTION_FORMATS = {
     'ssv': ' ',
     'pipes': '|'
 }
+// Logging
+export var WC_LOGGER_LEVEL = 1; //NgxLoggerLevel.DEBUG;
+export var WC_SERVER_LOGGER_LEVEL = 7; //NgxLoggerLevel.OFF;
+export var WC_SERVER_LOGGER_URL = '/api/logs';
+
+export const WC_LOGGER_CONFIG = {
+  WC_LOGGER_LEVEL: 1,
+  WC_SERVER_LOGGER_LEVEL: 7,
+  WC_SERVER_LOGGER_URL : '/api/logs'
+}

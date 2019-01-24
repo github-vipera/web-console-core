@@ -1,3 +1,4 @@
+import { NGXLogger } from 'ngx-logger';
 import { Component, OnInit } from '@angular/core';
 import { NavigationService } from '../../services/navigation-service/navigation.service';
 
@@ -8,8 +9,8 @@ import { NavigationService } from '../../services/navigation-service/navigation.
 })
 export class PageNotFoundComponent {
 
-  public constructor(private navService:NavigationService) {
-    console.log("PageNotFoundComponent component constructor");
+  public constructor(private logger: NGXLogger, private navService:NavigationService) {
+    this.logger.debug("PageNotFoundComponent component constructor");
   }
 
   onReturnToDashboardClick(){
