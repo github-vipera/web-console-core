@@ -9,6 +9,8 @@ import { StatusBarService } from '../status-bar/status-bar.service'
 import { StatusBarItem } from '../status-bar/status-bar-item'
 import { WCMainMenuComponent } from '../main-menu/main-menu.component'
 import { NGXLogger } from 'ngx-logger';
+import { DOCUMENT } from '@angular/common';
+import { setCurrentDirectiveDef } from '@angular/core/src/render3/state';
 
 @Component({
   selector: 'web-console',
@@ -19,6 +21,8 @@ export class WebConsoleComponent implements OnInit {
   //routes:Array<Route> = [];
 
   plugins:Array<ActivablePlugin>
+
+  private _currentItemSelected:string;
 
   @ViewChild(WCMainMenuComponent) mainMenu:WCMainMenuComponent;
 
@@ -135,6 +139,28 @@ export class WebConsoleComponent implements OnInit {
 
   showMainMenu(){
     this.mainMenu.show();
+  }
+
+  onMenuItemClick(event, currentItem) {
+    //console.log(">>>>> On Menu item Click ",  event, currentItem);
+    if (this._currentItemSelected) {
+        this.setCurrent(this._currentItemSelected, false);
+    }
+
+    this._currentItemSelected = currentItem;
+    this.setCurrent(currentItem, true);
+  }
+
+  private setCurrent(itemId:string, selected:boolean){
+    let el:HTMLElement = document.getElementById('wc-main-menu-item-' + itemId);
+    //console.log(">>>>> setCurrent: ", el);
+    if (el){
+      if (selected){
+        el.classList.add("current");
+      } else {
+        el.classList.remove("current");
+      }
+    }
   }
 
 }
