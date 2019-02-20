@@ -68,7 +68,8 @@ export class AuthService implements HttpInterceptor{
             return request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${token}`
-                }
+                },
+                withCredentials: true
             });
         }
         return request;
