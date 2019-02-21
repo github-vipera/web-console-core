@@ -1,7 +1,6 @@
 import { WCTopBarItem } from './wc-top-bar-item';
 import { Injectable, Type }           from '@angular/core';
-import { Observable }                 from 'rxjs';
-import { Subject }                    from 'rxjs/Subject';
+import { Observable, Subject }                 from 'rxjs';
 import { NGXLogger }                  from 'ngx-logger'
 
 const LOG_TAG = '[WCTopBarService]';

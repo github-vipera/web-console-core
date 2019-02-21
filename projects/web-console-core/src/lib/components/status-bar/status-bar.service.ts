@@ -1,11 +1,8 @@
 import { Injectable, Type }           from '@angular/core';
 import { StatusBarItem }              from './status-bar-item';
-import { Observable }                 from 'rxjs';
-import { Subject }                    from 'rxjs/Subject';
-import { BehaviorSubject }            from 'rxjs/BehaviorSubject';
+import { Observable, Subject }                 from 'rxjs';
 import { NGXLogger }                  from 'ngx-logger'
 import { first } from 'rxjs/operators';
-import { of } from 'rxjs/observable/of';
 import * as Rx from "rxjs";
 
 @Injectable({
