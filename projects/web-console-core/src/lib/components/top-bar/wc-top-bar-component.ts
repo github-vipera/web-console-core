@@ -38,6 +38,8 @@ export class WCTopBarComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private loadItems(): void {
     this.logger.debug(LOG_TAG, 'loadItems called.', this.locationValue, this.location);
+    const viewContainerRef = this.tbHost.viewContainerRef;
+    viewContainerRef.clear();
     const items:WCTopBarItem[] = this.topBarService.getItems(this.location);
     if (items.length==0){
       return;
@@ -51,7 +53,6 @@ export class WCTopBarComponent implements OnInit, OnDestroy, AfterViewInit {
   private addItem(item: WCTopBarItem): void {
     this.logger.debug(LOG_TAG, 'addItem for:', this.tbHost, this.locationValue);
     const viewContainerRef = this.tbHost.viewContainerRef;
-    viewContainerRef.clear();
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(item.component);
     const componentRef = viewContainerRef.createComponent(componentFactory);
     this.logger.debug(LOG_TAG, 'addItem done for:', this.tbHost, this.locationValue);

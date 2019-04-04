@@ -31,6 +31,7 @@ export class WCTopBarService {
 
   private _rightItems: WCTopBarItem[] = [];
   private _leftItems: WCTopBarItem[] = [];
+  private _centerItems: WCTopBarItem[] = [];
   private _itemsSubject = new Subject<StructureChangedEvent>();
 
   constructor(private logger: NGXLogger){
@@ -46,12 +47,14 @@ export class WCTopBarService {
         items = this._rightItems;
       } else if (location === WCTopBarLocation.Left){
         items = this._leftItems;
+      } else if (location === WCTopBarLocation.Center){
+        items = this._centerItems;
       }
       if (items){
         items.push(item);
       }
       this.notifyStructureChangeAll();
-      this.logger.debug(LOG_TAG, "Current items: ", this._leftItems, this._rightItems);
+      this.logger.debug(LOG_TAG, "Current items: ", this._leftItems, this._rightItems, this._centerItems);
     } else {
       this.logger.warn(LOG_TAG, "This item id already exits:", item);
     }
@@ -65,6 +68,7 @@ export class WCTopBarService {
   public clear(): void {
      this._rightItems = new Array();
      this._leftItems = new Array();
+     this._centerItems = new Array();
      this.notifyStructureChangeAll();
   }
 
@@ -85,6 +89,8 @@ export class WCTopBarService {
         items = this._leftItems;
       } else if (itemIndex.location==WCTopBarLocation.Right){
         items = this._rightItems;
+      } else if (itemIndex.location==WCTopBarLocation.Center){
+        items = this._centerItems;
       }
       if (items){
         items.splice(itemIndex.index, 1);
@@ -98,6 +104,7 @@ export class WCTopBarService {
   private getItemIndex(id:string):ItemIndexLocation {
     let leftId = this.getLeftItemIndex(id);
     let rightId = this.getRightItemIndex(id);
+    let centerId = this.getCenterItemIndex(id);
     let index = -1;
     let location : WCTopBarLocation;
     if (leftId!=-1){
@@ -107,6 +114,10 @@ export class WCTopBarService {
     if (rightId!=-1){
       location =  WCTopBarLocation.Right;
       index = rightId;
+    }
+    if (centerId!=-1){
+      location =  WCTopBarLocation.Center;
+      index = centerId;
     }
     return {
       index: index,
@@ -125,8 +136,18 @@ export class WCTopBarService {
   }
 
   private getLeftItemIndex(id:string):number {
-    for (let i=0;i<this._rightItems.length;i++){
-      let item:WCTopBarItem = this._rightItems[i];
+    for (let i=0;i<this._leftItems.length;i++){
+      let item:WCTopBarItem = this._leftItems[i];
+      if (item.id === id ){
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private getCenterItemIndex(id:string):number {
+    for (let i=0;i<this._centerItems.length;i++){
+      let item:WCTopBarItem = this._centerItems[i];
       if (item.id === id ){
         return i;
       }
@@ -140,6 +161,8 @@ export class WCTopBarService {
       return this._rightItems;
     } else if (location == WCTopBarLocation.Left) {
       return this._leftItems;
+    } else if (location == WCTopBarLocation.Center) {
+      return this._centerItems;
     } else {
       //not yet suppoted center items
       return [];
