@@ -8,7 +8,9 @@ const LOG_TAG = '[WCTopBarService]';
 
 export enum WCTopBarLocation {
   Right,
-  Left
+  Left,
+  Center,
+  Unknown
 }
 
 interface ItemIndexLocation {
@@ -136,8 +138,11 @@ export class WCTopBarService {
     this.logger.debug(LOG_TAG, "getItems", this._leftItems, this._rightItems);
     if (location == WCTopBarLocation.Right){
       return this._rightItems;
-    } else {
+    } else if (location == WCTopBarLocation.Left) {
       return this._leftItems;
+    } else {
+      //not yet suppoted center items
+      return [];
     }
   }
 
