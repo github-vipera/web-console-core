@@ -1,3 +1,4 @@
+import { WCTopBarLocation } from './../top-bar/wc-top-bar-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
