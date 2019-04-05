@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { WCTopBarService, WCTopBarLocation, StructureChangedEvent } from './wc-top-bar-service';
 import { Component, ElementRef, OnInit, OnDestroy, AfterViewInit, ViewChild, NgZone, ComponentFactoryResolver, Input } from '@angular/core';
 import { WCTopBarContentDirective } from './wc-top-bar-content-directive';
@@ -23,6 +24,8 @@ export class WCTopBarComponent implements OnInit, OnDestroy, AfterViewInit {
     private componentFactoryResolver: ComponentFactoryResolver,
     private topBarService: WCTopBarService){}
 
+    private _currentItems = {};
+
   ngOnInit(){
     this.logger.debug(LOG_TAG, "Initializing...", this.locationValue)
     this.topBarService.getStructureChange().subscribe( (event:StructureChangedEvent) => {
@@ -39,7 +42,7 @@ export class WCTopBarComponent implements OnInit, OnDestroy, AfterViewInit {
   private loadItems(): void {
     this.logger.debug(LOG_TAG, 'loadItems called.', this.locationValue, this.location);
     const viewContainerRef = this.tbHost.viewContainerRef;
-    viewContainerRef.clear();
+    //viewContainerRef.clear();
     const items:WCTopBarItem[] = this.topBarService.getItems(this.location);
     if (items.length==0){
       return;
@@ -51,10 +54,17 @@ export class WCTopBarComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private addItem(item: WCTopBarItem): void {
-    this.logger.debug(LOG_TAG, 'addItem for:', this.tbHost, this.locationValue);
+    this.logger.debug(LOG_TAG, 'addItem for:', item, this.tbHost, this.locationValue, this._currentItems);
+    //check if already exists
+    if (this._currentItems[item.id]){
+      this.logger.debug(LOG_TAG, 'Item already exists.', item, this._currentItems);
+      return;
+    }
     const viewContainerRef = this.tbHost.viewContainerRef;
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(item.component);
     const componentRef = viewContainerRef.createComponent(componentFactory);
+    this._currentItems[item.id] = item;
+    this.logger.debug(LOG_TAG, ">>> componentRef.instance.id: ",  componentRef.instance, componentRef.instance.id);
     this.logger.debug(LOG_TAG, 'addItem done for:', this.tbHost, this.locationValue);
   }
 
