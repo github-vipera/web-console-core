@@ -20,7 +20,7 @@ export class PluginRegistry {
     }
 
     private constructor(){
-      //console.log"Create component registry");
+      console.log("PluginRegistry constructor");
     }
 
     private createRegistrationEntry(name:string,value:Type<any>,info:RegistrationInfo):PluginRegistrationEntry{
@@ -38,8 +38,9 @@ export class PluginRegistry {
     }
 
     registryPluginComponent(name:string,value:Type<any>,info?:RegistrationInfo){
-      //console.log"registryPluginComponent",value);
+        console.log("registryPluginComponent name:",name,"value: ",value);
         const entry:PluginRegistrationEntry = this.createRegistrationEntry(name,value,info);
+        console.log("entry:", entry);
         this.pluginMap[name] = entry;
     }
 
@@ -106,7 +107,7 @@ export class PluginRegistry {
  * @param route
  */
 export function PluginView(name:string,info?:RegistrationInfo){
-    //console.debug("pluginview decorator called",name);
+    console.debug("PluginView decorator called: ",name, "Registration Info:",info);
     return (target:Type<any>) => {
         PluginRegistry.getInstance().registryPluginComponent(name,target,info);
     }

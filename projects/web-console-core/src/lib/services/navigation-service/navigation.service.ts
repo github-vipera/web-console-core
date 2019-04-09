@@ -13,7 +13,7 @@ export class NavigationService {
     constructor(private logger:NGXLogger, private pluginManager:WebConsolePluginManagerService,private router:Router, private config:WebConsoleConfig ){
         this.logger.debug("NavigationService");
         let routes = this.getInitialRouteConfig()
-        this.router.resetConfig(routes);
+        //this.router.resetConfig(routes);
     }
 
     public goToDashboard(){

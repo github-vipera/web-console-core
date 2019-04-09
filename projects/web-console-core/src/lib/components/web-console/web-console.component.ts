@@ -71,19 +71,19 @@ export class WebConsoleComponent implements OnInit {
   private createRoutingConfigByMotifCatalog(){
     this.loadPluginList();
     this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
-      this.resetRouting(result);
+      //this.resetRouting(result);
       this.loadPluginList();
       this.logger.debug("WebConsoleComponent routes",result);
     },(err) => {
       console.error("Fail to crete routing:",err);
       //this.resetRouting([]);
       this.showError("Catalog mapping fail");
-      this.validateCurrentRoute();
+      //this.validateCurrentRoute();
     }).catch((err) => {
       console.error("Catch fail to crete routing:",err);
       //this.resetRouting([]);
       this.showError("Catalog mapping fail");
-      this.validateCurrentRoute();
+      //this.validateCurrentRoute();
     });
   }
 
