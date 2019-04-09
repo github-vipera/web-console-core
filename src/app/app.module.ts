@@ -37,8 +37,7 @@ const routes:Routes = [
   imports: [
     BrowserModule , WebAdminModulesProvider,
     RouterModule.forRoot(routes,{enableTracing:true}),
-    LoggerModule
-//    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF})
+    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF})
   ],
   providers: [
     { provide: WC_API_BASE_PATH, useValue: environment.API_BASE_PATH },
