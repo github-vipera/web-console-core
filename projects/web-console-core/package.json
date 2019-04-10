@@ -5,6 +5,7 @@
     "@angular/common": "^7.0.0",
     "@angular/core": "^7.0.0",
     "@angular/router": "^7.0.0",
-    "ngx-logger": "^3.0.5"
+    "ngx-logger": "^3.0.5",
+    "ngx-scrollbar": "^4.1.1"
   }
 }

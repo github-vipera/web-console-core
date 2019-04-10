@@ -35,7 +35,7 @@ $side-nav-max-size: 200px;
         max-width: $side-nav-min-size;
         -webkit-box-shadow: 3px 0 5px -1px rgba(0,0,0,.2), 6px 0 10px 0 rgba(0,0,0,.14), 1px 0 18px 0 rgba(0,0,0,.12);
         -moz-box-shadow: 3px 0 5px -1px rgba(0,0,0,.2), 6px 0 10px 0 rgba(0,0,0,.14), 1px 0 18px 0 rgba(0,0,0,.12);
-        box-shadow: 3px 0 5px -1px rgba(0,0,0,.2), 6px 0 10px 0 rgba(0,0,0,.14), 1px 0 18px 0 rgba(0,0,0,.12);        
+        box-shadow: 3px 0 5px -1px rgba(0,0,0,.2), 6px 0 10px 0 rgba(0,0,0,.14), 1px 0 18px 0 rgba(0,0,0,.12);
         a{
             color:$text-color;
             &.plugin-link{
@@ -72,11 +72,11 @@ $side-nav-max-size: 200px;
 
 .web-console-container {
     height:100%;
-    margin:0; 
+    margin:0;
     padding:0;
-    font-family:'Open Sans', sans-serif; 
-    display:flex; 
-    background:#282D31; 
+    font-family:'Open Sans', sans-serif;
+    display:flex;
+    background:#282D31;
     flex-wrap:wrap;
     box-sizing:border-box;
     outline: none;
@@ -90,4 +90,10 @@ $side-nav-max-size: 200px;
     border-radius: 999px;
     width: 1.9rem;
     color: #9a9adc;
+}
+
+.wc-nav-scrollbar {
+  --scrollbar-size: 3px;
+  --scrollbar-padding: 2px;
+  width: 2.5rem;
 }

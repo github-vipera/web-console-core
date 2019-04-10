@@ -10,7 +10,8 @@
     }
   },
   "whitelistedNonPeerDependencies": [
-    "ngx-logger"
+    "ngx-logger",
+    "ngx-scrollbar"
   ]
 }
 

@@ -18,7 +18,7 @@ import { WCTopBarService } from './components/top-bar/wc-top-bar-service';
 import { WCTopBarComponent } from './components/top-bar/wc-top-bar-component';
 import { WCTopBarItem } from './components/top-bar/wc-top-bar-item';
 import { NGXLogger } from 'ngx-logger';
-
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @NgModule({
   providers:[
@@ -45,6 +45,7 @@ import { NGXLogger } from 'ngx-logger';
   imports:[
     CommonModule,
     HttpClientModule,
+    NgScrollbarModule,
     RouterModule.forChild([])
   ],
   entryComponents:[ MainStatusBarItemComponent, MainStatusBarProgressComponent ],
