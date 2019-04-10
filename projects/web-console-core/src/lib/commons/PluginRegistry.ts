@@ -29,7 +29,7 @@ export class PluginRegistry {
             component:value
         };
         if(info){
-            registrationEntry.routeDef = info.route;
+            //registrationEntry.routeDef = info.route;
             registrationEntry.dependencies = info.dependencies;
             registrationEntry.customIcon = info.customIcon;
             registrationEntry.iconName = info.iconName;
@@ -98,6 +98,10 @@ export class PluginRegistry {
          return false;
        }
     }
+
+    public isPluginAvailable(pluginName:string):boolean{
+        return this.pluginMap[pluginName] != null;
+    }
 }
 
 
@@ -114,7 +118,7 @@ export function PluginView(name:string,info?:RegistrationInfo){
 }
 
 export interface RegistrationInfo{
-    route?:Route,
+    //route?:Route,
     dependencies?:Array<PluginInfo>,
     customIcon?:string
     iconName?:string

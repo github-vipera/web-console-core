@@ -56,11 +56,11 @@ export class WebConsoleComponent implements OnInit {
   public ngOnInit(): void {
     this.logger.debug("WebConsoleComponent init done");
     //this.initStaticRouting();
-    this.createRoutingConfigByMotifCatalog();
+    //this.createRoutingConfigByMotifCatalog();
+    this.loadPluginList();
 
     //initialize the status bar
     this.initStatusBar();
-
   }
 
   private initStatusBar(){
@@ -68,7 +68,7 @@ export class WebConsoleComponent implements OnInit {
     this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-progress-status", MainStatusBarProgressComponent, {}));
   }
 
-  private createRoutingConfigByMotifCatalog(){
+  /*private createRoutingConfigByMotifCatalog(){
     this.loadPluginList();
     this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
       //this.resetRouting(result);
@@ -85,11 +85,13 @@ export class WebConsoleComponent implements OnInit {
       this.showError("Catalog mapping fail");
       //this.validateCurrentRoute();
     });
-  }
+  }*/
 
   private loadPluginList(){
     this.logger.debug("loadPluginList ...")
-    this.plugins = this.pluginManager.getCurrentActivablePlugins();
+    let dashboardRoute:Route = this.navService.getDashboardRoute();
+    console.log("Resolve dashboard route:",dashboardRoute);
+    this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
     this.logger.debug("loading done: ",this.plugins);
   }
 
