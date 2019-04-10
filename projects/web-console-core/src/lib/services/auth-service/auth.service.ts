@@ -76,12 +76,13 @@ export class AuthService implements HttpInterceptor{
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
-        this.logger.debug("intercept request");
+        this.logger.trace("intercept request");
         request = this.injectAccessToken(request);
 
         return next.handle(request).pipe(
             catchError((error:any) => {
                 if (error instanceof HttpErrorResponse) {
+                    this.logger.debug("intercept request error: ", error);
                     let errorBody:any = error.error;
                     if (error.status == 401 &&
                         errorBody.code == "E:V_OAUTH2_INVALID_TOKEN") {
