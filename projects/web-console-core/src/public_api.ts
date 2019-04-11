@@ -5,6 +5,7 @@ import { MOTIF_PAGED_QUERY_PARAM } from "./lib/services/motif-connector/motif-pa
  */
 
 export * from "./lib/commons/PluginRegistry"
+export * from "./lib/commons/ResolveRouter";
 export * from "./lib/services/auth-service/auth.service"
 export * from "./lib/services/motif-connector/motif-connector.service"
 export * from "./lib/services/motif-connector/motif-query.service"

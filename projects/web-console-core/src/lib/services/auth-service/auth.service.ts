@@ -82,11 +82,10 @@ export class AuthService implements HttpInterceptor{
         return next.handle(request).pipe(
             catchError((error:any) => {
                 if (error instanceof HttpErrorResponse) {
-                  this.logger.debug("intercept request error: ", error);
+                    this.logger.debug("intercept request error: ", error);
                     let errorBody:any = error.error;
                     if (error.status == 401 &&
-                        errorBody.code == "E:V_OAUTH2_INVALID_TOKEN" &&
-                        errorBody.details.startsWith("E:V_OAUTH2_EXPIRED_TOKEN")) {
+                        errorBody.code == "E:V_OAUTH2_INVALID_TOKEN") {
                         return this.handleUnauthorized(request, next);
                     }
                 }

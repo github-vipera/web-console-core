@@ -3,6 +3,7 @@ import { PluginRegistry , PluginInfo, PluginRegistrationEntry } from '../../comm
 import { MotifConnectorService} from '../motif-connector/motif-connector.service';
 import * as _ from 'lodash'
 import { NGXLogger } from 'ngx-logger';
+import { Router, Routes, Route } from '@angular/router';
 
 const PLUGIN_LIST_ENTRYPOINT = "/rest/v2/registry/plugins?all=true&status=ACTIVE"
 
@@ -13,7 +14,7 @@ export class WebConsolePluginManagerService {
     private pluginCatalog:Array<PluginInfo>
     private activePluginsCache:Array<ActivablePlugin>
 
-    constructor(private logger:NGXLogger, private connector:MotifConnectorService){
+    constructor(private logger:NGXLogger, private connector:MotifConnectorService, private router:Router){
         this.logger.debug("WebConsolePluginManagerService injected");
     }
     /*
@@ -49,35 +50,88 @@ export class WebConsolePluginManagerService {
         })
     }
 
-    public getCurrentActivablePlugins():Array<ActivablePlugin>{
+    public getCurrentActivablePlugins(baseRoute:Route):Array<ActivablePlugin>{
         if(!this.activePluginsCache){
-            this.activePluginsCache = this.getActivablePlugins(this.pluginCatalog);
+            this.activePluginsCache = this.getActivablePlugins(this.pluginCatalog,baseRoute);
         }
         return this.activePluginsCache;
     }
 
-    private getActivablePlugins(motifPlugins:Array<PluginInfo>):Array<ActivablePlugin>{
+    private getActivablePlugins(motifPlugins:Array<PluginInfo>,dashboardRoute:Route):Array<ActivablePlugin>{
         let plugins:Array<ActivablePlugin> = [];
         let availablePlugins = PluginRegistry.getInstance().getAllPlugins();
         _.forEach(availablePlugins,(entry:PluginRegistrationEntry,key:string) => {
             if(!this.checkDeps(entry,motifPlugins)){
                 console.error("Plugin",entry.name,"removed");
             }else{
-                plugins.push(this.createActivableRecord(entry));
+                let record = this.createActivableRecord(entry,dashboardRoute);
+                if(record == null){
+                    console.log("Plugin removed by not configured route... plugin:",entry);
+                    return;
+                }
+                plugins.push(record);
             }
         })
         return plugins;
     }
 
-    private createActivableRecord(entry: PluginRegistrationEntry):ActivablePlugin{
-        let label:string = entry.name;
-        let link:string =  entry.routeDef ? entry.routeDef.path : entry.name;
+    private createActivableRecord(entry: PluginRegistrationEntry,dashboardRoute:Route):ActivablePlugin{
+        /*let label:string = entry.name;
+        //let link:string =  entry.routeDef ? entry.routeDef.path : entry.name;
+        let link = this.resolveInternalLink(entry,dashboardRoute.children);
+        if(!link){
+            return null;
+        }
         return {
             label:label,
             baseInfo:entry,
             link: link
-        };
+        };*/
+        return this.resolveActivablePluginInfo(entry,dashboardRoute.children);
     }
+
+    private resolveActivablePluginInfo(entry: PluginRegistrationEntry, pluginRoutes: Routes):ActivablePlugin{
+        let route:Route = _.find(pluginRoutes, (toCheck:Route) => {
+            let routeData = toCheck.data;
+            if(!routeData){
+                if(toCheck.component && toCheck.component == entry.component){
+                    return true
+                }
+                return false;
+            }
+            let pluginName:string = routeData.pluginName;
+            return pluginName === entry.name;
+        });
+        if(route){
+            return {
+                label:entry.name,
+                baseInfo:entry,
+                link: route.path
+            }; 
+        }
+        return null;
+    }
+
+    /*
+    resolveInternalLink(entry: PluginRegistrationEntry, pluginRoutes: Routes): string {
+        let route:Route = _.find(pluginRoutes, (toCheck:Route) => {
+            let routeData = toCheck.data;
+            if(!routeData){
+                if(toCheck.component && toCheck.component == entry.component){
+                    return true
+                }
+                return false;
+            }
+            let pluginName:string = routeData.pluginName;
+            return pluginName === entry.name;
+        });
+        if(route){
+            return route.path;
+        }
+        return null;
+    }
+    */
+
 
 
     private checkDeps(entry:PluginRegistrationEntry,plugins:Array<PluginInfo>):boolean{
@@ -99,6 +153,6 @@ export class WebConsolePluginManagerService {
 
 export interface ActivablePlugin {
     label:string,
-    link:string,
+    link?:string,
     baseInfo:PluginRegistrationEntry
   }

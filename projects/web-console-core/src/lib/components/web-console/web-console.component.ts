@@ -56,11 +56,11 @@ export class WebConsoleComponent implements OnInit {
   public ngOnInit(): void {
     this.logger.debug("WebConsoleComponent init done");
     //this.initStaticRouting();
-    this.createRoutingConfigByMotifCatalog();
+    //this.createRoutingConfigByMotifCatalog();
+    this.loadPluginList();
 
     //initialize the status bar
     this.initStatusBar();
-
   }
 
   private initStatusBar(){
@@ -68,28 +68,30 @@ export class WebConsoleComponent implements OnInit {
     this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-progress-status", MainStatusBarProgressComponent, {}));
   }
 
-  private createRoutingConfigByMotifCatalog(){
+  /*private createRoutingConfigByMotifCatalog(){
     this.loadPluginList();
     this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
-      this.resetRouting(result);
+      //this.resetRouting(result);
       this.loadPluginList();
       this.logger.debug("WebConsoleComponent routes",result);
     },(err) => {
       console.error("Fail to crete routing:",err);
       //this.resetRouting([]);
       this.showError("Catalog mapping fail");
-      this.validateCurrentRoute();
+      //this.validateCurrentRoute();
     }).catch((err) => {
       console.error("Catch fail to crete routing:",err);
       //this.resetRouting([]);
       this.showError("Catalog mapping fail");
-      this.validateCurrentRoute();
+      //this.validateCurrentRoute();
     });
-  }
+  }*/
 
   private loadPluginList(){
     this.logger.debug("loadPluginList ...")
-    this.plugins = this.pluginManager.getCurrentActivablePlugins();
+    let dashboardRoute:Route = this.navService.getDashboardRoute();
+    console.log("Resolve dashboard route:",dashboardRoute);
+    this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
     this.logger.debug("loading done: ",this.plugins);
   }
 
