@@ -102,6 +102,27 @@ export class PluginRegistry {
     public isPluginAvailable(pluginName:string):boolean{
         return this.pluginMap[pluginName] != null;
     }
+
+    public isComponentPlugin(pluginName:string,componentToCheck){
+        console.log("check if component is a plugin name: ; componentToCheck: ",pluginName,componentToCheck)
+        if(!componentToCheck){
+            return false;
+        }
+        /*for (let key in this.pluginMap) {
+            if (this.pluginMap.hasOwnProperty(key)) { 
+              let value:PluginRegistrationEntry = this.pluginMap[key];
+              if(!value){
+                  return false;
+              }
+              return value.component === componentToCheck;
+            }
+        }*/
+        let value:PluginRegistrationEntry = this.pluginMap[pluginName];
+        if(!value){
+            return false;
+        }
+        return value.component === componentToCheck;
+    }
 }
 
 

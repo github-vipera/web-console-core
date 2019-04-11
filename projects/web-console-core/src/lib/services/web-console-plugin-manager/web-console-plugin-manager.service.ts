@@ -64,24 +64,55 @@ export class WebConsolePluginManagerService {
             if(!this.checkDeps(entry,motifPlugins)){
                 console.error("Plugin",entry.name,"removed");
             }else{
-                plugins.push(this.createActivableRecord(entry,dashboardRoute));
+                let record = this.createActivableRecord(entry,dashboardRoute);
+                if(record == null){
+                    console.log("Plugin removed by not configured route... plugin:",entry);
+                    return;
+                }
+                plugins.push(record);
             }
         })
         return plugins;
     }
 
     private createActivableRecord(entry: PluginRegistrationEntry,dashboardRoute:Route):ActivablePlugin{
-        let label:string = entry.name;
+        /*let label:string = entry.name;
         //let link:string =  entry.routeDef ? entry.routeDef.path : entry.name;
         let link = this.resolveInternalLink(entry,dashboardRoute.children);
+        if(!link){
+            return null;
+        }
         return {
             label:label,
             baseInfo:entry,
             link: link
-        };
-        
+        };*/
+        return this.resolveActivablePluginInfo(entry,dashboardRoute.children);
     }
 
+    private resolveActivablePluginInfo(entry: PluginRegistrationEntry, pluginRoutes: Routes):ActivablePlugin{
+        let route:Route = _.find(pluginRoutes, (toCheck:Route) => {
+            let routeData = toCheck.data;
+            if(!routeData){
+                if(toCheck.component && toCheck.component == entry.component){
+                    return true
+                }
+                return false;
+            }
+            let pluginName:string = routeData.pluginName;
+            return pluginName === entry.name;
+        });
+        if(route){
+            return {
+                label:entry.name,
+                baseInfo:entry,
+                link: route.path
+            }; 
+        }
+        return null;
+    }
+
+    /*
     resolveInternalLink(entry: PluginRegistrationEntry, pluginRoutes: Routes): string {
         let route:Route = _.find(pluginRoutes, (toCheck:Route) => {
             let routeData = toCheck.data;
@@ -99,7 +130,7 @@ export class WebConsolePluginManagerService {
         }
         return null;
     }
-
+    */
 
 
 
