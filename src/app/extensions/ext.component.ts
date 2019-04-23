@@ -14,6 +14,27 @@ export class ExtComponent implements OnInit{
 
   curr_date = new Date();
 
+  toolboxItems = [
+    { id: "A", title : "A"},
+    { id: "B", title : "B"},
+    { id: "C", title : "C"},
+    { id: "D", title : "D"},
+    { id: "E", title : "E"},
+    { id: "F", title : "F"},
+    { id: "G", title : "G"},
+    { id: "H", title : "H"},
+    { id: "I", title : "I"},
+    { id: "L", title : "L"},
+    { id: "M", title : "M"},
+    { id: "N", title : "N"},
+    { id: "O", title : "O"},
+    { id: "P", title : "P"},
+    { id: "Q", title : "Q"},
+    { id: "R", title : "R"},
+    { id: "S", title : "S"},
+    { id: "T", title : "T"}
+  ];
+
   title = 'app';
   constructor(/** protected httpClient:HttpClient,*/ private mcs:MotifConnectorService){
     console.log("ExtComponent constructor")

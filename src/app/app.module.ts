@@ -15,7 +15,7 @@ import { ExtComponentD } from './extensions/ext.component.3'
 import { ExtComponentE } from './extensions/ext.component.4'
 import { ExtComponentF } from './extensions/ext.component.5'
 import { ExtComponentG } from './extensions/ext.component.6'
-
+import { WCToolbox } from './components/toolbox/wc-toolbox-component';
 
 const moduleRoutes: Routes = [
   {component:ExtComponent, path:'ext'},
@@ -54,7 +54,8 @@ const routes:Routes = [
     ExtComponentE,
     ExtComponentF,
     ExtComponentG,
-    LoginComponent
+    LoginComponent,
+    WCToolbox
   ],
   imports: [
     BrowserModule , WebAdminModulesProvider,

@@ -24,7 +24,8 @@
             ],
             "styles" : [
               "src/assets/motif_webadmin_iconfont.css",
-              "src/assets/style.css"
+              "src/assets/style.css",
+              "src/styles.css"
             ],
             "scripts": []
           },
@@ -73,14 +74,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ]
+            "scripts": []
           }
         },
         "lint": {
@@ -134,15 +128,7 @@
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/web-console-core/tsconfig.lib.json",
-            "project": "projects/web-console-core/ng-package.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles" : [
-              "src/assets/motif_webadmin_iconfont.css",
-              "src/assets/style.css"
-            ]
+            "project": "projects/web-console-core/ng-package.json"
           },
           "configurations": {
             "production": {

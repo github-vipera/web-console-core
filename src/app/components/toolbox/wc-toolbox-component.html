@@ -1,0 +1,16 @@
+<div class="wa-toolbox" #toolbox (resize)="onResize($event)">
+
+  <div [style.display]="scrollbarsVisible? 'block':'none'" class="toolbox-scroll-button up" (click)="scrollDownCLick($event)"><i class="arrow up"></i></div>
+
+  <nav class="toolbox-container routing-container" #toolboxContainer>
+        <div class="toolbox-item-container" *ngFor="let item of items" id="toolbox-item-{{item.id}}" (mouseover)="onItemMouseOver($event, item)">
+          <label>{{item.title}}</label>
+          <div class="toolbox-item-container-pin" id="toolbox-item-pin-{{item.id}}" >
+              {{item.title}} PIN
+          </div>
+        </div>
+  </nav>
+
+  <div [style.display]="scrollbarsVisible? 'block':'none'" class="toolbox-scroll-button down" (click)="scrollUpCLick($event)"><i class="arrow down"></i></div>
+
+</div>
