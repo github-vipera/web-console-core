@@ -4,14 +4,14 @@ import { PluginView,MotifConnectorService } from 'web-console-core';
 //import { Observable, forkJoin } from 'rxjs';
 @Component({
   selector: 'app-root',
-  templateUrl: './ext.component.1.html',
+  templateUrl: './ext.component.5.html',
   styleUrls: ['./ext.component.css']
 })
-@PluginView("extb", {
+@PluginView("extf", {
   iconName: 'wa-ico-log'
 }
 )
-export class ExtComponentB implements OnInit{
+export class ExtComponentF implements OnInit{
 
   curr_date = new Date();
 

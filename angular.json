@@ -22,8 +22,9 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
-              "src/styles.css"
+            "styles" : [
+              "src/assets/motif_webadmin_iconfont.css",
+              "src/assets/style.css"
             ],
             "scripts": []
           },
@@ -133,7 +134,15 @@
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/web-console-core/tsconfig.lib.json",
-            "project": "projects/web-console-core/ng-package.json"
+            "project": "projects/web-console-core/ng-package.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles" : [
+              "src/assets/motif_webadmin_iconfont.css",
+              "src/assets/style.css"
+            ]
           },
           "configurations": {
             "production": {

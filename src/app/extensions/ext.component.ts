@@ -7,7 +7,9 @@ import { PluginView,MotifConnectorService } from 'web-console-core';
   templateUrl: './ext.component.html',
   styleUrls: ['./ext.component.css']
 })
-@PluginView("ext")
+@PluginView("ext",{
+  iconName: 'wa-ico-plugins'
+})
 export class ExtComponent implements OnInit{
 
   curr_date = new Date();
