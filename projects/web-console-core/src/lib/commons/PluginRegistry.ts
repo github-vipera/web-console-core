@@ -33,6 +33,7 @@ export class PluginRegistry {
             registrationEntry.dependencies = info.dependencies;
             registrationEntry.customIcon = info.customIcon;
             registrationEntry.iconName = info.iconName;
+            registrationEntry.index = (info.index ? info.index : 99999);
         }
         return registrationEntry;
     }
@@ -109,7 +110,7 @@ export class PluginRegistry {
             return false;
         }
         /*for (let key in this.pluginMap) {
-            if (this.pluginMap.hasOwnProperty(key)) { 
+            if (this.pluginMap.hasOwnProperty(key)) {
               let value:PluginRegistrationEntry = this.pluginMap[key];
               if(!value){
                   return false;
@@ -132,7 +133,7 @@ export class PluginRegistry {
  * @param route
  */
 export function PluginView(name:string,info?:RegistrationInfo){
-    console.debug("PluginView decorator called: ",name, "Registration Info:",info);
+    //console.debug("PluginView decorator called: ",name, "Registration Info:",info);
     return (target:Type<any>) => {
         PluginRegistry.getInstance().registryPluginComponent(name,target,info);
     }
@@ -140,9 +141,10 @@ export function PluginView(name:string,info?:RegistrationInfo){
 
 export interface RegistrationInfo{
     //route?:Route,
-    dependencies?:Array<PluginInfo>,
-    customIcon?:string
-    iconName?:string
+    dependencies?:Array<PluginInfo>;
+    customIcon?:string;
+    iconName?:string;
+    index?:number;
 }
 
 
@@ -158,4 +160,5 @@ export interface PluginRegistrationEntry {
     dependencies?:Array<PluginInfo>
     customIcon?:string
     iconName?:string
+    index?:number;
 }

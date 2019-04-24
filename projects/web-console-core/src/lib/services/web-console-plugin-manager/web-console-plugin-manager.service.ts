@@ -4,7 +4,7 @@ import { MotifConnectorService} from '../motif-connector/motif-connector.service
 import * as _ from 'lodash'
 import { NGXLogger } from 'ngx-logger';
 import { Router, Routes, Route } from '@angular/router';
-import { md5 } from '../../commons/md5'; 
+import { md5 } from '../../commons/md5';
 
 
 const PLUGIN_LIST_ENTRYPOINT = "/rest/v2/registry/plugins?all=true&status=ACTIVE"
@@ -74,6 +74,7 @@ export class WebConsolePluginManagerService {
                 plugins.push(record);
             }
         })
+        plugins = _.orderBy(plugins, ['index'],['asc']);
         return plugins;
     }
 
@@ -106,11 +107,12 @@ export class WebConsolePluginManagerService {
         });
         if(route){
             return {
+                index: (entry.index ? entry.index : -1),
                 id: md5(entry.name),
                 label:entry.name,
                 baseInfo:entry,
                 link: route.path
-            }; 
+            };
         }
         return null;
     }
@@ -158,5 +160,6 @@ export interface ActivablePlugin {
     id:string,
     label:string,
     link?:string,
+    index?:number,
     baseInfo:PluginRegistrationEntry
   }
