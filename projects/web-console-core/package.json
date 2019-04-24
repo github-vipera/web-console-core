@@ -1,6 +1,6 @@
 {
   "name": "web-console-core",
-  "version": "0.6.0-dev",
+  "version": "0.6.0",
   "peerDependencies": {
     "@angular/common": "^7.0.0",
     "@angular/core": "^7.0.0",
