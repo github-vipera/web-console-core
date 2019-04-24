@@ -19,6 +19,7 @@ import { WCTopBarComponent } from './components/top-bar/wc-top-bar-component';
 import { WCTopBarItem } from './components/top-bar/wc-top-bar-item';
 import { NGXLogger } from 'ngx-logger';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { TooltipModule } from 'ng2-tooltip-directive';
 
 @NgModule({
   providers:[
@@ -46,6 +47,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     CommonModule,
     HttpClientModule,
     NgScrollbarModule,
+    TooltipModule,
     RouterModule.forChild([])
   ],
   entryComponents:[ MainStatusBarItemComponent, MainStatusBarProgressComponent ],
