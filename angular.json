@@ -22,7 +22,9 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
+            "styles" : [
+              "src/assets/motif_webadmin_iconfont.css",
+              "src/assets/style.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -72,14 +74,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ]
+            "scripts": []
           }
         },
         "lint": {
