@@ -155,7 +155,7 @@ export class WebConsoleComponent implements OnInit {
   }
 
   private setCurrent(itemId:string, selected:boolean){
-    let el:HTMLElement = document.getElementById('wc-main-menu-item-' + itemId);
+    let el:HTMLElement = document.getElementById(itemId);
     //console.log(">>>>> setCurrent: ", el);
     if (el){
       if (selected){

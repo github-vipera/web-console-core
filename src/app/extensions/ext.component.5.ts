@@ -8,7 +8,8 @@ import { PluginView,MotifConnectorService } from 'web-console-core';
   styleUrls: ['./ext.component.css']
 })
 @PluginView("extf", {
-  iconName: 'wa-ico-log'
+  iconName: 'wa-ico-log',
+  index: 1
 }
 )
 export class ExtComponentF implements OnInit{

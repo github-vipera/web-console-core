@@ -1,24 +1,24 @@
 <div class="web-console-container">
     <header>
         <wc-top-bar [locationValue]="'left'" style="width:33%;"></wc-top-bar>
-        <!--
-        <div class="description">Vipera Motif Web Console • mw_uat_1 • 52.28.189.225</div>
-        -->
         <wc-top-bar [locationValue]="'center'" style="width:33%;"></wc-top-bar>
-        <!--
-        <div class="logo"><img src="assets/img/logo.svg"></div>
-        -->
         <wc-top-bar [locationValue]="'right'"></wc-top-bar>
-        <!--
-        <div class="cmd"><button (click)="showMainMenu()" class="main-menu-button">AD</button></div>
-        <wc-main-menu (menuClick)="onMainMenuClicked($event)"></wc-main-menu>
-        -->
     </header>
-    <ng-scrollbar [compact]="true"
+    <ng-scrollbar [trackX]="false"
+                  [compact]="true"
                   [shown]="'hover'"
+                  [barClass]="'wc-nav-scrollbar-bar'"
+                  [thumbClass]="'wc-nav-scrollbar-thumb'"
+                  [viewClass]="'wc-nav-scrollbar-view'"
                   class="wc-nav-scrollbar">
       <nav class="routing-container">
-          <a class="plugin-link" *ngFor="let plugin of plugins" routerLink="{{plugin.link}}" id="wc-main-menu-item-{{plugin.link}}" (click)="onMenuItemClick($event,plugin.link)">
+          <a class="plugin-link" *ngFor="let plugin of plugins" routerLink="{{plugin.link}}" [attr.id]="plugin.id" (click)="onMenuItemClick($event,plugin.id)"
+          tooltip="{{plugin.label}}"
+          placement="right"
+          show-delay="10"
+          hide-delay="10"
+          animation-duration="10"
+          tooltip-class="main-toolbar-button-tooltip" >
               <div class="main-menu-icon-container">
                 <i class="icon {{plugin.baseInfo.iconName}}"></i>
               </div>
@@ -31,7 +31,9 @@
                   </ng-template>
               </ng-template>
               -->
+              <!--
             <span>{{plugin.label}}</span>
+              -->
           </a>
       </nav>
     </ng-scrollbar>
