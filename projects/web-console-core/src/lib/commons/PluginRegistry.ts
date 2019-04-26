@@ -6,6 +6,7 @@ import {Type} from '@angular/core'
 import { Route } from '@angular/router';
 import * as _ from 'lodash'
 
+const LOG_TAG = "[web-console-core:PluginRegistry]"
 
 let instance:PluginRegistry = undefined;
 export class PluginRegistry {
@@ -20,7 +21,7 @@ export class PluginRegistry {
     }
 
     private constructor(){
-      console.log("PluginRegistry constructor");
+      console.log(LOG_TAG +" PluginRegistry constructor");
     }
 
     private createRegistrationEntry(name:string,value:Type<any>,info:RegistrationInfo):PluginRegistrationEntry{
@@ -39,9 +40,9 @@ export class PluginRegistry {
     }
 
     registryPluginComponent(name:string,value:Type<any>,info?:RegistrationInfo){
-        console.log("registryPluginComponent name:",name,"value: ",value);
+        console.log(LOG_TAG +" registryPluginComponent name:",name,"value: ",value);
         const entry:PluginRegistrationEntry = this.createRegistrationEntry(name,value,info);
-        console.log("entry:", entry);
+        console.log(LOG_TAG +" entry:", entry);
         this.pluginMap[name] = entry;
     }
 
@@ -69,7 +70,7 @@ export class PluginRegistry {
         let plugins:Array<PluginRegistrationEntry> = [];
         _.forEach(this.pluginMap,(entry:PluginRegistrationEntry,key:string) => {
             if(!this.checkDeps(entry,motifPlugins)){
-                console.error("Plugin",entry.name,"removed");
+                console.error(LOG_TAG +" Plugin",entry.name,"removed");
             }else{
                 plugins.push(entry);
             }
@@ -79,6 +80,7 @@ export class PluginRegistry {
 
     public getAllPlugins():Array<PluginRegistrationEntry>{
         let plugins:Array<PluginRegistrationEntry> = [];
+        console.log(LOG_TAG +" >>>>>> this.pluginMap:", this.pluginMap);
         _.forEach(this.pluginMap,(entry:PluginRegistrationEntry,key:string) => {
             plugins.push(entry)
         })
@@ -95,7 +97,7 @@ export class PluginRegistry {
         });
         return true;
        }catch(ex){
-         console.error("invalid plugin info",ex);
+         console.error(LOG_TAG +" invalid plugin info",ex);
          return false;
        }
     }
@@ -105,7 +107,7 @@ export class PluginRegistry {
     }
 
     public isComponentPlugin(pluginName:string,componentToCheck){
-        console.log("check if component is a plugin name: ; componentToCheck: ",pluginName,componentToCheck)
+        console.log(LOG_TAG +" check if component is a plugin name: ; componentToCheck: ",pluginName,componentToCheck)
         if(!componentToCheck){
             return false;
         }

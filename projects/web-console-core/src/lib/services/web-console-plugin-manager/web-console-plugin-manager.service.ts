@@ -6,6 +6,8 @@ import { NGXLogger } from 'ngx-logger';
 import { Router, Routes, Route } from '@angular/router';
 import { md5 } from '../../commons/md5';
 
+const LOG_TAG = "[web-console-core:WebConsolePluginManagerService]"
+
 
 const PLUGIN_LIST_ENTRYPOINT = "/rest/v2/registry/plugins?all=true&status=ACTIVE"
 
@@ -17,7 +19,7 @@ export class WebConsolePluginManagerService {
     private activePluginsCache:Array<ActivablePlugin>
 
     constructor(private logger:NGXLogger, private connector:MotifConnectorService, private router:Router){
-        this.logger.debug("WebConsolePluginManagerService injected");
+        this.logger.debug(LOG_TAG +" WebConsolePluginManagerService injected");
     }
     /*
       async createRouteConfigFromCatalog():Promise<Array<Route>>{
@@ -29,7 +31,7 @@ export class WebConsolePluginManagerService {
     public async getRemotePlugins(){
         let catalog:Array<PluginInfo> = await this.fetchCatalog();
         this.pluginCatalog = catalog;
-        this.logger.debug("Catalog:",catalog);
+        this.logger.debug(LOG_TAG +" Catalog:",catalog);
         return catalog;
     }
 
@@ -45,7 +47,7 @@ export class WebConsolePluginManagerService {
     private fetchCatalog():Promise<Array<PluginInfo>>{
         return new Promise<Array<PluginInfo>>((resolve,reject) => {
             this.connector.get(PLUGIN_LIST_ENTRYPOINT).subscribe((data) => {
-                this.logger.debug("Fetch plugin catalog done: ",data);
+                this.logger.debug(LOG_TAG +" Fetch plugin catalog done: ",data);
                 this.setPluginCatalog(data);
                 resolve(data);
             },reject);
@@ -62,19 +64,22 @@ export class WebConsolePluginManagerService {
     private getActivablePlugins(motifPlugins:Array<PluginInfo>,dashboardRoute:Route):Array<ActivablePlugin>{
         let plugins:Array<ActivablePlugin> = [];
         let availablePlugins = PluginRegistry.getInstance().getAllPlugins();
+        console.log(LOG_TAG +" >>>> availablePlugins: ", availablePlugins);
         _.forEach(availablePlugins,(entry:PluginRegistrationEntry,key:string) => {
             if(!this.checkDeps(entry,motifPlugins)){
-                console.error("Plugin",entry.name,"removed");
+                console.error(LOG_TAG +" Plugin",entry.name,"removed");
             }else{
                 let record = this.createActivableRecord(entry,dashboardRoute);
                 if(record == null){
-                    console.log("Plugin removed by not configured route... plugin:",entry);
+                    console.log(LOG_TAG +" Plugin removed by not configured route... plugin:",entry);
                     return;
                 }
                 plugins.push(record);
             }
         })
+        console.log(LOG_TAG +" >>>> Plugins before order: ", plugins);
         plugins = _.orderBy(plugins, ['index'],['asc']);
+        console.log(LOG_TAG +" >>>> Plugins after order: ", plugins);
         return plugins;
     }
 
@@ -148,7 +153,7 @@ export class WebConsolePluginManagerService {
          });
          return true;
         }catch(ex){
-          console.error("invalid plugin info",ex);
+          console.error(LOG_TAG +" invalid plugin info",ex);
           return false;
         }
      }

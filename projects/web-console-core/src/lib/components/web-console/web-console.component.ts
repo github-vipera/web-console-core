@@ -13,6 +13,8 @@ import { NGXLogger } from 'ngx-logger';
 import { DOCUMENT } from '@angular/common';
 import { setCurrentDirectiveDef } from '@angular/core/src/render3/state';
 
+const LOG_TAG = "[web-console-core:WebConsoleComponent]"
+
 @Component({
   selector: 'web-console',
   styleUrls: ['./web-console.component.scss'],
@@ -39,7 +41,7 @@ export class WebConsoleComponent implements OnInit {
     private pluginManager:WebConsolePluginManagerService,
     private statusBarService:StatusBarService,
     private logger: NGXLogger) {
-    this.logger.debug("Web Console component constructor");
+    this.logger.debug(LOG_TAG + " Web Console component constructor");
     this.initErrorBox();
   }
 
@@ -54,7 +56,7 @@ export class WebConsoleComponent implements OnInit {
    * Implements onInit event handler.
    */
   public ngOnInit(): void {
-    this.logger.debug("WebConsoleComponent init done");
+    this.logger.debug(LOG_TAG + " WebConsoleComponent init done");
     //this.initStaticRouting();
     //this.createRoutingConfigByMotifCatalog();
     this.loadPluginList();
@@ -88,25 +90,25 @@ export class WebConsoleComponent implements OnInit {
   }*/
 
   private loadPluginList(){
-    this.logger.debug("loadPluginList ...")
+    this.logger.debug(LOG_TAG + " loadPluginList ...")
     let dashboardRoute:Route = this.navService.getDashboardRoute();
-    console.log("Resolve dashboard route:",dashboardRoute);
+    console.log(LOG_TAG + " Resolve dashboard route:",dashboardRoute);
     this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
-    this.logger.debug("loading done: ",this.plugins);
+    this.logger.debug(LOG_TAG + " loading done: ",this.plugins);
   }
 
   private activatePlugin(plugin:ActivablePlugin){
-    this.logger.debug("activate plugin",plugin);
+    this.logger.debug(LOG_TAG + " activate plugin",plugin);
   }
 
   private validateCurrentRoute():void{
     let url = this.router.routerState.snapshot.url;
-    this.logger.debug("active", "" +this.router.isActive(url,true));
+    this.logger.debug(LOG_TAG + " active", "" +this.router.isActive(url,true));
     if(url){
       this.router.navigateByUrl(url).then((res:boolean) => {
-        this.logger.debug("navigateByUrl:",res)
+        this.logger.debug(LOG_TAG + " navigateByUrl:",res)
       },(err) => {
-         console.error("navigateByUrl err",err);
+         console.error(LOG_TAG + " navigateByUrl err",err);
          //this.router.navigateByUrl('/');
          this.navService.goToDashboard();
       });
