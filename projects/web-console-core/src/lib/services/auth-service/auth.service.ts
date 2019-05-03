@@ -1,3 +1,4 @@
+import { EventBusService } from './../event-bus/event-bus-service';
 import { NGXLogger } from 'ngx-logger';
 import { Injectable, Inject, Optional } from "@angular/core";
 import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams, HttpResponseBase, HttpEventType } from "@angular/common/http";
@@ -35,6 +36,7 @@ export class AuthService implements HttpInterceptor{
                 @Optional()@Inject(WC_OAUTH_BASE_PATH) basePath: string,
                 private webConsoleConfig:WebConsoleConfig,
                 @Optional()private router: Router,
+                private eventBus:EventBusService,
                 private logger: NGXLogger){
                     this._basePath = basePath;
                     this.logger.debug("AuthService basePath:", this._basePath)
@@ -173,7 +175,8 @@ export class AuthService implements HttpInterceptor{
                 let expiresIn = resp.expires_in;
                 this.setTokenData(refreshToken, accessToken, expiresIn);
                 this.onAuthorizationSuccess();
-                this.logger.debug("AuthService login done.")
+                this.logger.debug("AuthService login done.");
+                this.eventBus.broadcast('AuthService:LoginEvent', { username: request.userName });
             },(err) => {
                 console.error("login error",err);
             }
