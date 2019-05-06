@@ -21,6 +21,7 @@ import { NGXLogger } from 'ngx-logger';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { EventBusService } from './services/event-bus/event-bus-service';
+import { WebConsolePluginManagerService } from './services/web-console-plugin-manager/web-console-plugin-manager.service';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { EventBusService } from './services/event-bus/event-bus-service';
     StatusBarService,
     WCTopBarService,
     AuthService,
-    EventBusService
+    EventBusService,
+    WebConsolePluginManagerService
   ],
   declarations: [
     WebConsoleComponent,

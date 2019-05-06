@@ -9,6 +9,7 @@ export * from "./lib/commons/ResolveRouter";
 export * from "./lib/services/auth-service/auth.service"
 export * from "./lib/services/motif-connector/motif-connector.service"
 export * from "./lib/services/motif-connector/motif-query.service"
+export * from "./lib/services/web-console-plugin-manager/web-console-plugin-manager.service"
 //export * from "./lib/services/acl-service/acl.service"
 export * from "./lib/services/navigation-service/navigation.service"
 export * from "./lib/services/web-console-plugin-manager/web-console-plugin-manager.service"
