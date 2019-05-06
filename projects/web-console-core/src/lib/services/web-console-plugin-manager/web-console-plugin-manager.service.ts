@@ -79,6 +79,16 @@ export class WebConsolePluginManagerService {
       return ret;
     }
 
+    public getPluginByRoutePath(path:string):PluginRegistrationEntry {
+      this.logger.debug(LOG_TAG, "getPluginByRoutePath called for: ",path);
+      let availablePlugins = PluginRegistry.getInstance().getAllPlugins();
+      let ret = _.find(availablePlugins, (entry:PluginRegistrationEntry)=>{
+        return (entry.routeDef.path === path);
+      });
+      this.logger.debug(LOG_TAG, "getPluginByRoutePath item found: ",ret);
+      return ret;
+    }
+
     public getCurrentActivablePlugins(baseRoute:Route):Array<ActivablePlugin>{
         this.logger.debug(LOG_TAG, "getCurrentActivablePlugins called for: ",baseRoute);
         if(!this.activePluginsCache){
