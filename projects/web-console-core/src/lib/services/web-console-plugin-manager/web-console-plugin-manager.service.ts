@@ -69,6 +69,16 @@ export class WebConsolePluginManagerService {
         })
     }
 
+    public getPluginByComponentName(componentName:string):PluginRegistrationEntry {
+      this.logger.debug(LOG_TAG, "getPluginByComponentName called for: ",componentName);
+      let availablePlugins = PluginRegistry.getInstance().getAllPlugins();
+      let ret = _.find(availablePlugins, (entry:PluginRegistrationEntry)=>{
+        return (entry.component["name"] === componentName);
+      });
+      this.logger.debug(LOG_TAG, "getPluginByComponentName item found: ",ret);
+      return ret;
+    }
+
     public getCurrentActivablePlugins(baseRoute:Route):Array<ActivablePlugin>{
         this.logger.debug(LOG_TAG, "getCurrentActivablePlugins called for: ",baseRoute);
         if(!this.activePluginsCache){
