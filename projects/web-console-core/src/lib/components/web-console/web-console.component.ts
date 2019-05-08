@@ -72,8 +72,12 @@ export class WebConsoleComponent implements OnInit {
     this.logger.debug(LOG_TAG, "loadPluginList ...")
     let dashboardRoute:Route = this.navService.getDashboardRoute();
     this.logger.debug(LOG_TAG, "Resolve dashboard route:",dashboardRoute);
-    this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
-    this.logger.debug(LOG_TAG, "loading done: ",this.plugins);
+    this.pluginManager.getCurrentActivablePlugins(dashboardRoute).subscribe((plugins:Array<ActivablePlugin>)=>{
+      this.plugins = plugins;
+      this.logger.debug(LOG_TAG, "loading done: ",this.plugins);
+    }, (error)=>{
+      this.logger.error(LOG_TAG, "loading error: ",error);
+    })
   }
 
   private activatePlugin(plugin:ActivablePlugin){

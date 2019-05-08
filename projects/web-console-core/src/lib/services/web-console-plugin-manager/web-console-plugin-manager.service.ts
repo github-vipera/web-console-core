@@ -1,3 +1,4 @@
+import { Observable, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { PluginRegistry , PluginInfo, PluginRegistrationEntry } from '../../commons/PluginRegistry';
 import { MotifConnectorService} from '../motif-connector/motif-connector.service';
@@ -13,7 +14,7 @@ const PLUGIN_LIST_ENTRYPOINT = "/rest/v2/registry/plugins?all=true&status=ACTIVE
 
 export abstract class AbstractPluginValidator {
   constructor() { }
-  abstract validatePluginEntry(entry:PluginRegistrationEntry):boolean;
+  abstract validatePluginEntry(entry:PluginRegistrationEntry): Observable<boolean>;
 }
 
 @Injectable({
@@ -79,36 +80,79 @@ export class WebConsolePluginManagerService {
       return ret;
     }
 
-    public getCurrentActivablePlugins(baseRoute:Route):Array<ActivablePlugin>{
-        this.logger.debug(LOG_TAG, "getCurrentActivablePlugins called for: ",baseRoute);
+    public getCurrentActivablePlugins(baseRoute:Route): Observable<Array<ActivablePlugin>> {
+      return new Observable((observer)=>{
+        this.logger.debug(LOG_TAG, "getCurrentActivablePlugins [BY_OBSERVER] called for: ",baseRoute);
         if(!this.activePluginsCache){
           this.logger.debug(LOG_TAG, "Cache not available");
-          this.activePluginsCache = this.getActivablePlugins(this.pluginCatalog,baseRoute);
-          this.logger.debug(LOG_TAG, "New cache : ", this.activePluginsCache);
+          this.getActivablePlugins(this.pluginCatalog,baseRoute).subscribe((plugins)=>{
+            this.activePluginsCache = plugins;
+            this.logger.debug(LOG_TAG, "New cache : ", this.activePluginsCache);
+            observer.next(this.activePluginsCache);
+            observer.complete()
+          }, (error)=>{
+            this.logger.error(LOG_TAG, "NgetCurrentActivablePlugins error : ", error);
+            observer.error(error);
+          });
         }
-        return this.activePluginsCache;
+      });
     }
 
-    private getActivablePlugins(motifPlugins:Array<PluginInfo>,dashboardRoute:Route):Array<ActivablePlugin>{
-      this.logger.debug(LOG_TAG, "getActivablePlugins called for: ", motifPlugins, dashboardRoute);
-      let plugins:Array<ActivablePlugin> = [];
-        let availablePlugins = PluginRegistry.getInstance().getAllPlugins();
-        _.forEach(availablePlugins,(entry:PluginRegistrationEntry,key:string) => {
-            if( !(this.checkDeps(entry,motifPlugins)) || !(this.checkAvailability(entry)) ){
-              this.logger.debug(LOG_TAG, "this plugin is NOT eligible for the toolbar:", entry);
+    private getActivablePlugins(motifPlugins:Array<PluginInfo>,dashboardRoute:Route):Observable<Array<ActivablePlugin>>{
+      return new Observable((observer)=>{
+        this.logger.debug(LOG_TAG, "getActivablePlugins [BY_OBSERVER] called for: ", motifPlugins, dashboardRoute);
+        let plugins:Array<ActivablePlugin> = [];
+          let availablePlugins = PluginRegistry.getInstance().getAllPlugins();
+          let subscriptions = [];
+          //create subscriptions for forkjoin
+          _.forEach(availablePlugins,(entry:PluginRegistrationEntry,key:string) => {
+
+            if( !this.checkDeps(entry,motifPlugins) ){
+              this.logger.debug(LOG_TAG, "this plugin is NOT eligible for the toolbar by checkDeps:", entry);
               this.logger.warn(LOG_TAG, "Plugin ",entry.name," removed");
             } else {
-              this.logger.debug(LOG_TAG, "this plugin is eligible for the toolbar:", entry);
-              let record = this.createActivableRecord(entry,dashboardRoute);
-                if(record == null){
-                  this.logger.warn(LOG_TAG, "Plugin removed by not configured route... plugin:", entry);
-                } else {
-                  plugins.push(record);
-                }
+              this.logger.debug(LOG_TAG, "Creating plugin availability subscription for:", entry);
+              subscriptions.push(this.checkAvailability(entry));
             }
-        })
-        plugins = _.orderBy(plugins, ['index'],['asc']);
-        return plugins;
+
+            /*
+              if( !(this.checkDeps(entry,motifPlugins)) || !(this.checkAvailability(entry)) ){
+                this.logger.debug(LOG_TAG, "this plugin is NOT eligible for the toolbar:", entry);
+                this.logger.warn(LOG_TAG, "Plugin ",entry.name," removed");
+              } else {
+                this.logger.debug(LOG_TAG, "this plugin is eligible for the toolbar:", entry);
+                let record = this.createActivableRecord(entry,dashboardRoute);
+                  if(record == null){
+                    this.logger.warn(LOG_TAG, "Plugin removed by not configured route... plugin:", entry);
+                  } else {
+                    plugins.push(record);
+                  }
+              }
+              */
+          });
+
+          this.logger.debug(LOG_TAG, "Checking plugins availability...");
+          forkJoin(subscriptions).subscribe( (results:Array<boolean>)=>{
+            this.logger.debug(LOG_TAG, "getActivablePlugins results:", results);
+
+            //TODO!!
+
+            plugins = _.orderBy(plugins, ['index'],['asc']);
+            observer.next(plugins);
+            observer.complete();
+
+          }, (error) =>{
+            this.logger.error(LOG_TAG, "getActivablePlugins error:", error);
+            observer.error(error);
+          });
+
+
+          /*
+          plugins = _.orderBy(plugins, ['index'],['asc']);
+          observer.next(plugins);
+          observer.complete();
+          */
+      });
     }
 
     private createActivableRecord(entry: PluginRegistrationEntry,dashboardRoute:Route):ActivablePlugin{
@@ -154,22 +198,35 @@ export class WebConsolePluginManagerService {
      * it requests an availability check from an external and pluggable handler
      * @param entry
      */
-    private checkAvailability(entry:PluginRegistrationEntry):boolean {
-      let ret:boolean = true;
-      var BreakException = {};
-      this.logger.debug(LOG_TAG, "checkAvailability called for: ", entry, this.pluginValidators);
-      try {
-        this.pluginValidators.forEach( (element:AbstractPluginValidator) => {
-          if (!element.validatePluginEntry(entry)){
-            this.logger.warn(LOG_TAG, "This entry is not eligible for validator : ", entry, element);
-            ret = false;
-            throw BreakException;
+    private checkAvailability(entry:PluginRegistrationEntry):Observable<boolean> {
+      return new Observable((observer)=>{
+
+        this.logger.debug(LOG_TAG, "checkAvailability called for: ", entry, this.pluginValidators);
+        let subscriptions = [];
+        // make calls to each available validator
+        this.pluginValidators.forEach((validator:AbstractPluginValidator) => {
+          subscriptions.push(validator.validatePluginEntry(entry));
+        })
+        //mak all calls in parallel and wait for all results
+        forkJoin(subscriptions).subscribe( (results:Array<boolean>)=>{
+          this.logger.debug(LOG_TAG, "checkAvailability results: ", entry, results);
+          // one only validator result = FALSE is sufficient to discard this plugin as NOT eligible
+          let notAvailable = _.includes(results, false);
+          if (notAvailable){
+            this.logger.warn(LOG_TAG, "This entry is NOT eligible for validator : ", entry);
+            observer.next(false);
+          } else {
+            this.logger.debug(LOG_TAG, "This entry is eligible for validator : ", entry);
+            observer.next(true);
           }
+          observer.complete();
+        }, (error)=>{
+          this.logger.debug(LOG_TAG, "checkAvailability error: ", entry, error);
+          observer.error(error);
         });
-      } catch (e) {
-        if (e !== BreakException) throw e;
-      }
-      return ret;
+
+      });
+
     }
 
     private checkDeps(entry:PluginRegistrationEntry,plugins:Array<PluginInfo>):boolean{
