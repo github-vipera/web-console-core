@@ -135,7 +135,19 @@ export class WebConsolePluginManagerService {
           forkJoin(subscriptions).subscribe( (results:Array<boolean>)=>{
             this.logger.debug(LOG_TAG, "getActivablePlugins results:", results);
 
-            //TODO!!
+            //Add only available plugins (where TRUE is defined into the results array)
+            for (let i=0;i<availablePlugins.length;i++){
+              if (results[i]){
+                let entry = availablePlugins[i];
+                this.logger.debug(LOG_TAG, "this plugin is eligible for the toolbar:", entry);
+                let record = this.createActivableRecord(entry,dashboardRoute);
+                if(record == null){
+                  this.logger.warn(LOG_TAG, "Plugin removed by not configured route... plugin:", entry);
+                } else {
+                  plugins.push(record);
+                }
+              }
+            }
 
             plugins = _.orderBy(plugins, ['index'],['asc']);
             observer.next(plugins);
