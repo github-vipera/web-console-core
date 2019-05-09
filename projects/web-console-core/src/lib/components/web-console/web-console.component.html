@@ -1,4 +1,4 @@
-<div class="web-console-container">
+<div class="web-console-container" *ngIf="plugins | async as plugins$; else loading">
     <header>
         <wc-top-bar [locationValue]="'left'" style="width:33%;"></wc-top-bar>
         <wc-top-bar [locationValue]="'center'" style="width:33%;"></wc-top-bar>
@@ -13,7 +13,7 @@
                   class="wc-nav-scrollbar">
       <nav class="routing-container">
 
-          <a class="plugin-link" *ngFor="let plugin of plugins | async as plugins" routerLink="{{plugin.link}}" [attr.id]="plugin.id" (click)="onMenuItemClick($event,plugin.id)"
+          <a class="plugin-link" *ngFor="let plugin of plugins$" routerLink="{{plugin.link}}" [attr.id]="plugin.id" (click)="onMenuItemClick($event,plugin.id)"
           tooltip="{{plugin.label}}"
           placement="right"
           show-delay="10"
@@ -36,3 +36,10 @@
             <wc-status-bar></wc-status-bar>
     </footer>
 </div>
+<ng-template #loading>
+  <div class="main-page-loader">
+  <a>Loading UI...</a>
+</div>
+</ng-template>
+
+
