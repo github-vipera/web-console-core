@@ -13,7 +13,7 @@
                   class="wc-nav-scrollbar">
       <nav class="routing-container">
 
-          <a class="plugin-link" *ngFor="let plugin of plugins" routerLink="{{plugin.link}}" [attr.id]="plugin.id" (click)="onMenuItemClick($event,plugin.id)"
+          <a class="plugin-link" *ngFor="let plugin of plugins | async as plugins" routerLink="{{plugin.link}}" [attr.id]="plugin.id" (click)="onMenuItemClick($event,plugin.id)"
           tooltip="{{plugin.label}}"
           placement="right"
           show-delay="10"

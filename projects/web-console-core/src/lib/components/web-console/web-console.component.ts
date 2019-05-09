@@ -1,4 +1,3 @@
-import { WCTopBarLocation } from './../top-bar/wc-top-bar-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
@@ -10,6 +9,7 @@ import { StatusBarService } from '../status-bar/status-bar.service'
 import { StatusBarItem } from '../status-bar/status-bar-item'
 import { WCMainMenuComponent } from '../main-menu/main-menu.component'
 import { NGXLogger } from 'ngx-logger';
+import { Observable } from 'rxjs';
 
 const LOG_TAG = "[WebConsoleComponent]"
 
@@ -20,7 +20,9 @@ const LOG_TAG = "[WebConsoleComponent]"
 })
 export class WebConsoleComponent implements OnInit {
 
-  plugins:Array<ActivablePlugin>
+  //plugins:Array<ActivablePlugin>
+  plugins:Observable<Array<ActivablePlugin>>;
+
 
   private _currentItemSelected:string;
 
@@ -53,11 +55,11 @@ export class WebConsoleComponent implements OnInit {
    * Implements onInit event handler.
    */
   public ngOnInit(): void {
-    this.logger.debug(LOG_TAG, "WebConsoleComponent init done");
-    //this.initStaticRouting();
-    //this.createRoutingConfigByMotifCatalog();
-    this.loadPluginList();
+    this.logger.debug(LOG_TAG, "WebConsoleComponent init done **");
 
+    let dashboardRoute:Route = this.navService.getDashboardRoute();
+    this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
+     
     //initialize the status bar
     this.initStatusBar();
   }
@@ -65,19 +67,6 @@ export class WebConsoleComponent implements OnInit {
   private initStatusBar(){
     this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-status", MainStatusBarItemComponent, {}));
     this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-progress-status", MainStatusBarProgressComponent, {}));
-  }
-
-
-  private loadPluginList(){
-    this.logger.debug(LOG_TAG, "loadPluginList ...")
-    let dashboardRoute:Route = this.navService.getDashboardRoute();
-    this.logger.debug(LOG_TAG, "Resolve dashboard route:",dashboardRoute);
-    this.pluginManager.getCurrentActivablePlugins(dashboardRoute).subscribe((plugins:Array<ActivablePlugin>)=>{
-      this.plugins = plugins;
-      this.logger.debug(LOG_TAG, "loading done: ",this.plugins);
-    }, (error)=>{
-      this.logger.error(LOG_TAG, "loading error: ",error);
-    })
   }
 
   private activatePlugin(plugin:ActivablePlugin){

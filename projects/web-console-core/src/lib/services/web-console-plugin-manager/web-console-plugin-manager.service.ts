@@ -94,7 +94,10 @@ export class WebConsolePluginManagerService {
             this.logger.error(LOG_TAG, "NgetCurrentActivablePlugins error : ", error);
             observer.error(error);
           });
-        }
+        } else {
+          observer.next(this.activePluginsCache);
+          observer.complete()
+      }
       });
     }
 
