@@ -98,3 +98,19 @@ $side-nav-max-size: 200px;
   width: 2.5rem;
 }
 
+.main-page-loader {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  a {
+    flex: 1;
+    margin: 0;
+    font-family: montserrat;
+    font-size: .7rem;
+    color: #dadada;
+    font-weight: lighter;
+    text-align: center;
+  }
+
+}

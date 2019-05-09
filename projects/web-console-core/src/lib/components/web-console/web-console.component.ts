@@ -1,4 +1,3 @@
-import { WCTopBarLocation } from './../top-bar/wc-top-bar-service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Route,Router } from '@angular/router'
 import { NavigationService } from '../../services/navigation-service/navigation.service';
@@ -10,8 +9,9 @@ import { StatusBarService } from '../status-bar/status-bar.service'
 import { StatusBarItem } from '../status-bar/status-bar-item'
 import { WCMainMenuComponent } from '../main-menu/main-menu.component'
 import { NGXLogger } from 'ngx-logger';
-import { DOCUMENT } from '@angular/common';
-import { setCurrentDirectiveDef } from '@angular/core/src/render3/state';
+import { Observable } from 'rxjs';
+
+const LOG_TAG = "[WebConsoleComponent]"
 
 @Component({
   selector: 'web-console',
@@ -19,9 +19,10 @@ import { setCurrentDirectiveDef } from '@angular/core/src/render3/state';
   templateUrl: './web-console.component.html'
 })
 export class WebConsoleComponent implements OnInit {
-  //routes:Array<Route> = [];
 
-  plugins:Array<ActivablePlugin>
+  //plugins:Array<ActivablePlugin>
+  plugins:Observable<Array<ActivablePlugin>>;
+
 
   private _currentItemSelected:string;
 
@@ -54,11 +55,11 @@ export class WebConsoleComponent implements OnInit {
    * Implements onInit event handler.
    */
   public ngOnInit(): void {
-    this.logger.debug("WebConsoleComponent init done");
-    //this.initStaticRouting();
-    //this.createRoutingConfigByMotifCatalog();
-    this.loadPluginList();
+    this.logger.debug(LOG_TAG, "WebConsoleComponent init done **");
 
+    let dashboardRoute:Route = this.navService.getDashboardRoute();
+    this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
+     
     //initialize the status bar
     this.initStatusBar();
   }
@@ -68,46 +69,18 @@ export class WebConsoleComponent implements OnInit {
     this.statusBarService.addItem(new StatusBarItem("__$wcstatusbar-main-progress-status", MainStatusBarProgressComponent, {}));
   }
 
-  /*private createRoutingConfigByMotifCatalog(){
-    this.loadPluginList();
-    this.navService.createRouteConfigFromCatalog().then((result:Array<Route>) => {
-      //this.resetRouting(result);
-      this.loadPluginList();
-      this.logger.debug("WebConsoleComponent routes",result);
-    },(err) => {
-      console.error("Fail to crete routing:",err);
-      //this.resetRouting([]);
-      this.showError("Catalog mapping fail");
-      //this.validateCurrentRoute();
-    }).catch((err) => {
-      console.error("Catch fail to crete routing:",err);
-      //this.resetRouting([]);
-      this.showError("Catalog mapping fail");
-      //this.validateCurrentRoute();
-    });
-  }*/
-
-  private loadPluginList(){
-    this.logger.debug("loadPluginList ...")
-    let dashboardRoute:Route = this.navService.getDashboardRoute();
-    console.log("Resolve dashboard route:",dashboardRoute);
-    this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
-    this.logger.debug("loading done: ",this.plugins);
-  }
-
   private activatePlugin(plugin:ActivablePlugin){
-    this.logger.debug("activate plugin",plugin);
+    this.logger.debug(LOG_TAG, "activate plugin",plugin);
   }
 
   private validateCurrentRoute():void{
     let url = this.router.routerState.snapshot.url;
-    this.logger.debug("active", "" +this.router.isActive(url,true));
+    this.logger.debug(LOG_TAG, "active", "" +this.router.isActive(url,true));
     if(url){
       this.router.navigateByUrl(url).then((res:boolean) => {
-        this.logger.debug("navigateByUrl:",res)
+        this.logger.debug(LOG_TAG, "navigateByUrl:",res)
       },(err) => {
-         console.error("navigateByUrl err",err);
-         //this.router.navigateByUrl('/');
+         this.logger.error(LOG_TAG, "navigateByUrl err",err);
          this.navService.goToDashboard();
       });
     }
@@ -119,7 +92,6 @@ export class WebConsoleComponent implements OnInit {
    */
   private resetRouting(routes:Array<Route>){
     this.router.resetConfig(routes);
-    //this.routes = routes;
   }
 
   private showError(message:string):void{
@@ -145,7 +117,6 @@ export class WebConsoleComponent implements OnInit {
   }
 
   onMenuItemClick(event, currentItem) {
-    //console.log(">>>>> On Menu item Click ",  event, currentItem);
     if (this._currentItemSelected) {
         this.setCurrent(this._currentItemSelected, false);
     }
@@ -156,7 +127,6 @@ export class WebConsoleComponent implements OnInit {
 
   private setCurrent(itemId:string, selected:boolean){
     let el:HTMLElement = document.getElementById(itemId);
-    //console.log(">>>>> setCurrent: ", el);
     if (el){
       if (selected){
         el.classList.add("current");

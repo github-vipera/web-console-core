@@ -34,6 +34,8 @@ export class PluginRegistry {
             registrationEntry.customIcon = info.customIcon;
             registrationEntry.iconName = info.iconName;
             registrationEntry.index = (info.index ? info.index : 99999);
+            registrationEntry.userData = (info.userData ? info.userData : null) ;
+
         }
         return registrationEntry;
     }
@@ -139,12 +141,13 @@ export function PluginView(name:string,info?:RegistrationInfo){
     }
 }
 
-export interface RegistrationInfo{
+export interface RegistrationInfo {
     //route?:Route,
     dependencies?:Array<PluginInfo>;
     customIcon?:string;
     iconName?:string;
     index?:number;
+    userData?: any;
 }
 
 
@@ -161,4 +164,5 @@ export interface PluginRegistrationEntry {
     customIcon?:string
     iconName?:string
     index?:number;
+    userData?:any;
 }
