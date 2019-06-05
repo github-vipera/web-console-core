@@ -20,7 +20,7 @@ export class PluginRegistry {
     }
 
     private constructor(){
-      //console.log"Create component registry");
+      console.log("PluginRegistry constructor");
     }
 
     private createRegistrationEntry(name:string,value:Type<any>,info:RegistrationInfo):PluginRegistrationEntry{
@@ -29,17 +29,21 @@ export class PluginRegistry {
             component:value
         };
         if(info){
-            registrationEntry.routeDef = info.route;
+            //registrationEntry.routeDef = info.route;
             registrationEntry.dependencies = info.dependencies;
             registrationEntry.customIcon = info.customIcon;
             registrationEntry.iconName = info.iconName;
+            registrationEntry.index = (info.index ? info.index : 99999);
+            registrationEntry.userData = (info.userData ? info.userData : null) ;
+
         }
         return registrationEntry;
     }
 
     registryPluginComponent(name:string,value:Type<any>,info?:RegistrationInfo){
-      //console.log"registryPluginComponent",value);
+        console.log("registryPluginComponent name:",name,"value: ",value);
         const entry:PluginRegistrationEntry = this.createRegistrationEntry(name,value,info);
+        console.log("entry:", entry);
         this.pluginMap[name] = entry;
     }
 
@@ -97,6 +101,31 @@ export class PluginRegistry {
          return false;
        }
     }
+
+    public isPluginAvailable(pluginName:string):boolean{
+        return this.pluginMap[pluginName] != null;
+    }
+
+    public isComponentPlugin(pluginName:string,componentToCheck){
+        console.log("check if component is a plugin name: ; componentToCheck: ",pluginName,componentToCheck)
+        if(!componentToCheck){
+            return false;
+        }
+        /*for (let key in this.pluginMap) {
+            if (this.pluginMap.hasOwnProperty(key)) {
+              let value:PluginRegistrationEntry = this.pluginMap[key];
+              if(!value){
+                  return false;
+              }
+              return value.component === componentToCheck;
+            }
+        }*/
+        let value:PluginRegistrationEntry = this.pluginMap[pluginName];
+        if(!value){
+            return false;
+        }
+        return value.component === componentToCheck;
+    }
 }
 
 
@@ -106,17 +135,19 @@ export class PluginRegistry {
  * @param route
  */
 export function PluginView(name:string,info?:RegistrationInfo){
-    //console.debug("pluginview decorator called",name);
+    //console.debug("PluginView decorator called: ",name, "Registration Info:",info);
     return (target:Type<any>) => {
         PluginRegistry.getInstance().registryPluginComponent(name,target,info);
     }
 }
 
-export interface RegistrationInfo{
-    route?:Route,
-    dependencies?:Array<PluginInfo>,
-    customIcon?:string
-    iconName?:string
+export interface RegistrationInfo {
+    //route?:Route,
+    dependencies?:Array<PluginInfo>;
+    customIcon?:string;
+    iconName?:string;
+    index?:number;
+    userData?: any;
 }
 
 
@@ -132,4 +163,6 @@ export interface PluginRegistrationEntry {
     dependencies?:Array<PluginInfo>
     customIcon?:string
     iconName?:string
+    index?:number;
+    userData?:any;
 }

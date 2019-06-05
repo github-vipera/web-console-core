@@ -1,0 +1,111 @@
+:host{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+
+.wa-toolbox {
+  display: flex;
+  flex-direction: column;
+  width:100%;
+  height: 100%;
+  position: relative;
+}
+
+.toolbox-scroll-button {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  font-size: 0.5rem;
+  color:#787878;
+  cursor: pointer;
+  text-align: center;
+  line-height: 15px;
+}
+
+.toolbox-scroll-button:hover {
+  color:#dfdfdf;
+}
+
+
+.toolbox-scroll-button.up {
+  top: 0px;
+  left: 100%;
+}
+
+.toolbox-scroll-button.down {
+  bottom: 0px;
+  left: 100%;
+}
+
+
+
+.toolbox-container {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+}
+
+.toolbox-container::-webkit-scrollbar {
+    width: .15rem;
+}
+
+.toolbox-container::-webkit-scrollbar-thumb {
+  background-color: rgba(169, 169, 169, 0.137);
+}
+
+.toolbox-item-container {
+  position: static;
+
+  label {
+    text-align: center;
+  }
+
+}
+
+.toolbox-item-container-pin {
+  display: none;
+  position:absolute;
+}
+
+
+.toolbox-item-container:hover {
+  background-color: red;
+
+  .toolbox-item-container-pin {
+    background: blue;
+    display: block;
+    width: 300px;
+    position: absolute;
+    z-index: 99999;
+  }
+
+}
+
+i {
+  border: solid #797979;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 2px;
+  z-index: 0;
+}
+
+i:hover {
+  border: solid #dadada;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 2px;
+}
+
+.up {
+  transform: rotate(-68deg);
+  -webkit-transform: rotate(-68deg);
+}
+
+.down {
+  transform: rotate(23deg);
+  -webkit-transform: rotate(23deg);
+}

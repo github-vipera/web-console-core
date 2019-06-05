@@ -10,7 +10,9 @@
     }
   },
   "whitelistedNonPeerDependencies": [
-    "ngx-logger"
+    "ngx-logger",
+    "ngx-scrollbar",
+    "ng2-tooltip-directive"
   ]
 }
 

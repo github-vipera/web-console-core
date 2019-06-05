@@ -12,16 +12,30 @@ import { WebConsoleConfig } from "../../config/WebConsoleConfig";
 export class NavigationService {
     constructor(private logger:NGXLogger, private pluginManager:WebConsolePluginManagerService,private router:Router, private config:WebConsoleConfig ){
         this.logger.debug("NavigationService");
-        let routes = this.getInitialRouteConfig()
-        this.router.resetConfig(routes);
+        //let routes = this.getInitialRouteConfig()
+        //this.router.resetConfig(routes);
     }
 
     public goToDashboard(){
         this.router.navigate([this.config.dashboardRoute]);
     }
 
+    public getDashboardRoute():Route{
+        return this.findDashboardRoute(this.router.config);
+    }
 
-    public getInitialRouteConfig():Routes{
+    private findDashboardRoute(routes:Routes): Route {
+        let index = _.findIndex(routes,(route:Route) => {
+            return route.path === this.config.dashboardRoute
+        })
+        if(index === -1){
+            return null;
+        }
+        return routes[index];
+    }
+
+
+    /*public getInitialRouteConfig():Routes{
         let baseRoute:Route = this.findDashboardRoute(this.router.config);
         this.logger.debug("base route",baseRoute);
         let pluginRoutes:Routes = this.createIntialPluginsRoutes();
@@ -58,18 +72,11 @@ export class NavigationService {
 
     patchCompleteRoutes(baseRoute:Route,catalog:Routes):void{
         baseRoute.children = catalog;
-    }
+    }*/
 
-    findDashboardRoute(routes:Routes): Route {
-        let index = _.findIndex(routes,(route:Route) => {
-            return route.path === this.config.dashboardRoute
-        })
-        if(index === -1){
-            return null;
-        }
-        return routes[index];
-    }
 
+
+    /*
     getActivableRoutesConfig(plugins:Array<PluginInfo>):Routes{
         let activablePlugins = PluginRegistry.getInstance().getActivablePlugins(plugins);
         let routes:Routes = [];
@@ -88,6 +95,6 @@ export class NavigationService {
 
     getInitialRoutes():void{
         let baseRoute:Route = this.findDashboardRoute(this.router.config);
-
     }
+    */
 }

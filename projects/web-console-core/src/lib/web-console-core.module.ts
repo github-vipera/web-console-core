@@ -9,7 +9,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService, AuthGuard } from './services/auth-service/auth.service';
 import { WebConsoleConfig } from './config/WebConsoleConfig';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
-import { ACLPermissionDirective } from './services/acl-service/acl-directive'
+//import { ACLPermissionDirective } from './services/acl-service/acl-directive'
 import { StatusBarComponent, StatusBarDirective, StatusBarService, MainStatusBarItemComponent, MainStatusBarProgressComponent } from './components/status-bar/index'
 import { MotifActivityIndicatorService } from './services/motif-connector/motif-activity-indicator.service'
 import { WCMainMenuComponent } from './components/main-menu/main-menu.component'
@@ -18,6 +18,10 @@ import { WCTopBarService } from './components/top-bar/wc-top-bar-service';
 import { WCTopBarComponent } from './components/top-bar/wc-top-bar-component';
 import { WCTopBarItem } from './components/top-bar/wc-top-bar-item';
 import { NGXLogger } from 'ngx-logger';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { TooltipModule } from 'ng2-tooltip-directive';
+import { EventBusService } from './services/event-bus/event-bus-service';
+import { WebConsolePluginManagerService } from './services/web-console-plugin-manager/web-console-plugin-manager.service';
 
 
 @NgModule({
@@ -28,12 +32,14 @@ import { NGXLogger } from 'ngx-logger';
     AuthGuard,
     StatusBarService,
     WCTopBarService,
-    AuthService
+    AuthService,
+    EventBusService,
+    WebConsolePluginManagerService
   ],
   declarations: [
     WebConsoleComponent,
     PageNotFoundComponent,
-    ACLPermissionDirective,
+    /*ACLPermissionDirective,*/
     WCTopBarContentDirective,
     StatusBarComponent,
     StatusBarDirective,
@@ -45,13 +51,15 @@ import { NGXLogger } from 'ngx-logger';
   imports:[
     CommonModule,
     HttpClientModule,
+    NgScrollbarModule,
+    TooltipModule,
     RouterModule.forChild([])
   ],
   entryComponents:[ MainStatusBarItemComponent, MainStatusBarProgressComponent ],
   exports: [
     WebConsoleComponent,
     RouterModule,
-    ACLPermissionDirective,
+    /*ACLPermissionDirective,*/
     StatusBarComponent,
     StatusBarDirective
   ]

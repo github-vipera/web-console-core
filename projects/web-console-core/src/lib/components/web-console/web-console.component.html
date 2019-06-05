@@ -1,54 +1,45 @@
-<div class="web-console-container">
+<div class="web-console-container" *ngIf="plugins | async as plugins$; else loading">
     <header>
-        <div class="description">Vipera Motif Web Console • mw_uat_1 • 52.28.189.225</div>
-        <div class="logo"><img src="assets/img/logo.svg"></div>
-        <wc-top-bar></wc-top-bar>
-        <!--
-        <div class="cmd"><button (click)="showMainMenu()" class="main-menu-button">AD</button></div>
-        <wc-main-menu (menuClick)="onMainMenuClicked($event)"></wc-main-menu>
-        -->
+        <wc-top-bar [locationValue]="'left'" style="width:33%;"></wc-top-bar>
+        <wc-top-bar [locationValue]="'center'" style="width:33%;"></wc-top-bar>
+        <wc-top-bar [locationValue]="'right'"></wc-top-bar>
     </header>
-    <nav class="routing-container">
-        <a class="plugin-link" *ngFor="let plugin of plugins" routerLink="{{plugin.link}}" id="wc-main-menu-item-{{plugin.link}}" (click)="onMenuItemClick($event,plugin.link)">
-            <div class="main-menu-icon-container">
-              <i class="icon {{plugin.baseInfo.iconName}}"></i>
-            </div>
-            <!--
-            <svg *ngIf="plugin.baseInfo.customIcon;else other_icon"><use [attr.xlink:href]="plugin.baseInfo.customIcon"></use></svg>
-            <ng-template #other_icon>
-                <svg *ngIf="plugin.baseInfo.iconName;else default_icon"><use [attr.xlink:href]="'assets/img/icons.svg#'+plugin.baseInfo.iconName"></use></svg>
-                <ng-template #default_icon>
-                    <svg><use xlink:href="assets/img/icons.svg#ico-plugins"></use></svg>
-                </ng-template>
-            </ng-template>
-            -->
-           <span>{{plugin.label}}</span>
-        </a>
-    </nav>
+    <ng-scrollbar [trackX]="false"
+                  [compact]="true"
+                  [shown]="'hover'"
+                  [barClass]="'wc-nav-scrollbar-bar'"
+                  [thumbClass]="'wc-nav-scrollbar-thumb'"
+                  [viewClass]="'wc-nav-scrollbar-view'"
+                  class="wc-nav-scrollbar">
+      <nav class="routing-container">
+
+          <a class="plugin-link" *ngFor="let plugin of plugins$" routerLink="{{plugin.link}}" [attr.id]="plugin.id" (click)="onMenuItemClick($event,plugin.id)"
+          tooltip="{{plugin.label}}"
+          placement="right"
+          show-delay="10"
+          hide-delay="10"
+          animation-duration="10"
+          tooltip-class="main-toolbar-button-tooltip" >
+              <div class="main-menu-icon-container">
+                <i class="icon {{plugin.baseInfo.iconName}}"></i>
+              </div>
+          </a>
+
+      </nav>
+    </ng-scrollbar>
     <main class="web-console-page-container">
-        <!--<div class="error-box" *ngIf="errorBox.show">
-            <p class="error-msg">{{errorBox.message}}</p>
-        </div>-->
         <section class="contents">
             <router-outlet></router-outlet>
         </section>
     </main>
     <footer>
             <wc-status-bar></wc-status-bar>
-            <!--
-            <div class="settings">
-                <div class="switch">
-                    <input type="checkbox" id="light-theme"><label for="light-theme" id="theme"></label>
-                </div>
-                <div class="size">
-                    <input type="radio" name="font-size" id="fsize1" value="xsmall" onclick="changeSize(this);"><label for="fsize1"></label>
-                    <input type="radio" name="font-size" id="fsize2" value="small" onclick="changeSize(this);"><label for="fsize2"></label>
-                    <input type="radio" name="font-size" id="fsize3" value="normal" onclick="changeSize(this);" checked><label for="fsize3"></label>
-                    <input type="radio" name="font-size" id="fsize4" value="large" onclick="changeSize(this);"><label for="fsize4"></label>
-                    <input type="radio" name="font-size" id="fsize5" value="xlarge" onclick="changeSize(this);"><label for="fsize5"></label>
-                </div>
-            </div>
-            <div class="license">ViperaOSGI • ver. 1.10 • Issued 02.25.2016 • <b class="warn">Expires 12.31.2018</b></div>
-            -->
     </footer>
 </div>
+<ng-template #loading>
+  <div class="main-page-loader">
+  <a>Loading UI...</a>
+</div>
+</ng-template>
+
+

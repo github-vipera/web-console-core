@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+/*
+nav.routing-container {
+  height: 70%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+nav.routing-container a:hover {
+  position: absolute;
+}
+
+*/
+
+nav.routing-container {
+  height: 70%;
+}
+
+body {
+  overflow: hidden;
+}

@@ -10,6 +10,22 @@ import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'web-console-core'
 import { WC_API_BASE_PATH, WC_OAUTH_BASE_PATH } from 'web-console-core'
 import { environment } from '../environments/environment';
 import { ExtComponentB } from './extensions/ext.component.1'
+import { ExtComponentC } from './extensions/ext.component.2'
+import { ExtComponentD } from './extensions/ext.component.3'
+import { ExtComponentE } from './extensions/ext.component.4'
+import { ExtComponentF } from './extensions/ext.component.5'
+import { ExtComponentG } from './extensions/ext.component.6'
+import { WCToolbox } from './components/toolbox/wc-toolbox-component';
+
+const moduleRoutes: Routes = [
+  {component:ExtComponent, path:'ext'},
+  {component:ExtComponentB, path:'extb'},
+  {component:ExtComponentC, path:'extc'},
+  {component:ExtComponentD, path:'extd'},
+  {component:ExtComponentE, path:'exte'},
+  {component:ExtComponentF, path:'extf'},
+  {component:ExtComponentG, path:'extg'}
+];
 
 const routes:Routes = [
   {
@@ -19,7 +35,8 @@ const routes:Routes = [
   {
     path:"dashboard",
     component:WebConsoleComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    children: moduleRoutes
   },
   {
     path:"**",
@@ -32,13 +49,18 @@ const routes:Routes = [
     AppComponent,
     ExtComponent,
     ExtComponentB,
-    LoginComponent
+    ExtComponentC,
+    ExtComponentD,
+    ExtComponentE,
+    ExtComponentF,
+    ExtComponentG,
+    LoginComponent,
+    WCToolbox
   ],
   imports: [
     BrowserModule , WebAdminModulesProvider,
     RouterModule.forRoot(routes,{enableTracing:true}),
-    LoggerModule
-//    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF})
+    LoggerModule.forRoot({serverLoggingUrl: '/api/logs', level: NgxLoggerLevel.DEBUG, serverLogLevel: NgxLoggerLevel.OFF})
   ],
   providers: [
     { provide: WC_API_BASE_PATH, useValue: environment.API_BASE_PATH },
