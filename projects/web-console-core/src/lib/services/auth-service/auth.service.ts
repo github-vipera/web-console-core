@@ -1,19 +1,21 @@
 import { EventBusService } from './../event-bus/event-bus-service';
 import { NGXLogger } from 'ngx-logger';
-import { Injectable, Inject, Optional } from "@angular/core";
-import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse, HttpParams, HttpResponseBase, HttpEventType } from "@angular/common/http";
-import { Observable, throwError, BehaviorSubject} from "rxjs";
-import {tap, catchError, switchMap, finalize, filter, take, map} from 'rxjs/operators'
-import { WebConsoleConfig } from "../../config/WebConsoleConfig";
+import { Injectable, Inject, Optional } from '@angular/core';
+import { HttpClient, HttpRequest, HttpInterceptor, HttpHandler, HttpEvent, HttpErrorResponse,
+  HttpResponse, HttpParams, HttpEventType } from '@angular/common/http';
+import { Observable, throwError, BehaviorSubject} from 'rxjs';
+import {tap, catchError, switchMap, finalize, filter, take, map} from 'rxjs/operators';
+import { WebConsoleConfig } from '../../config/WebConsoleConfig';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
-export const TOKEN_NOT_AVAILABLE:string = "TOKEN_NOT_AVAILABLE";
-export const LOGIN_PATH:string = '/oauth2/token';
+export const TOKEN_NOT_AVAILABLE = 'TOKEN_NOT_AVAILABLE';
+export const LOGIN_PATH = '/oauth2/token';
+export const REVOKE_PATH = '/oauth2/revoke';
 
-const AUTH_TOKEN_KEY:string = "AuthToken"
-const AUTH_LOGON_INFO:string = "LogonInfo"
+const AUTH_TOKEN_KEY = 'AuthToken';
+const AUTH_LOGON_INFO = 'LogonInfo';
 
-import { WC_OAUTH_BASE_PATH, COLLECTION_FORMATS }                     from '../../variables';
+import { WC_OAUTH_BASE_PATH } from '../../variables';
 
 export interface LogonInfo {
   userName: string;
@@ -23,50 +25,50 @@ export interface LogonInfo {
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService implements HttpInterceptor{
+export class AuthService implements HttpInterceptor {
 
-    private clientId:string = "123456789";
-    private clientSecret:string = "123456789";
-    private _basePath:string = '';
+    private clientId = '123456789';
+    private clientSecret = '123456789';
+    private _basePath = '';
     private _isRefreshingToken = false;
     private tokenAwaiter: BehaviorSubject<TokenData> = new BehaviorSubject<TokenData>(null);
     private _currentUserName: string;
 
     constructor(protected httpClient: HttpClient,
                 @Optional()@Inject(WC_OAUTH_BASE_PATH) basePath: string,
-                private webConsoleConfig:WebConsoleConfig,
+                private webConsoleConfig: WebConsoleConfig,
                 @Optional()private router: Router,
-                private eventBus:EventBusService,
-                private logger: NGXLogger){
+                private eventBus: EventBusService,
+                private logger: NGXLogger) {
                     this._basePath = basePath;
-                    this.logger.debug("AuthService basePath:", this._basePath)
+                    this.logger.debug('AuthService basePath:', this._basePath);
     }
 
-    public setTokenData(refreshToken:string, accessToken:string, expiresIn:number):TokenData{
-        let data = this.createTokenData(refreshToken, accessToken, expiresIn);
-        localStorage.setItem(AUTH_TOKEN_KEY,JSON.stringify(data));
+    public setTokenData(refreshToken: string, accessToken: string, expiresIn: number): TokenData {
+        const data = this.createTokenData(refreshToken, accessToken, expiresIn);
+        localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(data));
         return data;
     }
 
-    public getTokenData():TokenData {
-        let data:TokenData = JSON.parse(localStorage.getItem(AUTH_TOKEN_KEY));
+    public getTokenData(): TokenData {
+        const data: TokenData = JSON.parse(localStorage.getItem(AUTH_TOKEN_KEY));
         return data;
     }
 
-    public getRefreshToken():string{
-        let data:TokenData = this.getTokenData();
+    public getRefreshToken(): string {
+        const data: TokenData = this.getTokenData();
         return data != null ? data.refreshToken : null;
     }
 
-    public getAccessToken():string{
-        let data:TokenData = this.getTokenData();
+    public getAccessToken(): string {
+        const data: TokenData = this.getTokenData();
         return data != null ? data.accessToken : null;
     }
 
 
-    private injectAccessToken(request:HttpRequest<any>):HttpRequest<any> {
-        let token = this.getAccessToken();
-        if(token){
+    private injectAccessToken(request: HttpRequest<any>): HttpRequest<any> {
+        const token = this.getAccessToken();
+        if (token) {
             return request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${token}`
@@ -77,17 +79,17 @@ export class AuthService implements HttpInterceptor{
         return request;
     }
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
-        this.logger.trace("intercept request");
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        this.logger.trace('intercept request');
         request = this.injectAccessToken(request);
 
         return next.handle(request).pipe(
-            catchError((error:any) => {
+            catchError((error: any) => {
                 if (error instanceof HttpErrorResponse) {
-                    this.logger.debug("intercept request error: ", error);
-                    let errorBody:any = error.error;
-                    if (error.status == 401 &&
-                        errorBody.code == "E:V_OAUTH2_INVALID_TOKEN") {
+                    this.logger.debug('intercept request error: ', error);
+                    const errorBody: any = error.error;
+                    if (error.status === 401 &&
+                        errorBody.code === 'E:V_OAUTH2_INVALID_TOKEN') {
                         return this.handleUnauthorized(request, next);
                     }
                 }
@@ -131,147 +133,161 @@ export class AuthService implements HttpInterceptor{
 
     refreshToken(next: HttpHandler): Observable<TokenData> {
         return next.handle(this.createRefreshTokenRequest()).pipe(
-            filter((event: HttpEvent<any>) => event.type == HttpEventType.Response),
+            filter((event: HttpEvent<any>) => event.type === HttpEventType.Response),
             map((event: HttpResponse<any>) => {
                 return this.extractTokenDataFromEvent(event);
             }), catchError((err) => {
-                console.error("Refresh token failed");
+                console.error('Refresh token failed');
                 return throwError(err);
             }));
     }
 
     createRefreshTokenRequest(): HttpRequest<any> {
-        let httpParams = new HttpParams()
-            .append("client_id", this.clientId)
-            .append("client_secret", this.clientSecret)
-            .append("refresh_token", this.getRefreshToken())
-            .append("grant_type", "refresh_token");
+        const httpParams = new HttpParams()
+            .append('client_id', this.clientId)
+            .append('client_secret', this.clientSecret)
+            .append('refresh_token', this.getRefreshToken())
+            .append('grant_type', 'refresh_token');
 
-        let postUrl = `${this._basePath}${LOGIN_PATH}`;
-        this.logger.debug("AuthService refreshToken URL: >" + postUrl + "< ", ">" + this._basePath + "<")
-        return new HttpRequest("POST", postUrl, httpParams);
+        const postUrl = `${this._basePath}${LOGIN_PATH}`;
+        this.logger.debug('AuthService refreshToken URL: >' + postUrl + '< ', '>' + this._basePath + '<');
+        return new HttpRequest('POST', postUrl, httpParams);
     }
 
-    invalidateToken(){
-        localStorage.removeItem(AUTH_TOKEN_KEY)
+    invalidateToken() {
+        localStorage.removeItem(AUTH_TOKEN_KEY);
     }
 
-    public login(request:LoginRequest):Observable<any>{
-        let httpParams = new HttpParams()
-            .append("username", request.userName)
-            .append("password", request.password)
-            .append("client_id", this.clientId)
-            .append("client_secret", this.clientSecret)
-            .append("grant_type", "password");
+    public login(request: LoginRequest): Observable<any> {
+        const httpParams = new HttpParams()
+            .append('username', request.userName)
+            .append('password', request.password)
+            .append('client_id', this.clientId)
+            .append('client_secret', this.clientSecret)
+            .append('grant_type', 'password');
 
-        let postUrl = `${this._basePath}${LOGIN_PATH}`;
-        this.logger.debug("AuthService login URL: >" + postUrl+"< ", ">" + this._basePath+"<")
-        return this.httpClient.post(postUrl,httpParams).pipe(
+        const postUrl = `${this._basePath}${LOGIN_PATH}`;
+        this.logger.debug('AuthService login URL: >' + postUrl + '< ', '>' + this._basePath + '<');
+        return this.httpClient.post(postUrl, httpParams).pipe(
             tap((resp) => {
-                this.logger.debug("AuthService login response: ",resp);
+                this.logger.debug('AuthService login response: ', resp);
                 this.storeLogonInfo(request.userName);
-                let accessToken = resp.access_token;
-                let refreshToken = resp.refresh_token;
-                let expiresIn = resp.expires_in;
+                const accessToken = resp.access_token;
+                const refreshToken = resp.refresh_token;
+                const expiresIn = resp.expires_in;
                 this.setTokenData(refreshToken, accessToken, expiresIn);
                 this.onAuthorizationSuccess();
-                this.logger.debug("AuthService login done.");
+                this.logger.debug('AuthService login done.');
                 this.eventBus.broadcast('AuthService:LoginEvent', { username: request.userName });
-            },(err) => {
-                console.error("login error",err);
+            }, (err) => {
+                console.error('login error', err);
             }
         ));
     }
 
-    logout(){
-        this.invalidateToken();
-        if (this.router){
-            this.router.navigate([this.webConsoleConfig.loginRoute]);
-        }
-        this.clearLogonInfo();
-      }
+    public logout() {
+        const httpParams = new HttpParams()
+            .append('client_id', this.clientId)
+            .append('token', this.getRefreshToken());
 
-      private storeLogonInfo(userName: string) {
-          const logonInfo: LogonInfo = {
-            userName: userName,
-            accessTime: new Date()
-          }
-          localStorage.setItem(AUTH_LOGON_INFO, JSON.stringify(logonInfo));
-      }
+        const postUrl = `${this._basePath}${REVOKE_PATH}`;
+        this.logger.debug('AuthService logout URL: >' + postUrl + '< ', '>' + this._basePath + '<');
+        return this.httpClient.post(postUrl, httpParams).pipe(
+            tap((resp) => {
+                this.logger.debug('AuthService logout response: ', resp);
+            }, (err) => {
+              this.logger.warn('AuthService logout request failed: ', err);
+            }, () => {
+              this.invalidateToken();
+              if (this.router) {
+                  this.router.navigate([this.webConsoleConfig.loginRoute]);
+              }
+              this.clearLogonInfo();
 
-      private clearLogonInfo() {
-         localStorage.removeItem(AUTH_LOGON_INFO);
-      }
+              this.logger.debug('AuthService logout done.');
+              this.eventBus.broadcast('AuthService:LogoutEvent');
+          })
+        );
+    }
 
-      public get logonInfo(): LogonInfo {
+    private storeLogonInfo(userName: string) {
+        const logonInfo: LogonInfo = {
+          userName: userName,
+          accessTime: new Date()
+        };
+        localStorage.setItem(AUTH_LOGON_INFO, JSON.stringify(logonInfo));
+    }
+
+    private clearLogonInfo() {
+        localStorage.removeItem(AUTH_LOGON_INFO);
+    }
+
+    public get logonInfo(): LogonInfo {
         const rawData = localStorage.getItem(AUTH_LOGON_INFO);
-        if (rawData){
+        if (rawData) {
           return JSON.parse(rawData);
         } else {
           return null;
         }
-      }
+    }
 
-      public get currentUserName(): string {
+    public get currentUserName(): string {
         const logonInfo = this.logonInfo;
-        if (logonInfo){
+        if (logonInfo) {
           return logonInfo.userName;
         } else {
           return null;
         }
-      }
-
-    createTokenData(refreshToken:string, accessToken:string, expiresIn:number): TokenData {
-        return {
-            refreshToken:refreshToken,
-            accessToken:accessToken,
-            timestamp: Date.now(),
-            expiresIn: expiresIn
-        }
     }
 
-    extractTokenDataFromEvent(response: HttpResponse<any>):TokenData {
-        let body = response.body;
+    createTokenData(refreshToken: string, accessToken: string, expiresIn: number): TokenData {
+        return {
+            refreshToken: refreshToken,
+            accessToken: accessToken,
+            timestamp: Date.now(),
+            expiresIn: expiresIn
+        };
+    }
+
+    extractTokenDataFromEvent(response: HttpResponse<any>): TokenData {
+        const body = response.body;
         return this.setTokenData(body.refresh_token, body.access_token, body.expiresIn);
     }
 
     notifyUnauthorized(): void {
-        if (this.router){
+        if (this.router) {
             this.router.navigate([this.webConsoleConfig.loginRoute]);
         }
     }
 
-    onAuthorizationSuccess():void {
-        if (this.router){
+    onAuthorizationSuccess(): void {
+        if (this.router) {
             this.router.navigate([this.webConsoleConfig.dashboardRoute]);
         }
     }
 
-    onAuthorizationFailure():void {
-        if (this.router){
+    onAuthorizationFailure(): void {
+        if (this.router) {
             this.router.navigate([this.webConsoleConfig.loginRoute]);
         }
     }
 
-    isAuthenticated():boolean {
+    isAuthenticated(): boolean {
         return this.getTokenData() ? true : false;
     }
-
-
-
 }
 
 export interface TokenData {
-    refreshToken:string,
-    accessToken:string,
-    timestamp:number,
-    expiresIn:number
+    refreshToken: string;
+    accessToken: string;
+    timestamp: number;
+    expiresIn: number;
 }
 
-export interface LoginRequest{
-    userName?:string,
-    password?:string,
-    [propName: string]: string
+export interface LoginRequest {
+    userName?: string;
+    password?: string;
+    [propName: string]: string;
 }
 
 @Injectable({
@@ -279,13 +295,13 @@ export interface LoginRequest{
 })
 export class AuthGuard implements CanActivate {
 
-    constructor(private router: Router, private authService:AuthService, private webConsoleConfig:WebConsoleConfig) {
+    constructor(private router: Router, private authService: AuthService, private webConsoleConfig: WebConsoleConfig) {
 
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
-        if (this.authService.isAuthenticated()){
+        if (this.authService.isAuthenticated()) {
             return true;
         }
 
