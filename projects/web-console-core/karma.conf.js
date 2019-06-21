@@ -15,8 +15,11 @@ module.exports = function (config) {
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
+    proxyRes: function(proxyRes, req, res, options) {
+      proxyRes.headers['Access-Control-Expose-Headers'] = '*';
+    },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, '../../coverage'),
+      dir: require('path').join(__dirname, '../../../coverage'),
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true
     },
@@ -25,7 +28,14 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    customLaunchers: {
+      Chrome_with_debugging: {
+        base: 'Chrome',
+        flags: ['--remote-debugging-port=9222'],
+        debug: true
+      }
+    },
+    browsers: ['Chrome_with_debugging'],
     singleRun: false
   });
 };
