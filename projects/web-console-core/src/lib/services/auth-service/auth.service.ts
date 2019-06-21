@@ -187,7 +187,7 @@ export class AuthService implements HttpInterceptor {
       ));
   }
 
-  public logout() {
+  public logout(): Observable<any> {
     const httpParams = new HttpParams()
       .append('client_id', this.clientId)
       .append('client_secret', this.clientSecret)
