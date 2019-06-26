@@ -10,6 +10,7 @@ import { StatusBarItem } from '../status-bar/status-bar-item'
 import { WCMainMenuComponent } from '../main-menu/main-menu.component'
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
+import { EventBusService } from '../../services/event-bus/event-bus-service';
 
 const LOG_TAG = "[WebConsoleComponent]"
 
@@ -35,10 +36,11 @@ export class WebConsoleComponent implements OnInit {
   };
 
   public constructor(private router: Router,
-    private authService:AuthService ,
-    private navService:NavigationService,
-    private pluginManager:WebConsolePluginManagerService,
-    private statusBarService:StatusBarService,
+    private authService: AuthService,
+    private navService: NavigationService,
+    private pluginManager: WebConsolePluginManagerService,
+    private statusBarService: StatusBarService,
+    private eventBus: EventBusService,
     private logger: NGXLogger) {
     this.logger.debug("Web Console component constructor");
     this.initErrorBox();
@@ -59,9 +61,16 @@ export class WebConsoleComponent implements OnInit {
 
     let dashboardRoute:Route = this.navService.getDashboardRoute();
     this.plugins = this.pluginManager.getCurrentActivablePlugins(dashboardRoute);
-     
+
     //initialize the status bar
     this.initStatusBar();
+
+    // Listen on AuthService:LoginEvent to invalidate plugins cache
+    this.eventBus.on('AuthService:LoginEvent').subscribe((message) => {
+      this.logger.debug(LOG_TAG, "on AuthService:LoginEvent received");
+      this.pluginManager.invalidateActivePluginsCache();
+    });
+
   }
 
   private initStatusBar(){
