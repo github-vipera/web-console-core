@@ -80,6 +80,11 @@ export class WebConsolePluginManagerService {
       return ret;
     }
 
+    public invalidateActivePluginsCache(): void {
+      this.activePluginsCache = undefined;
+      this.logger.debug(LOG_TAG, "Active plugins cache invalidated");
+    }
+
     public getCurrentActivablePlugins(baseRoute:Route): Observable<Array<ActivablePlugin>> {
       return new Observable((observer)=>{
         this.logger.debug(LOG_TAG, "getCurrentActivablePlugins [BY_OBSERVER] called for: ",baseRoute);
