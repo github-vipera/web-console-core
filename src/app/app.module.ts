@@ -7,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard, WebConsoleComponent, PageNotFoundComponent } from 'web-console-core'
 import { LoginComponent } from './login/login/login.component';
 import { LoggerModule, NGXLogger, NgxLoggerLevel } from 'web-console-core'
-import { WC_API_BASE_PATH, WC_OAUTH_BASE_PATH } from 'web-console-core'
+import { WC_API_BASE_PATH, WC_OAUTH_BASE_PATH, WC_OAUTH_LOGIN_PATH, WC_OAUTH_REVOKE_PATH } from 'web-console-core'
 import { environment } from '../environments/environment';
 import { ExtComponentB } from './extensions/ext.component.1'
 import { ExtComponentC } from './extensions/ext.component.2'

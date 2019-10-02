@@ -17,7 +17,7 @@ export const REVOKE_PATH = '/oauth2/revoke';
 const AUTH_TOKEN_KEY = 'AuthToken';
 const AUTH_LOGON_INFO = 'LogonInfo';
 
-import { WC_OAUTH_BASE_PATH } from '../../variables';
+import { WC_OAUTH_BASE_PATH, WC_OAUTH_LOGIN_PATH, WC_OAUTH_REVOKE_PATH, WC_OAUTH_CLIENT_ID, WC_OAUTH_CONTENT_TYPE } from '../../variables';
 
 export interface LogonInfo {
   userName: string;
@@ -29,21 +29,41 @@ export interface LogonInfo {
 })
 export class AuthService implements HttpInterceptor {
 
-  private clientId = '123456789';
   private clientSecret = '123456789';
   private _basePath = '';
+  private _clientId = '123456789';
+  private _loginPath = LOGIN_PATH;
+  private _revokePath = REVOKE_PATH;
   private _isRefreshingToken = false;
   private tokenAwaiter: BehaviorSubject<TokenData> = new BehaviorSubject<TokenData>(null);
   private _currentUserName: string;
+  private _contentType = null;
 
   constructor(protected httpClient: HttpClient,
     @Optional() @Inject(WC_OAUTH_BASE_PATH) basePath: string,
+    @Optional() @Inject(WC_OAUTH_LOGIN_PATH) loginPath: string,
+    @Optional() @Inject(WC_OAUTH_REVOKE_PATH) revokePath: string,
+    @Optional() @Inject(WC_OAUTH_CLIENT_ID) clientId: string,
+    @Optional() @Inject(WC_OAUTH_CONTENT_TYPE) contentType: string,
     private webConsoleConfig: WebConsoleConfig,
     @Optional() private router: Router,
     private eventBus: EventBusService,
     private logger: NGXLogger) {
     this._basePath = basePath;
     this.logger.debug('AuthService basePath:', this._basePath);
+
+    if (loginPath){
+      this._loginPath = loginPath;
+    }
+    if (revokePath){
+      this._revokePath = revokePath;
+    }
+    if (clientId){
+      this._clientId = clientId;
+    }
+    if (contentType){
+      this._contentType = contentType;
+    }
   }
 
   public setTokenData(refreshToken: string, accessToken: string, expiresIn: number): TokenData {
@@ -146,12 +166,12 @@ export class AuthService implements HttpInterceptor {
 
   createRefreshTokenRequest(): HttpRequest<any> {
     const httpParams = new HttpParams()
-      .append('client_id', this.clientId)
+      .append('client_id', this._clientId)
       .append('client_secret', this.clientSecret)
       .append('refresh_token', this.getRefreshToken())
       .append('grant_type', 'refresh_token');
 
-    const postUrl = `${this._basePath}${LOGIN_PATH}`;
+    const postUrl = `${this._basePath}${this._loginPath}`;
     this.logger.debug('AuthService refreshToken URL: >' + postUrl + '< ', '>' + this._basePath + '<');
     return new HttpRequest('POST', postUrl, httpParams);
   }
@@ -164,11 +184,15 @@ export class AuthService implements HttpInterceptor {
     const httpParams = new HttpParams()
       .append('username', request.userName)
       .append('password', request.password)
-      .append('client_id', this.clientId)
-      .append('client_secret', this.clientSecret)
+      .append('client_id', this._clientId)
+      //.append('client_secret', this.clientSecret)
       .append('grant_type', 'password');
 
-    const postUrl = `${this._basePath}${LOGIN_PATH}`;
+      if (this._contentType){
+        httpParams.append('Content-Type', this._contentType /*'application/x-www-form-urlencoded'*/)
+      }
+
+    const postUrl = `${this._basePath}${this._loginPath}`;
     this.logger.debug('AuthService login URL: >' + postUrl + '< ', '>' + this._basePath + '<');
     return this.httpClient.post(postUrl, httpParams).pipe(
       tap((resp) => {
@@ -189,7 +213,7 @@ export class AuthService implements HttpInterceptor {
 
   public logout(): Observable<any> {
     const httpParams = new HttpParams()
-      .append('client_id', this.clientId)
+      .append('client_id', this._clientId)
       .append('client_secret', this.clientSecret)
       .append('token', this.getRefreshToken());
 

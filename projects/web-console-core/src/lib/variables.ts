@@ -2,6 +2,13 @@ import { InjectionToken } from '@angular/core';
 
 export const WC_API_BASE_PATH = new InjectionToken<string>('apiBasePath');
 export const WC_OAUTH_BASE_PATH = new InjectionToken<string>('oauthBasePath');
+export const WC_OAUTH_LOGIN_PATH = new InjectionToken<string>('oauthLoginPath');
+export const WC_OAUTH_REVOKE_PATH = new InjectionToken<string>('oauthRevokePath');
+export const WC_OAUTH_CLIENT_ID = new InjectionToken<string>('oauthClientId');
+export const WC_OAUTH_CONTENT_TYPE = new InjectionToken<string>('oauthContentType');
+
+
+
 export const COLLECTION_FORMATS = {
     'csv': ',',
     'tsv': '   ',
