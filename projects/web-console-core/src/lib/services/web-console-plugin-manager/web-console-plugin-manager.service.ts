@@ -160,6 +160,7 @@ export class WebConsolePluginManagerService {
             plugins = _.orderBy(plugins, ['index'],['asc']);
             observer.next(plugins);
             observer.complete();
+            this.logger.debug(LOG_TAG, "getActivablePlugins done.");
 
           }, (error) =>{
             this.logger.error(LOG_TAG, "getActivablePlugins error:", error);
@@ -220,6 +221,13 @@ export class WebConsolePluginManagerService {
      */
     private checkAvailability(entry:PluginRegistrationEntry):Observable<boolean> {
       return new Observable((observer)=>{
+
+        if (this.pluginValidators.length==0){
+          this.logger.debug(LOG_TAG, "Unable to check: validators list is empty.");
+          observer.next(true);
+          observer.complete();
+          return;
+        }
 
         this.logger.debug(LOG_TAG, "checkAvailability called for: ", entry, this.pluginValidators);
         let subscriptions = [];

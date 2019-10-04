@@ -29,14 +29,12 @@ export interface LogonInfo {
 })
 export class AuthService implements HttpInterceptor {
 
-  private clientSecret = '123456789';
   private _basePath = '';
   private _clientId = '123456789';
   private _loginPath = LOGIN_PATH;
   private _revokePath = REVOKE_PATH;
   private _isRefreshingToken = false;
   private tokenAwaiter: BehaviorSubject<TokenData> = new BehaviorSubject<TokenData>(null);
-  private _currentUserName: string;
   private _contentType = null;
 
   constructor(protected httpClient: HttpClient,
@@ -167,7 +165,6 @@ export class AuthService implements HttpInterceptor {
   createRefreshTokenRequest(): HttpRequest<any> {
     const httpParams = new HttpParams()
       .append('client_id', this._clientId)
-      .append('client_secret', this.clientSecret)
       .append('refresh_token', this.getRefreshToken())
       .append('grant_type', 'refresh_token');
 
@@ -185,7 +182,6 @@ export class AuthService implements HttpInterceptor {
       .append('username', request.userName)
       .append('password', request.password)
       .append('client_id', this._clientId)
-      //.append('client_secret', this.clientSecret)
       .append('grant_type', 'password');
 
       if (this._contentType){
@@ -214,10 +210,9 @@ export class AuthService implements HttpInterceptor {
   public logout(): Observable<any> {
     const httpParams = new HttpParams()
       .append('client_id', this._clientId)
-      .append('client_secret', this.clientSecret)
       .append('token', this.getRefreshToken());
 
-    const postUrl = `${this._basePath}${REVOKE_PATH}`;
+    const postUrl = `${this._basePath}${this._revokePath}`;
     this.logger.debug('AuthService logout URL: >' + postUrl + '< ', '>' + this._basePath + '<');
     return this.httpClient.post(postUrl, httpParams).pipe(
       tap((resp) => {
